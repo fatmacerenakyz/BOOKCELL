@@ -1,7 +1,6 @@
 package tr.com.bookcell.book;
 
 import tr.com.bookcell.author.Author;
-import tr.com.bookcell.branch.Branch;
 import tr.com.bookcell.publisher.Publisher;
 
 import java.util.Objects;
@@ -14,13 +13,12 @@ public class Book {
     private String genre;
     private int publicationYear;
     private int pageNumber;
-    private Branch branch;
     private boolean isAvailable;
-    private boolean isFav;
 
-    public Book() {}
+    public Book() {
+    }
 
-    public Book(String id, String name, Author author, Publisher publisher, String genre, int publicationYear, int pageNumber, Branch branch, boolean isAvailable, boolean isFav) {
+    public Book(String id, String name, Author author, Publisher publisher, String genre, int publicationYear, int pageNumber, boolean isAvailable) {
         this.id = id;
         this.name = name;
         this.author = author;
@@ -28,9 +26,7 @@ public class Book {
         this.genre = genre;
         this.publicationYear = publicationYear;
         this.pageNumber = pageNumber;
-        this.branch = branch;
         this.isAvailable = isAvailable;
-        this.isFav = isFav;
     }
 
     public String getId() {
@@ -89,28 +85,12 @@ public class Book {
         this.pageNumber = pageNumber;
     }
 
-    public Branch getBranch() {
-        return branch;
-    }
-
-    public void setBranch(Branch branch) {
-        this.branch = branch;
-    }
-
     public boolean isAvailable() {
         return isAvailable;
     }
 
     public void setAvailable(boolean available) {
         isAvailable = available;
-    }
-
-    public boolean isFav() {
-        return isFav;
-    }
-
-    public void setFav(boolean fav) {
-        isFav = fav;
     }
 
     @Override
@@ -125,14 +105,12 @@ public class Book {
                 Objects.equals(this.genre, that.genre) &&
                 this.publicationYear == that.publicationYear &&
                 this.pageNumber == that.pageNumber &&
-                Objects.equals(this.branch, that.branch) &&
-                this.isAvailable == that.isAvailable &&
-                this.isFav == that.isFav;
+                this.isAvailable == that.isAvailable;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, author, publisher, genre, publicationYear, pageNumber, branch, isAvailable, isFav);
+        return Objects.hash(id, name, author, publisher, genre, publicationYear, pageNumber, isAvailable);
     }
 
     @Override
@@ -145,9 +123,7 @@ public class Book {
                 "genre=" + genre + ", " +
                 "publicationYear=" + publicationYear + ", " +
                 "pageNumber=" + pageNumber + ", " +
-                "branch=" + branch + ", " +
-                "isAvailable=" + isAvailable + ", " +
-                "isFav=" + isFav + ']';
+                "isAvailable=" + isAvailable + ", " + ']';
     }
 
 }

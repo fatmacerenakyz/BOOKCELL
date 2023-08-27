@@ -1,52 +1,21 @@
 package tr.com.bookcell.user;
 
-import tr.com.bookcell.book.Book;
-import tr.com.bookcell.payment.Payment;
-import tr.com.bookcell.reservation.Reservation;
-
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Objects;
 
 public class Customer extends User {
-    //optional parameters
-    private List<Book> books;
     private LocalDate registrationDate;
-    private List<Reservation> reservations;
-    private List<Payment> payments;
 
     public Customer() {
     }
 
-    public Customer(String id, String name, String surname, String userName, String email, String password, List<Book> books, LocalDate registrationDate, List<Reservation> reservations, List<Payment> payments) {
-        super(id, name, surname, userName, email, password);
-        this.books = books;
+    public Customer(LocalDate registrationDate) {
         this.registrationDate = registrationDate;
-        this.reservations = reservations;
-        this.payments = payments;
     }
 
-    public List<Reservation> getReservations() {
-        return reservations;
-    }
-
-    public void setReservations(List<Reservation> reservations) {
-        this.reservations = reservations;
-    }
-
-    public List<Payment> getPayments() {
-        return payments;
-    }
-
-    public void setPayments(List<Payment> payments) {
-        this.payments = payments;
-    }
-
-    public List<Book> getBooks() {
-        return books;
-    }
-
-    public void setBooks(List<Book> books) {
-        this.books = books;
+    public Customer(String id, String name, String surname, String userName, String email, String password, LocalDate registrationDate) {
+        super(id, name, surname, userName, email, password);
+        this.registrationDate = registrationDate;
     }
 
     public LocalDate getRegistrationDate() {
@@ -55,5 +24,25 @@ public class Customer extends User {
 
     public void setRegistrationDate(LocalDate registrationDate) {
         this.registrationDate = registrationDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Customer customer)) return false;
+        if (!super.equals(o)) return false;
+        return Objects.equals(registrationDate, customer.registrationDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), registrationDate);
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "registrationDate=" + registrationDate +
+                '}';
     }
 }

@@ -3,19 +3,28 @@ package tr.com.bookcell.basket;
 import tr.com.bookcell.book.Book;
 import tr.com.bookcell.user.Customer;
 
-import java.util.List;
 import java.util.Objects;
 
 public class Basket {
+    private String id;
     private Customer customer;
-    private List<Book> books;
+    private Book book;
 
     public Basket() {
     }
 
-    public Basket(Customer customer, List<Book> books) {
+    public Basket(String id, Customer customer, Book book) {
+        this.id = id;
         this.customer = customer;
-        this.books = books;
+        this.book = book;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Customer getCustomer() {
@@ -26,31 +35,31 @@ public class Basket {
         this.customer = customer;
     }
 
-    public List<Book> getBooks() {
-        return books;
+    public Book getBook() {
+        return book;
     }
 
-    public void setBooks(List<Book> books) {
-        this.books = books;
+    public void setBooks(Book book) {
+        this.book = book;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Basket basket)) return false;
-        return Objects.equals(customer, basket.customer) && Objects.equals(books, basket.books);
+        return Objects.equals(customer, basket.customer) && Objects.equals(book, basket.book);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(customer, books);
+        return Objects.hash(customer, book);
     }
 
     @Override
     public String toString() {
         return "Basket{" +
                 "customer='" + customer + '\'' +
-                ", books=" + books +
+                ", book=" + book +
                 '}';
     }
 }

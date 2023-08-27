@@ -1,7 +1,6 @@
 package tr.com.bookcell.book;
 
 import tr.com.bookcell.author.Author;
-import tr.com.bookcell.branch.Branch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +35,7 @@ public class DefaultBookRepository implements BookRepository {
         return null;
     }
 
-    public List<Book> getAll(){
+    public List<Book> getAll() {
         return books;
     }
 
@@ -54,16 +53,6 @@ public class DefaultBookRepository implements BookRepository {
     public Book getWithAuthor(Author author) {
         for (Book book : books) {
             if (Objects.equals(book.getAuthor(), author)) {
-                return book;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Book getWithBranch(Branch branch) {
-        for (Book book : books) {
-            if (Objects.equals(book.getBranch(), branch)) {
                 return book;
             }
         }

@@ -1,36 +1,43 @@
 package tr.com.bookcell.reservation;
 
-import tr.com.bookcell.branch.Branch;
+import tr.com.bookcell.book.Book;
 import tr.com.bookcell.user.Customer;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 public class Reservation {
+    private String id;
     private Customer customer;
     private LocalDateTime startDate;
     private LocalDateTime expiryDate;
-    private Branch pickUpBranch;
-    private Branch dropOffBranch;
-    private boolean isPay;
+    private Book book;
 
     public Reservation() {
     }
 
-    public Reservation(Customer customer, LocalDateTime startDate, LocalDateTime expiryDate, Branch pickUpBranch, Branch dropOffBranch, boolean isPay) {
+    public Reservation(String id, Customer customer, LocalDateTime startDate, LocalDateTime expiryDate, Book book) {
+        this.id = id;
         this.customer = customer;
         this.startDate = startDate;
         this.expiryDate = expiryDate;
-        this.pickUpBranch = pickUpBranch;
-        this.dropOffBranch = dropOffBranch;
-        this.isPay = isPay;
+        this.book = book;
     }
 
-    public Customer getcustomer() {
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Customer getCustomer() {
         return customer;
     }
 
-    public void setcustomer(Customer customer) {
+    public void setCustomer(Customer customer) {
         this.customer = customer;
     }
 
@@ -50,52 +57,34 @@ public class Reservation {
         this.expiryDate = expiryDate;
     }
 
-    public Branch getPickUpBranch() {
-        return pickUpBranch;
+    public Book getBook() {
+        return book;
     }
 
-    public void setPickUpBranch(Branch pickUpBranch) {
-        this.pickUpBranch = pickUpBranch;
-    }
-
-    public Branch getDropOffBranch() {
-        return dropOffBranch;
-    }
-
-    public void setDropOffBranch(Branch dropOffBranch) {
-        this.dropOffBranch = dropOffBranch;
-    }
-
-    public boolean isPay() {
-        return isPay;
-    }
-
-    public void setPay(boolean pay) {
-        isPay = pay;
+    public void setBook(Book book) {
+        this.book = book;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Reservation that = (Reservation) o;
-        return isPay == that.isPay && Objects.equals(customer, that.customer) && Objects.equals(startDate, that.startDate) && Objects.equals(expiryDate, that.expiryDate) && Objects.equals(pickUpBranch, that.pickUpBranch) && Objects.equals(dropOffBranch, that.dropOffBranch);
+        if (!(o instanceof Reservation that)) return false;
+        return Objects.equals(id, that.id) && Objects.equals(customer, that.customer) && Objects.equals(startDate, that.startDate) && Objects.equals(expiryDate, that.expiryDate) && Objects.equals(book, that.book);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, customer, startDate, expiryDate, book);
     }
 
     @Override
     public String toString() {
         return "Reservation{" +
-                "customer='" + customer + '\'' +
+                "id='" + id + '\'' +
+                ", customer=" + customer +
                 ", startDate=" + startDate +
                 ", expiryDate=" + expiryDate +
-                ", pickUpBranch=" + pickUpBranch +
-                ", dropOffBranch=" + dropOffBranch +
-                ", isPay=" + isPay +
+                ", book=" + book +
                 '}';
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(customer, startDate, expiryDate, pickUpBranch, dropOffBranch, isPay);
     }
 }

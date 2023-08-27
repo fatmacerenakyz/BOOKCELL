@@ -1,7 +1,6 @@
 package tr.com.bookcell.book;
 
 import tr.com.bookcell.author.Author;
-import tr.com.bookcell.branch.Branch;
 
 import java.util.List;
 
@@ -40,11 +39,6 @@ public class DefaultBookService implements BookService {
     @Override
     public Book getWithAuthor(Author author) {
         return bookRepository.getWithAuthor(author);
-    }
-
-    @Override
-    public Book getWithBranch(Branch branch) {
-        return bookRepository.getWithBranch(branch);
     }
 
 }
