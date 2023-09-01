@@ -1,4 +1,4 @@
-package tr.com.bookcell.favourites;
+package tr.com.bookcell.favourite;
 
 public interface FavouriteRepository {
 }

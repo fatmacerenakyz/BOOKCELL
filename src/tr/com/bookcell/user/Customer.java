@@ -4,18 +4,34 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class Customer extends User {
+    private String name;
+    private String surName;
     private LocalDate registrationDate;
 
     public Customer() {
     }
 
-    public Customer(LocalDate registrationDate) {
+    public Customer(String id, String email, String password, String name, String surName, LocalDate registrationDate) {
+        super(id, email, password);
+        this.name = name;
+        this.surName = surName;
         this.registrationDate = registrationDate;
     }
 
-    public Customer(String id, String name, String surname, String userName, String email, String password, LocalDate registrationDate) {
-        super(id, name, surname, userName, email, password);
-        this.registrationDate = registrationDate;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurName() {
+        return surName;
+    }
+
+    public void setSurName(String surName) {
+        this.surName = surName;
     }
 
     public LocalDate getRegistrationDate() {
@@ -31,18 +47,20 @@ public class Customer extends User {
         if (this == o) return true;
         if (!(o instanceof Customer customer)) return false;
         if (!super.equals(o)) return false;
-        return Objects.equals(registrationDate, customer.registrationDate);
+        return Objects.equals(name, customer.name) && Objects.equals(surName, customer.surName) && Objects.equals(registrationDate, customer.registrationDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), registrationDate);
+        return Objects.hash(super.hashCode(), name, surName, registrationDate);
     }
 
     @Override
     public String toString() {
         return "Customer{" +
-                "registrationDate=" + registrationDate +
+                "name='" + name + '\'' +
+                ", surName='" + surName + '\'' +
+                ", registrationDate=" + registrationDate +
                 '}';
     }
 }

@@ -10,5 +10,5 @@ public interface BookRepository {
     Book getWithId(String id);
     List<Book> getAll();
     Book getWithName(String name);
-    Book getWithAuthor(Author author);
+    Book getWithAuthorId(Author author);
 }

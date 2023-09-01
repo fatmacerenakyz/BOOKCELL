@@ -50,9 +50,9 @@ public class DefaultBookRepository implements BookRepository {
     }
 
     @Override
-    public Book getWithAuthor(Author author) {
+    public Book getWithAuthorId(Author author) {
         for (Book book : books) {
-            if (Objects.equals(book.getAuthor(), author)) {
+            if (Objects.equals(book.getAuthorId(), author)) {
                 return book;
             }
         }

@@ -15,6 +15,6 @@ public interface BookService {
 
     Book getWithName(String name);
 
-    Book getWithAuthor(Author author);
+    Book getWithAuthorId(Author author);
 
 }

@@ -1,16 +1,16 @@
-package tr.com.bookcell.basket;
+package tr.com.bookcell.favourite;
 
 import java.util.Objects;
 
-public class Basket {
+public class Favourite {
     private Integer id;
     private Integer customerId;
     private Integer bookId;
 
-    public Basket() {
+    public Favourite() {
     }
 
-    public Basket(Integer id, Integer customerId, Integer bookId) {
+    public Favourite(Integer id, Integer customerId, Integer bookId) {
         this.id = id;
         this.customerId = customerId;
         this.bookId = bookId;
@@ -41,23 +41,23 @@ public class Basket {
     }
 
     @Override
-    public String toString() {
-        return "Basket{" +
-                "id=" + id +
-                ", customerId=" + customerId +
-                ", bookId=" + bookId +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Basket basket)) return false;
-        return Objects.equals(id, basket.id) && Objects.equals(customerId, basket.customerId) && Objects.equals(bookId, basket.bookId);
+        if (!(o instanceof Favourite favourite)) return false;
+        return Objects.equals(id, favourite.id) && Objects.equals(customerId, favourite.customerId) && Objects.equals(bookId, favourite.bookId);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, customerId, bookId);
+    }
+
+    @Override
+    public String toString() {
+        return "Favourite{" +
+                "id='" + id + '\'' +
+                ", customerId=" + customerId +
+                ", bookId=" + bookId +
+                '}';
     }
 }

@@ -1,15 +1,12 @@
 package tr.com.bookcell.landing;
 
-import tr.com.bookcell.book.Book;
-import tr.com.bookcell.user.Customer;
-
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Landing {
-    private String id;
-    private Customer customer;
-    private Book book;
+    private Integer id;
+    private Integer customerId;
+    private Integer bookId;
     private LocalDateTime pickUpDate;
     private LocalDateTime dropOffDate;
 
@@ -17,36 +14,36 @@ public class Landing {
 
     }
 
-    public Landing(String id, Customer customer, Book book, LocalDateTime pickUpDate, LocalDateTime dropOffDate) {
+    public Landing(Integer id, Integer customerId, Integer bookId, LocalDateTime pickUpDate, LocalDateTime dropOffDate) {
         this.id = id;
-        this.customer = customer;
-        this.book = book;
+        this.customerId = customerId;
+        this.bookId = bookId;
         this.pickUpDate = pickUpDate;
         this.dropOffDate = dropOffDate;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public Integer getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setCustomerId(Integer customerId) {
+        this.customerId = customerId;
     }
 
-    public Book getBook() {
-        return book;
+    public Integer getBookId() {
+        return bookId;
     }
 
-    public void setBook(Book book) {
-        this.book = book;
+    public void setBookId(Integer bookId) {
+        this.bookId = bookId;
     }
 
     public LocalDateTime getPickUpDate() {
@@ -69,20 +66,20 @@ public class Landing {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Landing landing)) return false;
-        return Objects.equals(id, landing.id) && Objects.equals(customer, landing.customer) && Objects.equals(book, landing.book) && Objects.equals(pickUpDate, landing.pickUpDate) && Objects.equals(dropOffDate, landing.dropOffDate);
+        return Objects.equals(id, landing.id) && Objects.equals(customerId, landing.customerId) && Objects.equals(bookId, landing.bookId) && Objects.equals(pickUpDate, landing.pickUpDate) && Objects.equals(dropOffDate, landing.dropOffDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, customer, book, pickUpDate, dropOffDate);
+        return Objects.hash(id, customerId, bookId, pickUpDate, dropOffDate);
     }
 
     @Override
     public String toString() {
         return "Landing{" +
-                "id='" + id + '\'' +
-                ", customer=" + customer +
-                ", book=" + book +
+                "id=" + id +
+                ", customerId=" + customerId +
+                ", bookId=" + bookId +
                 ", pickUpDate=" + pickUpDate +
                 ", dropOffDate=" + dropOffDate +
                 '}';

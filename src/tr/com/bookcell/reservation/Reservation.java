@@ -8,37 +8,46 @@ import java.util.List;
 import java.util.Objects;
 
 public class Reservation {
-    private String id;
-    private Customer customer;
+    private Integer id;
+    private Integer customerId;
+    private Integer bookId;
     private LocalDateTime startDate;
     private LocalDateTime expiryDate;
-    private Book book;
+
 
     public Reservation() {
     }
 
-    public Reservation(String id, Customer customer, LocalDateTime startDate, LocalDateTime expiryDate, Book book) {
+    public Reservation(Integer id, Integer customerId, Integer bookId, LocalDateTime startDate, LocalDateTime expiryDate) {
         this.id = id;
-        this.customer = customer;
+        this.customerId = customerId;
+        this.bookId = bookId;
         this.startDate = startDate;
         this.expiryDate = expiryDate;
-        this.book = book;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public Integer getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setCustomerId(Integer customerId) {
+        this.customerId = customerId;
+    }
+
+    public Integer getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(Integer bookId) {
+        this.bookId = bookId;
     }
 
     public LocalDateTime getStartDate() {
@@ -57,34 +66,26 @@ public class Reservation {
         this.expiryDate = expiryDate;
     }
 
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Reservation that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(customer, that.customer) && Objects.equals(startDate, that.startDate) && Objects.equals(expiryDate, that.expiryDate) && Objects.equals(book, that.book);
+        return Objects.equals(id, that.id) && Objects.equals(customerId, that.customerId) && Objects.equals(bookId, that.bookId) && Objects.equals(startDate, that.startDate) && Objects.equals(expiryDate, that.expiryDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, customer, startDate, expiryDate, book);
+        return Objects.hash(id, customerId, bookId, startDate, expiryDate);
     }
 
     @Override
     public String toString() {
         return "Reservation{" +
-                "id='" + id + '\'' +
-                ", customer=" + customer +
+                "id=" + id +
+                ", customerId=" + customerId +
+                ", bookId=" + bookId +
                 ", startDate=" + startDate +
                 ", expiryDate=" + expiryDate +
-                ", book=" + book +
                 '}';
     }
 }

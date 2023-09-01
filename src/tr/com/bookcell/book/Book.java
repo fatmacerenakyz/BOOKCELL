@@ -1,15 +1,12 @@
 package tr.com.bookcell.book;
 
-import tr.com.bookcell.author.Author;
-import tr.com.bookcell.publisher.Publisher;
-
 import java.util.Objects;
 
 public class Book {
     private String id;
     private String name;
-    private Author author;
-    private Publisher publisher;
+    private Integer authorId;
+    private Integer publisherId;
     private String genre;
     private int publicationYear;
     private int pageNumber;
@@ -18,11 +15,11 @@ public class Book {
     public Book() {
     }
 
-    public Book(String id, String name, Author author, Publisher publisher, String genre, int publicationYear, int pageNumber, boolean isAvailable) {
+    public Book(String id, String name, Integer authorId, Integer publisherId, String genre, int publicationYear, int pageNumber, boolean isAvailable) {
         this.id = id;
         this.name = name;
-        this.author = author;
-        this.publisher = publisher;
+        this.authorId = authorId;
+        this.publisherId = publisherId;
         this.genre = genre;
         this.publicationYear = publicationYear;
         this.pageNumber = pageNumber;
@@ -45,20 +42,20 @@ public class Book {
         this.name = name;
     }
 
-    public Author getAuthor() {
-        return author;
+    public Integer getAuthorId() {
+        return authorId;
     }
 
-    public void setAuthor(Author author) {
-        this.author = author;
+    public void setAuthorId(Integer authorId) {
+        this.authorId = authorId;
     }
 
-    public Publisher getPublisher() {
-        return publisher;
+    public Integer getPublisherId() {
+        return publisherId;
     }
 
-    public void setPublisher(Publisher publisher) {
-        this.publisher = publisher;
+    public void setPublisherId(Integer publisherId) {
+        this.publisherId = publisherId;
     }
 
     public String getGenre() {
@@ -94,37 +91,29 @@ public class Book {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
-        var that = (Book) obj;
-        return this.id == that.id &&
-                Objects.equals(this.name, that.name) &&
-                Objects.equals(this.author, that.author) &&
-                Objects.equals(this.publisher, that.publisher) &&
-                Objects.equals(this.genre, that.genre) &&
-                this.publicationYear == that.publicationYear &&
-                this.pageNumber == that.pageNumber &&
-                this.isAvailable == that.isAvailable;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Book book)) return false;
+        return publicationYear == book.publicationYear && pageNumber == book.pageNumber && isAvailable == book.isAvailable && Objects.equals(id, book.id) && Objects.equals(name, book.name) && Objects.equals(authorId, book.authorId) && Objects.equals(publisherId, book.publisherId) && Objects.equals(genre, book.genre);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, author, publisher, genre, publicationYear, pageNumber, isAvailable);
+        return Objects.hash(id, name, authorId, publisherId, genre, publicationYear, pageNumber, isAvailable);
     }
 
     @Override
     public String toString() {
-        return "tr.com.bookcell.book.Book[" +
-                "idNumber=" + id + ", " +
-                "name=" + name + ", " +
-                "author=" + author + ", " +
-                "publisher=" + publisher + ", " +
-                "genre=" + genre + ", " +
-                "publicationYear=" + publicationYear + ", " +
-                "pageNumber=" + pageNumber + ", " +
-                "isAvailable=" + isAvailable + ", " + ']';
+        return "Book{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", authorId=" + authorId +
+                ", publisherId=" + publisherId +
+                ", genre='" + genre + '\'' +
+                ", publicationYear=" + publicationYear +
+                ", pageNumber=" + pageNumber +
+                ", isAvailable=" + isAvailable +
+                '}';
     }
-
 }
 

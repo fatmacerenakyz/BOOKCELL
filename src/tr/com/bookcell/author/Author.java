@@ -1,31 +1,26 @@
 package tr.com.bookcell.author;
 
-import tr.com.bookcell.book.Book;
-
-import java.util.List;
 import java.util.Objects;
 
 public class Author {
-    private String id;
+    private Integer id;
     private String name;
     private String surname;
-    private List<Book> books;
 
     public Author() {
     }
 
-    public Author(String id, String name, String surname, List<Book> books) {
+    public Author(Integer id, String name, String surname) {
         this.id = id;
         this.name = name;
         this.surname = surname;
-        this.books = books;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -45,13 +40,6 @@ public class Author {
         this.surname = surname;
     }
 
-    public List<Book> getBooks() {
-        return books;
-    }
-
-    public void setBooks(List<Book> books) {
-        this.books = books;
-    }
 
     @Override
     public boolean equals(Object obj) {
@@ -60,13 +48,12 @@ public class Author {
         var that = (Author) obj;
         return Objects.equals(this.id, that.id) &&
                 Objects.equals(this.name, that.name) &&
-                Objects.equals(this.surname, that.surname) &&
-                Objects.equals(this.books, that.books);
+                Objects.equals(this.surname, that.surname);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, surname, books);
+        return Objects.hash(id, name, surname);
     }
 
     @Override
@@ -74,8 +61,7 @@ public class Author {
         return "tr.com.bookcell.author.Author[" +
                 "idNumber=" + id + ", " +
                 "name=" + name + ", " +
-                "surname=" + surname + ", " +
-                "book=" + books + ", " + ']';
+                "surname=" + surname + ']';
     }
 
 }

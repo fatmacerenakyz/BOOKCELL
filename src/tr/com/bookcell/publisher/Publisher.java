@@ -1,29 +1,24 @@
 package tr.com.bookcell.publisher;
 
-import tr.com.bookcell.book.Book;
-
-import java.util.List;
 import java.util.Objects;
 
 public class Publisher {
-    private String id;
+    private Integer id;
     private String name;
-    private List<Book> books;
 
     public Publisher() {
     }
 
-    public Publisher(String id, String name, List<Book> books) {
+    public Publisher(Integer id, String name) {
         this.id = id;
         this.name = name;
-        this.books = books;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -35,33 +30,23 @@ public class Publisher {
         this.name = name;
     }
 
-    public List<Book> getBooks() {
-        return books;
-    }
-
-    public void setBooks(List<Book> books) {
-        this.books = books;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Publisher publisher)) return false;
-        return Objects.equals(id, publisher.id) && Objects.equals(name, publisher.name) && Objects.equals(books, publisher.books);
+        return Objects.equals(id, publisher.id) && Objects.equals(name, publisher.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, books);
+        return Objects.hash(id, name);
     }
 
     @Override
-    public String
-    toString() {
+    public String toString() {
         return "Publisher{" +
-                "id='" + id + '\'' +
+                "id=" + id +
                 ", name='" + name + '\'' +
-                ", books=" + books +
                 '}';
     }
 }

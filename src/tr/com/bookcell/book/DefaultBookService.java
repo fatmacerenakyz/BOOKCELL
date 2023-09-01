@@ -37,8 +37,8 @@ public class DefaultBookService implements BookService {
     }
 
     @Override
-    public Book getWithAuthor(Author author) {
-        return bookRepository.getWithAuthor(author);
+    public Book getWithAuthorId(Author author) {
+        return bookRepository.getWithAuthorId(author);
     }
 
 }
