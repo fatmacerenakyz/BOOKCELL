@@ -14,6 +14,13 @@ public class Landing {
 
     }
 
+    public Landing(Integer customerId, Integer bookId, LocalDateTime pickUpDate, LocalDateTime dropOffDate) {
+        this.customerId = customerId;
+        this.bookId = bookId;
+        this.pickUpDate = pickUpDate;
+        this.dropOffDate = dropOffDate;
+    }
+
     public Landing(Integer id, Integer customerId, Integer bookId, LocalDateTime pickUpDate, LocalDateTime dropOffDate) {
         this.id = id;
         this.customerId = customerId;

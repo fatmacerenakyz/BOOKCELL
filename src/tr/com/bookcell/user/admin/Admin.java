@@ -1,4 +1,6 @@
-package tr.com.bookcell.user;
+package tr.com.bookcell.user.admin;
+
+import tr.com.bookcell.user.User;
 
 import java.util.Objects;
 
@@ -6,6 +8,11 @@ public class Admin extends User {
     private String userName;
 
     public Admin() {
+    }
+
+    public Admin(String email, String password, String userName) {
+        super(email, password);
+        this.userName = userName;
     }
 
     public Admin(String id, String email, String password, String userName) {

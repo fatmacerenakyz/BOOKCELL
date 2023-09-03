@@ -1,7 +1,7 @@
 package tr.com.bookcell.basket;
 
 import tr.com.bookcell.book.Book;
-import tr.com.bookcell.user.Customer;
+import tr.com.bookcell.user.customer.Customer;
 
 import java.util.List;
 

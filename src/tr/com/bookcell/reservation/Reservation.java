@@ -1,10 +1,6 @@
 package tr.com.bookcell.reservation;
 
-import tr.com.bookcell.book.Book;
-import tr.com.bookcell.user.Customer;
-
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 public class Reservation {
@@ -16,6 +12,13 @@ public class Reservation {
 
 
     public Reservation() {
+    }
+
+    public Reservation(Integer customerId, Integer bookId, LocalDateTime startDate, LocalDateTime expiryDate) {
+        this.customerId = customerId;
+        this.bookId = bookId;
+        this.startDate = startDate;
+        this.expiryDate = expiryDate;
     }
 
     public Reservation(Integer id, Integer customerId, Integer bookId, LocalDateTime startDate, LocalDateTime expiryDate) {

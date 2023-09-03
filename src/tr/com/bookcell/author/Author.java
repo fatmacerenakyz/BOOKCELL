@@ -10,6 +10,11 @@ public class Author {
     public Author() {
     }
 
+    public Author(String name, String surname) {
+        this.name = name;
+        this.surname = surname;
+    }
+
     public Author(Integer id, String name, String surname) {
         this.id = id;
         this.name = name;
@@ -58,8 +63,7 @@ public class Author {
 
     @Override
     public String toString() {
-        return "tr.com.bookcell.author.Author[" +
-                "idNumber=" + id + ", " +
+        return "[id=" + id + ", " +
                 "name=" + name + ", " +
                 "surname=" + surname + ']';
     }

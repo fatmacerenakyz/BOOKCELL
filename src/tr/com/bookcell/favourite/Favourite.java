@@ -10,6 +10,11 @@ public class Favourite {
     public Favourite() {
     }
 
+    public Favourite(Integer customerId, Integer bookId) {
+        this.customerId = customerId;
+        this.bookId = bookId;
+    }
+
     public Favourite(Integer id, Integer customerId, Integer bookId) {
         this.id = id;
         this.customerId = customerId;

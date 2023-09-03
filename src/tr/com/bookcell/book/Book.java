@@ -3,7 +3,7 @@ package tr.com.bookcell.book;
 import java.util.Objects;
 
 public class Book {
-    private String id;
+    private Integer id;
     private String name;
     private Integer authorId;
     private Integer publisherId;
@@ -15,7 +15,28 @@ public class Book {
     public Book() {
     }
 
-    public Book(String id, String name, Integer authorId, Integer publisherId, String genre, int publicationYear, int pageNumber, boolean isAvailable) {
+    public Book(String name, Integer authorId, boolean isAvailable) {
+        this.name = name;
+        this.authorId = authorId;
+        this.isAvailable = isAvailable;
+    }
+
+    public Book(String name, Integer authorId) {
+        this.name = name;
+        this.authorId = authorId;
+    }
+
+    public Book(String name, Integer authorId, Integer publisherId, String genre, int publicationYear, int pageNumber, boolean isAvailable) {
+        this.name = name;
+        this.authorId = authorId;
+        this.publisherId = publisherId;
+        this.genre = genre;
+        this.publicationYear = publicationYear;
+        this.pageNumber = pageNumber;
+        this.isAvailable = isAvailable;
+    }
+
+    public Book(Integer id, String name, Integer authorId, Integer publisherId, String genre, int publicationYear, int pageNumber, boolean isAvailable) {
         this.id = id;
         this.name = name;
         this.authorId = authorId;
@@ -26,11 +47,11 @@ public class Book {
         this.isAvailable = isAvailable;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

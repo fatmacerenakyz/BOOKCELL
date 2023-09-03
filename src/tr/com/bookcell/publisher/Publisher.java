@@ -9,6 +9,10 @@ public class Publisher {
     public Publisher() {
     }
 
+    public Publisher(String name) {
+        this.name = name;
+    }
+
     public Publisher(Integer id, String name) {
         this.id = id;
         this.name = name;

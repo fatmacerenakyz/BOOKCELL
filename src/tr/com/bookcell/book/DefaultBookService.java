@@ -1,6 +1,7 @@
 package tr.com.bookcell.book;
 
 import tr.com.bookcell.author.Author;
+import tr.com.bookcell.publisher.Publisher;
 
 import java.util.List;
 
@@ -11,19 +12,11 @@ public class DefaultBookService implements BookService {
         this.bookRepository = bookRepository;
     }
 
+
     @Override
-    public void add(Book book) {
+    public void add(String name, Integer authorId, Integer publisherId, String genre, int publicationYear, int pageNumber, boolean isAvailable) {
+        Book book = new Book(name, authorId, publisherId, genre, publicationYear, pageNumber, isAvailable);
         bookRepository.add(book);
-    }
-
-    @Override
-    public void delete(String id) {
-        bookRepository.delete(id);
-    }
-
-    @Override
-    public Book getWithId(String id) {
-        return bookRepository.getWithId(id);
     }
 
     @Override
@@ -32,13 +25,14 @@ public class DefaultBookService implements BookService {
     }
 
     @Override
-    public Book getWithName(String name) {
-        return bookRepository.getWithName(name);
+    public void remove(String name, Integer authorId) {
+        Book book = new Book(name, authorId);
+        bookRepository.remove(book);
     }
 
     @Override
-    public Book getWithAuthorId(Author author) {
-        return bookRepository.getWithAuthorId(author);
+    public void setAvailable(String name, Integer authorId, boolean isAvailable) {
+        Book book = new Book(name, authorId, isAvailable);
+        bookRepository.setAvailable(book);
     }
-
 }

@@ -1,4 +1,4 @@
-package tr.com.bookcell.user;
+package tr.com.bookcell.user.customer;
 
 public enum CustomerType {
     DEFAULT("0"),

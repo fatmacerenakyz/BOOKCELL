@@ -10,6 +10,11 @@ public class Basket {
     public Basket() {
     }
 
+    public Basket(Integer customerId, Integer bookId) {
+        this.customerId = customerId;
+        this.bookId = bookId;
+    }
+
     public Basket(Integer id, Integer customerId, Integer bookId) {
         this.id = id;
         this.customerId = customerId;
