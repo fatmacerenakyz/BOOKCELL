@@ -1,5 +1,6 @@
 package tr.com.bookcell.landing;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -7,21 +8,21 @@ public class Landing {
     private Integer id;
     private Integer customerId;
     private Integer bookId;
-    private LocalDateTime pickUpDate;
-    private LocalDateTime dropOffDate;
+    private LocalDate pickUpDate;
+    private LocalDate dropOffDate;
 
     public Landing() {
 
     }
 
-    public Landing(Integer customerId, Integer bookId, LocalDateTime pickUpDate, LocalDateTime dropOffDate) {
+    public Landing(Integer customerId, Integer bookId, LocalDate pickUpDate, LocalDate dropOffDate) {
         this.customerId = customerId;
         this.bookId = bookId;
         this.pickUpDate = pickUpDate;
         this.dropOffDate = dropOffDate;
     }
 
-    public Landing(Integer id, Integer customerId, Integer bookId, LocalDateTime pickUpDate, LocalDateTime dropOffDate) {
+    public Landing(Integer id, Integer customerId, Integer bookId, LocalDate pickUpDate, LocalDate dropOffDate) {
         this.id = id;
         this.customerId = customerId;
         this.bookId = bookId;
@@ -53,19 +54,19 @@ public class Landing {
         this.bookId = bookId;
     }
 
-    public LocalDateTime getPickUpDate() {
+    public LocalDate getPickUpDate() {
         return pickUpDate;
     }
 
-    public void setPickUpDate(LocalDateTime pickUpDate) {
+    public void setPickUpDate(LocalDate pickUpDate) {
         this.pickUpDate = pickUpDate;
     }
 
-    public LocalDateTime getDropOffDate() {
+    public LocalDate getDropOffDate() {
         return dropOffDate;
     }
 
-    public void setDropOffDate(LocalDateTime dropOffDate) {
+    public void setDropOffDate(LocalDate dropOffDate) {
         this.dropOffDate = dropOffDate;
     }
 

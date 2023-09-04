@@ -1,32 +1,32 @@
 package tr.com.bookcell.reservation;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Reservation {
     private Integer id;
     private Integer customerId;
     private Integer bookId;
-    private LocalDateTime startDate;
-    private LocalDateTime expiryDate;
+    private LocalDate startDate;
+    private LocalDate deliveryDate;
 
 
     public Reservation() {
     }
 
-    public Reservation(Integer customerId, Integer bookId, LocalDateTime startDate, LocalDateTime expiryDate) {
+    public Reservation(Integer customerId, Integer bookId, LocalDate startDate, LocalDate deliveryDate) {
         this.customerId = customerId;
         this.bookId = bookId;
         this.startDate = startDate;
-        this.expiryDate = expiryDate;
+        this.deliveryDate = deliveryDate;
     }
 
-    public Reservation(Integer id, Integer customerId, Integer bookId, LocalDateTime startDate, LocalDateTime expiryDate) {
+    public Reservation(Integer id, Integer customerId, Integer bookId, LocalDate startDate, LocalDate deliveryDate) {
         this.id = id;
         this.customerId = customerId;
         this.bookId = bookId;
         this.startDate = startDate;
-        this.expiryDate = expiryDate;
+        this.deliveryDate = deliveryDate;
     }
 
     public Integer getId() {
@@ -53,32 +53,32 @@ public class Reservation {
         this.bookId = bookId;
     }
 
-    public LocalDateTime getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDateTime getExpiryDate() {
-        return expiryDate;
+    public LocalDate getDeliveryDate() {
+        return deliveryDate;
     }
 
-    public void setExpiryDate(LocalDateTime expiryDate) {
-        this.expiryDate = expiryDate;
+    public void setDeliveryDate(LocalDate deliveryDate) {
+        this.deliveryDate = deliveryDate;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Reservation that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(customerId, that.customerId) && Objects.equals(bookId, that.bookId) && Objects.equals(startDate, that.startDate) && Objects.equals(expiryDate, that.expiryDate);
+        return Objects.equals(id, that.id) && Objects.equals(customerId, that.customerId) && Objects.equals(bookId, that.bookId) && Objects.equals(startDate, that.startDate) && Objects.equals(deliveryDate, that.deliveryDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, customerId, bookId, startDate, expiryDate);
+        return Objects.hash(id, customerId, bookId, startDate, deliveryDate);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class Reservation {
                 ", customerId=" + customerId +
                 ", bookId=" + bookId +
                 ", startDate=" + startDate +
-                ", expiryDate=" + expiryDate +
+                ", expiryDate=" + deliveryDate +
                 '}';
     }
 }

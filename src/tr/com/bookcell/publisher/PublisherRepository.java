@@ -7,5 +7,6 @@ import java.util.List;
 public interface PublisherRepository extends BaseRepository {
     void add(Publisher publisher);
     List<Publisher> getAll();
-    void remove(Publisher publisher);
+    Publisher getByName(String name);
+    void remove(String name);
 }

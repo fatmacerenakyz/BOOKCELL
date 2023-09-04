@@ -11,6 +11,7 @@ public class DefaultAuthorRepository implements AuthorRepository {
     private static final String INSERT_AUTHORS = "INSERT INTO public.\"AUTHOR\"(\"NAME\", \"SURNAME\") VALUES (?, ?);";
     private static final String SELECT_AUTHORS_WHERE_NAME = "SELECT * FROM public.\"AUTHOR\" WHERE \"NAME\" = ?;";
     private static final String DELETE_AUTHORS = "DELETE FROM public.\"AUTHOR\" WHERE \"NAME\" = ? AND \"SURNAME\" = ?;";
+    private static final String SELECT_AUTHORS_WHERE_NAME_AND_SURNAME = "SELECT * FROM public.\"AUTHOR\" WHERE \"NAME\" = ? AND \"SURNAME\" = ?;";
 
     @Override
     public void add(Author author) {
@@ -67,13 +68,32 @@ public class DefaultAuthorRepository implements AuthorRepository {
     }
 
     @Override
-    public void remove(Author author) {
-        try(Connection connection =  connect()){
+    public Author getByNameAndSurname(String name, String surname) {
+        Author author = new Author();
+        try (Connection connection = connect()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AUTHORS_WHERE_NAME_AND_SURNAME);
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, surname);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                author.setId(resultSet.getInt("ID"));
+                author.setName(resultSet.getString("NAME"));
+                author.setSurname(resultSet.getString("SURNAME"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return author;
+    }
+
+    @Override
+    public void remove(String name, String surname) {
+        try (Connection connection = connect()) {
             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_AUTHORS);
-            preparedStatement.setString(1, author.getName());
-            preparedStatement.setString(2, author.getSurname());
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, surname);
             preparedStatement.executeUpdate();
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -27,8 +27,12 @@ public class DefaultAuthorService implements AuthorService{
     }
 
     @Override
+    public Author getByNameAndSurname(String name, String surname) {
+        return authorRepository.getByNameAndSurname(name, surname);
+    }
+
+    @Override
     public void remove(String name, String surname) {
-        Author author = new Author(name, surname);
-        authorRepository.remove(author);
+        authorRepository.remove(name, surname);
     }
 }

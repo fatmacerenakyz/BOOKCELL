@@ -21,8 +21,12 @@ public class DefaultPublisherService implements PublisherService{
     }
 
     @Override
+    public Publisher getByName(String name) {
+        return publisherRepository.getByName(name);
+    }
+
+    @Override
     public void remove(String name) {
-        Publisher publisher = new Publisher(name);
-        publisherRepository.remove(publisher);
+        publisherRepository.remove(name);
     }
 }

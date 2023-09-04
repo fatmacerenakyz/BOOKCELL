@@ -1,12 +1,14 @@
 package tr.com.bookcell.book;
 
-import tr.com.bookcell.author.Author;
-import tr.com.bookcell.publisher.Publisher;
+import tr.com.bookcell.author.*;
 
 import java.util.List;
 
 public class DefaultBookService implements BookService {
     private final BookRepository bookRepository;
+    AuthorRepository defaultAuthorRepository = new DefaultAuthorRepository();
+    AuthorService defaultAuthorService = new DefaultAuthorService(defaultAuthorRepository);
+    Author author = new Author();
 
     public DefaultBookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
@@ -25,14 +27,27 @@ public class DefaultBookService implements BookService {
     }
 
     @Override
-    public void remove(String name, Integer authorId) {
-        Book book = new Book(name, authorId);
-        bookRepository.remove(book);
+    public List<Book> getByName(String name) {
+        return bookRepository.getByName(name);
+    }
+
+    @Override
+    public Book getByNameAndAuthor(String name, String authorName, String authorSurname) {
+        author = defaultAuthorService.getByNameAndSurname(authorName, authorSurname);
+        return bookRepository.getByNameAndAuthor(name, author.getId());
+    }
+
+
+    @Override
+    public void remove(String name, String authorName, String authorSurname) {
+        author = defaultAuthorService.getByNameAndSurname(authorName, authorSurname);
+        bookRepository.remove(name, author.getId());
     }
 
     @Override
     public void setAvailable(String name, Integer authorId, boolean isAvailable) {
-        Book book = new Book(name, authorId, isAvailable);
-        bookRepository.setAvailable(book);
+        bookRepository.setAvailable(name, authorId, isAvailable);
     }
+
+
 }

@@ -11,6 +11,7 @@ public interface AuthorRepository extends BaseRepository {
     List<Author> getAll();
 
     List<Author> getByName(String name);
-    void remove(Author author);
+    Author getByNameAndSurname(String name, String surname);
+    void remove(String name, String surname);
 
 }
