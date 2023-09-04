@@ -25,8 +25,6 @@ public class DefaultAuthorRepository implements AuthorRepository {
             e.printStackTrace();
 
         }
-
-
     }
 
     @Override
@@ -75,10 +73,12 @@ public class DefaultAuthorRepository implements AuthorRepository {
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, surname);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
+            if (resultSet.first()) {
                 author.setId(resultSet.getInt("ID"));
                 author.setName(resultSet.getString("NAME"));
                 author.setSurname(resultSet.getString("SURNAME"));
+            } else {
+                System.out.println("THERE IS NO DATA IN THIS TABLE");
             }
         } catch (Exception e) {
             e.printStackTrace();

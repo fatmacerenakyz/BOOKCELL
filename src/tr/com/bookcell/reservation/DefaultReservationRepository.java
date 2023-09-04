@@ -7,30 +7,11 @@ import java.sql.ResultSet;
 import java.time.LocalDate;
 
 public class DefaultReservationRepository implements ReservationRepository {
-    private static final String INSERT_RESERVATIONS;
-    private static final String DELETE_RESERVATIONS;
-    private static final String UPDATE_RESERVATIONS_START_DATE;
-    private static final String UPDATE_RESERVATIONS_DELIVERY_DATE;
-    private static final String SELECT_RESERVATIONS_WHERE_CUSTOMER_ID_BOOK_ID;
-
-    static {
-        INSERT_RESERVATIONS = "INSERT INTO public.\"RESERVATION\"(\"CUSTOMER_ID\", \"BOOK_ID\", \"START_DATE\", \"EXPIRY_DATE\") VALUES (?, ?, ?, ?);";
-    }
-
-    static {
-        DELETE_RESERVATIONS = "DELETE FROM public.\"RESERVATION\" WHERE \"CUSTOMER_ID\" = ? AND \"BOOK_ID\" = ?;";
-    }
-
-    static {
-        UPDATE_RESERVATIONS_START_DATE = "UPDATE public.\"RESERVATION\" SET \"START_DATE\"=? WHERE \"CUSTOMER_ID\"=? AND \"BOOK_ID\"=?;";
-    }
-
-    static {
-        UPDATE_RESERVATIONS_DELIVERY_DATE = "UPDATE public.\"RESERVATION\" SET \"DELIVERY_DATE\"=? WHERE \"CUSTOMER_ID\"=? AND \"BOOK_ID\"=?;";
-    }
-    static{
-        SELECT_RESERVATIONS_WHERE_CUSTOMER_ID_BOOK_ID = "SELECT * FROM public.\"RESERVATION\" WHERE \"CUSTOMER_ID\"=? AND \"BOOK_ID\"=?;";
-    }
+    private static final String INSERT_RESERVATIONS = "INSERT INTO public.\"RESERVATION\"(\"CUSTOMER_ID\", \"BOOK_ID\", \"START_DATE\", \"DELIVERY_DATE\") VALUES (?, ?, ?, ?);";
+    private static final String DELETE_RESERVATIONS = "DELETE FROM public.\"RESERVATION\" WHERE \"CUSTOMER_ID\" = ? AND \"BOOK_ID\" = ?;";
+    private static final String UPDATE_RESERVATIONS_START_DATE = "UPDATE public.\"RESERVATION\" SET \"START_DATE\"=? WHERE \"CUSTOMER_ID\"=? AND \"BOOK_ID\"=?;";
+    private static final String UPDATE_RESERVATIONS_DELIVERY_DATE = "UPDATE public.\"RESERVATION\" SET \"DELIVERY_DATE\"=? WHERE \"CUSTOMER_ID\"=? AND \"BOOK_ID\"=?;";
+    private static final String SELECT_RESERVATIONS_WHERE_CUSTOMER_ID_BOOK_ID = "SELECT * FROM public.\"RESERVATION\" WHERE \"CUSTOMER_ID\"=? AND \"BOOK_ID\"=?;";
 
     @Override
     public void add(Reservation reservation) {
@@ -60,26 +41,26 @@ public class DefaultReservationRepository implements ReservationRepository {
 
     @Override
     public void setStartDate(Integer customerId, Integer bookId, LocalDate startDate) {
-        try(Connection connection = connect()){
+        try (Connection connection = connect()) {
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_RESERVATIONS_START_DATE);
             preparedStatement.setDate(1, Date.valueOf(startDate));
             preparedStatement.setInt(2, customerId);
             preparedStatement.setInt(3, bookId);
             preparedStatement.executeUpdate();
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public void setDeliveryDate(Integer customerId, Integer bookId, LocalDate expiryDate) {
-        try(Connection connection = connect()){
+        try (Connection connection = connect()) {
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_RESERVATIONS_DELIVERY_DATE);
             preparedStatement.setDate(1, Date.valueOf(expiryDate));
             preparedStatement.setInt(2, customerId);
             preparedStatement.setInt(3, bookId);
             preparedStatement.executeUpdate();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -87,20 +68,21 @@ public class DefaultReservationRepository implements ReservationRepository {
     @Override
     public Reservation getByCustomerAndBook(Integer customerId, Integer bookId) {
         Reservation reservation = new Reservation();
-        try(Connection connection = connect()){
+        try (Connection connection = connect()) {
             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_RESERVATIONS_WHERE_CUSTOMER_ID_BOOK_ID);
             preparedStatement.setInt(1, customerId);
             preparedStatement.setInt(2, bookId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
+            if (resultSet.first()) {
                 reservation.setId(resultSet.getInt("ID"));
                 reservation.setCustomerId(resultSet.getInt("CUSTOMER_ID"));
                 reservation.setBookId(resultSet.getInt("BOOK_ID"));
                 reservation.setStartDate(resultSet.getDate("START_DATE").toLocalDate());
                 reservation.setDeliveryDate(resultSet.getDate("DELIVERY_DATE").toLocalDate());
-
+            } else {
+                System.out.println("THERE IS NO DATA IN THIS TABLE");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return reservation;

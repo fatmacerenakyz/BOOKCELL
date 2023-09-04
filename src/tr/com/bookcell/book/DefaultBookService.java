@@ -6,9 +6,6 @@ import java.util.List;
 
 public class DefaultBookService implements BookService {
     private final BookRepository bookRepository;
-    AuthorRepository defaultAuthorRepository = new DefaultAuthorRepository();
-    AuthorService defaultAuthorService = new DefaultAuthorService(defaultAuthorRepository);
-    Author author = new Author();
 
     public DefaultBookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
@@ -33,6 +30,9 @@ public class DefaultBookService implements BookService {
 
     @Override
     public Book getByNameAndAuthor(String name, String authorName, String authorSurname) {
+        Author author = new Author();
+        AuthorRepository defaultAuthorRepository = new DefaultAuthorRepository();
+        AuthorService defaultAuthorService = new DefaultAuthorService(defaultAuthorRepository);
         author = defaultAuthorService.getByNameAndSurname(authorName, authorSurname);
         return bookRepository.getByNameAndAuthor(name, author.getId());
     }
@@ -40,6 +40,9 @@ public class DefaultBookService implements BookService {
 
     @Override
     public void remove(String name, String authorName, String authorSurname) {
+        Author author = new Author();
+        AuthorRepository defaultAuthorRepository = new DefaultAuthorRepository();
+        AuthorService defaultAuthorService = new DefaultAuthorService(defaultAuthorRepository);
         author = defaultAuthorService.getByNameAndSurname(authorName, authorSurname);
         bookRepository.remove(name, author.getId());
     }

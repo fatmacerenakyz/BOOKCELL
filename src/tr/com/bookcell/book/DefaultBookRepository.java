@@ -7,35 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DefaultBookRepository implements BookRepository {
-    private static final String INSERT_BOOKS;
-    private static final String SELECT_BOOKS;
-    private static final String DELETE_BOOKS;
-    private static final String UPDATE_BOOKS_IS_AVAILABLE;
-    private static final String SELECT_BOOKS_WHERE_NAME;
-    private static final String SELECT_BOOKS_WHERE_NAME_AND_AUTHOR_ID;
-
-    static {
-        INSERT_BOOKS = "INSERT INTO public.\"BOOK\"(\"NAME\", \"AUTHOR_ID\", \"PUBLISHER_ID\", \"GENRE\", \"PUBLICATION_YEAR\", \"PAGE_NUMBER\", \"IS_AVAILABLE\") VALUES (?, ?, ?, ?, ?, ?, ?);";
-    }
-
-    static {
-        SELECT_BOOKS = "SELECT * FROM public.\"BOOK\";";
-    }
-
-    static {
-        DELETE_BOOKS = "DELETE FROM public.\"BOOK\" WHERE \"NAME\" = ? AND \"AUTHOR_ID\" = ?;";
-    }
-
-    static {
-        UPDATE_BOOKS_IS_AVAILABLE = "UPDATE public.\"BOOK\" SET \"IS_AVAILABLE\"=? WHERE \"NAME\"=? AND \"AUTHOR_ID\"=?;";
-    }
-
-    static {
-        SELECT_BOOKS_WHERE_NAME = "SELECT * FROM public.\"BOOK\" WHERE \"NAME\" = ?;";
-    }
-    static {
-        SELECT_BOOKS_WHERE_NAME_AND_AUTHOR_ID = "SELECT * FROM public.\"BOOK\" WHERE \"NAME\" = ? AND \"AUTHOR_ID\" = ?;";
-    }
+    private static final String INSERT_BOOKS = "INSERT INTO public.\"BOOK\"(\"NAME\", \"AUTHOR_ID\", \"PUBLISHER_ID\", \"GENRE\", \"PUBLICATION_YEAR\", \"PAGE_NUMBER\", \"IS_AVAILABLE\") VALUES (?, ?, ?, ?, ?, ?, ?);";
+    private static final String SELECT_BOOKS = "SELECT * FROM public.\"BOOK\";";
+    private static final String DELETE_BOOKS = "DELETE FROM public.\"BOOK\" WHERE \"NAME\" = ? AND \"AUTHOR_ID\" = ?;";
+    private static final String UPDATE_BOOKS_IS_AVAILABLE = "UPDATE public.\"BOOK\" SET \"IS_AVAILABLE\"=? WHERE \"NAME\"=? AND \"AUTHOR_ID\"=?;";
+    private static final String SELECT_BOOKS_WHERE_NAME = "SELECT * FROM public.\"BOOK\" WHERE \"NAME\" = ?;";
+    private static final String SELECT_BOOKS_WHERE_NAME_AND_AUTHOR_ID = "SELECT * FROM public.\"BOOK\" WHERE \"NAME\" = ? AND \"AUTHOR_ID\" = ?;";
 
     @Override
     public void add(Book book) {
@@ -107,12 +84,12 @@ public class DefaultBookRepository implements BookRepository {
     @Override
     public Book getByNameAndAuthor(String name, Integer authorId) {
         Book book = new Book();
-        try(Connection connection = connect()){
+        try (Connection connection = connect()) {
             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BOOKS_WHERE_NAME_AND_AUTHOR_ID);
             preparedStatement.setString(1, name);
             preparedStatement.setInt(2, authorId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
+            if (resultSet.first()) {
                 book.setId(resultSet.getInt("ID"));
                 book.setName(resultSet.getString("NAME"));
                 book.setAuthorId(resultSet.getInt("AUTHOR_ID"));
@@ -121,8 +98,10 @@ public class DefaultBookRepository implements BookRepository {
                 book.setPublicationYear(resultSet.getInt("PUBLICATION_YEAR"));
                 book.setPageNumber(resultSet.getInt("PAGE_NUMBER"));
                 book.setAvailable(resultSet.getBoolean("IS_AVAILABLE"));
+            } else {
+                System.out.println("THERE IS NO DATA IN THIS TABLE");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return book;

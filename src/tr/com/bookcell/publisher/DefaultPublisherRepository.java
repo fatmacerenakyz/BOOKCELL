@@ -1,7 +1,5 @@
 package tr.com.bookcell.publisher;
 
-import tr.com.bookcell.book.Book;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,25 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DefaultPublisherRepository implements PublisherRepository {
-    private static final String INSERT_PUBLISHERS;
-    private static final String SELECT_PUBLISHERS;
-    private static final String DELETE_PUBLISHERS;
-    private static final String SELECT_PUBLISHERS_WHERE_NAME;
-
-    static {
-        INSERT_PUBLISHERS = "INSERT INTO public.\"PUBLISHER\"(\"NAME\") VALUES (?);";
-    }
-
-    static {
-        SELECT_PUBLISHERS = "SELECT * FROM public.\"PUBLISHER\";";
-    }
-
-    static {
-        DELETE_PUBLISHERS = "DELETE FROM public.\"PUBLISHER\" WHERE \"NAME\" = ?;";
-    }
-    static{
-        SELECT_PUBLISHERS_WHERE_NAME = "SELECT * FROM public.\"PUBLISHER\" WHERE \"NAME\" = ?;";
-    }
+    private static final String INSERT_PUBLISHERS = "INSERT INTO public.\"PUBLISHER\"(\"NAME\") VALUES (?);";
+    private static final String SELECT_PUBLISHERS = "SELECT * FROM public.\"PUBLISHER\";";
+    private static final String DELETE_PUBLISHERS = "DELETE FROM public.\"PUBLISHER\" WHERE \"NAME\" = ?;";
+    private static final String SELECT_PUBLISHERS_WHERE_NAME = "SELECT * FROM public.\"PUBLISHER\" WHERE \"NAME\" = ?;";
 
     @Override
     public void add(Publisher publisher) {
@@ -60,15 +43,17 @@ public class DefaultPublisherRepository implements PublisherRepository {
     @Override
     public Publisher getByName(String name) {
         Publisher publisher = new Publisher();
-        try(Connection connection = connect()){
+        try (Connection connection = connect()) {
             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_PUBLISHERS_WHERE_NAME);
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()) {
+            if (resultSet.first()) {
                 publisher.setId(resultSet.getInt("ID"));
                 publisher.setName(resultSet.getString("NAME"));
+            } else {
+                System.out.println("THERE IS NO DATA IN THIS TABLE");
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return publisher;

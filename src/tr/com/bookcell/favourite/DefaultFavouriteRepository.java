@@ -1,21 +1,11 @@
 package tr.com.bookcell.favourite;
 
-import tr.com.bookcell.publisher.PublisherRepository;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 public class DefaultFavouriteRepository implements FavouriteRepository {
-    private static final String INSERT_FAVOURITES;
-    private static final String DELETE_FAVOURITES;
-
-    static {
-        INSERT_FAVOURITES = "INSERT INTO public.\"FAVOURITE\"(\"CUSTOMER_ID\", \"BOOK_ID\") VALUES (?, ?);";
-    }
-
-    static {
-        DELETE_FAVOURITES = "DELETE FROM public.\"FAVOURITE\" WHERE \"CUSTOMER_ID\" = ? AND \"BOOK_ID\" = ?;";
-    }
+    private static final String INSERT_FAVOURITES = "INSERT INTO public.\"FAVOURITE\"(\"CUSTOMER_ID\", \"BOOK_ID\") VALUES (?, ?);";
+    private static final String DELETE_FAVOURITES = "DELETE FROM public.\"FAVOURITE\" WHERE \"CUSTOMER_ID\" = ? AND \"BOOK_ID\" = ?;";
 
     @Override
     public void add(Favourite favourite) {
@@ -31,12 +21,12 @@ public class DefaultFavouriteRepository implements FavouriteRepository {
 
     @Override
     public void remove(Integer customerId, Integer bookId) {
-        try(Connection connection = connect()){
+        try (Connection connection = connect()) {
             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_FAVOURITES);
             preparedStatement.setInt(1, customerId);
             preparedStatement.setInt(2, bookId);
             preparedStatement.executeUpdate();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
