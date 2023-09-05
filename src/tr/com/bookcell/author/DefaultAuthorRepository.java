@@ -73,12 +73,10 @@ public class DefaultAuthorRepository implements AuthorRepository {
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, surname);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.first()) {
+            while (resultSet.next()) {
                 author.setId(resultSet.getInt("ID"));
                 author.setName(resultSet.getString("NAME"));
                 author.setSurname(resultSet.getString("SURNAME"));
-            } else {
-                System.out.println("THERE IS NO DATA IN THIS TABLE");
             }
         } catch (Exception e) {
             e.printStackTrace();

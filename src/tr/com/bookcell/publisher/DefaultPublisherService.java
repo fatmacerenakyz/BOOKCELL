@@ -2,6 +2,8 @@ package tr.com.bookcell.publisher;
 
 import java.util.List;
 
+import static tr.com.bookcell.util.InputFormatter.capitalizeFirst;
+
 public class DefaultPublisherService implements PublisherService{
     private final PublisherRepository publisherRepository;
 
@@ -11,8 +13,15 @@ public class DefaultPublisherService implements PublisherService{
 
     @Override
     public void add(String name) {
-        Publisher publisher = new Publisher(name);
-        publisherRepository.add(publisher);
+        String formattedName = capitalizeFirst(name);
+        Publisher publisher = new Publisher(formattedName);
+        for(Publisher tempPublisher : getAll()){
+            if(tempPublisher.getName().equals(publisher.getName())){
+                System.out.println("THERE IS ALREADY "+formattedName+" IN PUBLISHERS LIST");
+                break;
+            }
+            publisherRepository.add(publisher);
+        }
     }
 
     @Override
@@ -22,11 +31,19 @@ public class DefaultPublisherService implements PublisherService{
 
     @Override
     public Publisher getByName(String name) {
-        return publisherRepository.getByName(name);
+        String formattedName = capitalizeFirst(name);
+        return publisherRepository.getByName(formattedName);
     }
 
     @Override
     public void remove(String name) {
-        publisherRepository.remove(name);
+        String formattedName = capitalizeFirst(name);
+        for(Publisher tempPublisher : getAll()){
+            if(tempPublisher.getName().equals(formattedName)){
+                publisherRepository.remove(name);
+                break;
+            }
+            System.out.println("THERE IS NO"+formattedName+" IN PUBLISHERS LIST!");
+        }
     }
 }

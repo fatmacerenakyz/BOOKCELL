@@ -2,6 +2,7 @@ package tr.com.bookcell.landing;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.sql.Date;
 import java.util.Objects;
 
 public class Landing {

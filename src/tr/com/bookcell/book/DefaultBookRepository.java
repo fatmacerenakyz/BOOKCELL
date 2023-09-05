@@ -89,7 +89,7 @@ public class DefaultBookRepository implements BookRepository {
             preparedStatement.setString(1, name);
             preparedStatement.setInt(2, authorId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.first()) {
+            while (resultSet.next()) {
                 book.setId(resultSet.getInt("ID"));
                 book.setName(resultSet.getString("NAME"));
                 book.setAuthorId(resultSet.getInt("AUTHOR_ID"));
@@ -98,8 +98,6 @@ public class DefaultBookRepository implements BookRepository {
                 book.setPublicationYear(resultSet.getInt("PUBLICATION_YEAR"));
                 book.setPageNumber(resultSet.getInt("PAGE_NUMBER"));
                 book.setAvailable(resultSet.getBoolean("IS_AVAILABLE"));
-            } else {
-                System.out.println("THERE IS NO DATA IN THIS TABLE");
             }
         } catch (Exception e) {
             e.printStackTrace();

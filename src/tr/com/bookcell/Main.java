@@ -6,6 +6,7 @@ import tr.com.bookcell.favourite.DefaultFavouriteRepository;
 import tr.com.bookcell.favourite.DefaultFavouriteService;
 import tr.com.bookcell.favourite.FavouriteRepository;
 import tr.com.bookcell.favourite.FavouriteService;
+import tr.com.bookcell.landing.*;
 import tr.com.bookcell.publisher.DefaultPublisherRepository;
 import tr.com.bookcell.publisher.DefaultPublisherService;
 import tr.com.bookcell.publisher.PublisherRepository;
@@ -20,6 +21,7 @@ import tr.com.bookcell.user.customer.DefaultCustomerRepository;
 import tr.com.bookcell.user.customer.DefaultCustomerService;
 
 import java.time.LocalDate;
+import java.sql.Date;
 
 public class Main {
     public static void main(String[] args) {
@@ -40,6 +42,9 @@ public class Main {
 
         ReservationRepository defaultReservationRepository = new DefaultReservationRepository();
         ReservationService defaultReservationService = new DefaultReservationService(defaultReservationRepository);
+
+        LandingRepository defaultLandingRepository = new DefaultLandingRepository();
+        LandingService defaultLandingService = new DefaultLandingService(defaultLandingRepository);
         /*
 
 
@@ -95,5 +100,10 @@ public class Main {
         //defaultReservationService.setDeliveryDate(7, "Franny ve Zoey", "David", "Salinger", "10-10-2023");
         //defaultReservationService.add(7, "Billy Summers", "Stephen", "King", "08-09-2023", "11-09-2023");
         //defaultReservationService.setDeliveryDate(7, "Billy Summers", "Stephen", "King","07-09-2023");
+        //defaultLandingService.pickUp(8, "Billy Summers", "Stephen", "King");
+        //defaultLandingService.pickUp(8, "Billy Summers", "Stephen", "King");
+        //defaultLandingService.dropOff(8, "Billy Summers", "Stephen", "King", "05-09-2023");
+
+
     }
 }
