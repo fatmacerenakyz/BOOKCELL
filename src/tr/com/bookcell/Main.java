@@ -1,5 +1,6 @@
 package tr.com.bookcell;
 
+import jdk.jshell.execution.LoaderDelegate;
 import tr.com.bookcell.author.*;
 import tr.com.bookcell.book.*;
 import tr.com.bookcell.favourite.DefaultFavouriteRepository;
@@ -22,6 +23,10 @@ import tr.com.bookcell.user.customer.DefaultCustomerService;
 
 import java.time.LocalDate;
 import java.sql.Date;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+
+import static tr.com.bookcell.util.DateFormatter.dateFormatter;
 
 public class Main {
     public static void main(String[] args) {
@@ -101,9 +106,9 @@ public class Main {
         //defaultReservationService.add(7, "Billy Summers", "Stephen", "King", "08-09-2023", "11-09-2023");
         //defaultReservationService.setDeliveryDate(7, "Billy Summers", "Stephen", "King","07-09-2023");
         //defaultLandingService.pickUp(8, "Billy Summers", "Stephen", "King");
-        //defaultLandingService.pickUp(8, "Billy Summers", "Stephen", "King");
-        //defaultLandingService.dropOff(8, "Billy Summers", "Stephen", "King", "05-09-2023");
-
-
+        //defaultLandingService.setPickUp(8, "Franny ve Zoey", "David", "Salinger");
+        //defaultLandingService.setDropOff(8, "Franny ve Zoey", "David", "Salinger", "07-09-2023");
+        //defaultPublisherService.add("Altın yayıncılık");
+        defaultBookService.add("franny ve zoey", "david", "salinger", "altın Yayıncılık", "uzun hikaye", 1961, 155, true);
     }
 }

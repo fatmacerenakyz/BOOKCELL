@@ -5,6 +5,7 @@ import tr.com.bookcell.book.*;
 import java.util.List;
 
 import static tr.com.bookcell.util.InputFormatter.capitalizeFirst;
+import static tr.com.bookcell.util.InputFormatter.capitalizeForBookName;
 
 public class DefaultFavouriteService implements FavouriteService {
     private final FavouriteRepository favouriteRepository;
@@ -15,39 +16,48 @@ public class DefaultFavouriteService implements FavouriteService {
 
     @Override
     public void add(Integer customerId, String bookName, String authorName, String authorSurname) {
-        String formattedBookName = capitalizeFirst(bookName);
+        String formattedBookName = capitalizeForBookName(bookName);
         String formattedAuthorName = capitalizeFirst(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         BookRepository defaultBookRepository = new DefaultBookRepository();
         BookService defaultBookService = new DefaultBookService(defaultBookRepository);
         Book book = new Book();
         book = defaultBookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
-        Favourite favourite = new Favourite(customerId, book.getId());
-        for (Favourite tempFavourite : getByCustomerId(customerId)) {
-            if (tempFavourite.getBookId().equals(favourite.getBookId())) {
-                System.out.println("THERE IS ALREADY " + formattedBookName + " IN FAVOURITES LIST");
-                break;
+        if (book != null) {
+            boolean bool = false;
+            for (Favourite tempFavourite : getByCustomerId(customerId)) {
+                if (tempFavourite.getBookId().equals(book.getId())) {
+                    System.out.println("THERE IS ALREADY " + formattedBookName + " IN FAVOURITES LIST");
+                    bool = true;
+                    break;
+                }
             }
-            favouriteRepository.add(new Favourite(customerId, book.getId()));
+            if(!bool){
+                Favourite favourite = new Favourite(customerId, book.getId());
+                favouriteRepository.add(favourite);
+            }
         }
     }
 
     @Override
     public void remove(Integer customerId, String bookName, String authorName, String authorSurname) {
-        String formattedBookName = capitalizeFirst(bookName);
+        String formattedBookName = capitalizeForBookName(bookName);
         String formattedAuthorName = capitalizeFirst(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         BookRepository defaultBookRepository = new DefaultBookRepository();
         BookService defaultBookService = new DefaultBookService(defaultBookRepository);
         Book book = new Book();
         book = defaultBookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
-        for (Favourite tempFavourite : getByCustomerId(customerId)) {
-            if (tempFavourite.getBookId().equals(book.getId())) {
-                favouriteRepository.remove(customerId, book.getId());
-                break;
+        if (book != null) {
+            for (Favourite tempFavourite : getByCustomerId(customerId)) {
+                if (tempFavourite.getBookId().equals(book.getId())) {
+                    favouriteRepository.remove(customerId, book.getId());
+                    return;
+                }
             }
             System.out.println("THERE IS NO " + formattedBookName + " IN FAVOURITES LIST!");
         }
+
     }
 
     @Override

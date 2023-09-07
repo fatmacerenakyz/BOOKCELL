@@ -16,11 +16,15 @@ public class DefaultAuthorService implements AuthorService {
         String formattedName = capitalizeFirst(name);
         String formattedSurname = capitalizeFirst(surname);
         Author author = new Author(formattedName, formattedSurname);
+        boolean bool = false;
         for (Author tempAuthor : getAll()) {
             if (tempAuthor.getName().equals(author.getName()) && tempAuthor.getSurname().equals(author.getSurname())) {
                 System.out.println("THERE IS ALREADY "+formattedName+" "+formattedSurname+" IN AUTHORS LIST");
+                bool = true;
                 break;
             }
+        }
+        if(!bool){
             authorRepository.add(author);
         }
     }
@@ -33,14 +37,24 @@ public class DefaultAuthorService implements AuthorService {
     @Override
     public List<Author> getByName(String name) {
         String formattedName = capitalizeFirst(name);
-        return authorRepository.getByName(formattedName);
+        for(Author tempAuthor : getAll()){
+            if(tempAuthor.getName().equals(formattedName))
+                return authorRepository.getByName(formattedName);
+        }
+        System.out.println("THERE IS NO "+formattedName+" IN AUTHORS LIST!");
+        return null;
     }
 
     @Override
     public Author getByNameAndSurname(String name, String surname) {
         String formattedName = capitalizeFirst(name);
         String formattedSurname = capitalizeFirst(surname);
-        return authorRepository.getByNameAndSurname(formattedName, formattedSurname);
+        for(Author tempAuthor:getAll()){
+            if(tempAuthor.getName().equals(formattedName)&&tempAuthor.getSurname().equals(formattedSurname))
+                return authorRepository.getByNameAndSurname(formattedName, formattedSurname);
+        }
+        System.out.println("THERE IS NO "+formattedName+" "+formattedSurname+" IN AUTHORS LIST!");
+        return null;
     }
 
     @Override
@@ -50,9 +64,9 @@ public class DefaultAuthorService implements AuthorService {
         for(Author author : getAll()){
             if(author.getName().equals(formattedName) && author.getSurname().equals(formattedSurname)){
                 authorRepository.remove(formattedName, formattedSurname);
-                break;
+                return;
             }
-            System.out.println("THERE IS NO "+formattedName+" "+formattedSurname+" IN AUTHORS LIST!");
         }
+        System.out.println("THERE IS NO "+formattedName+" "+formattedSurname+" IN AUTHORS LIST!");
     }
 }

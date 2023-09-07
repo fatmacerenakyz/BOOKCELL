@@ -6,6 +6,6 @@ import java.sql.Date;
 import java.time.LocalDate;
 
 public interface LandingRepository extends BaseRepository {
-    void pickUp(Landing landing);
-    void dropOff(Integer customerId, Integer bookId, LocalDate dropOffDate, LocalDate pickUpDate);
+    void setPickUp(Landing landing);
+    void setDropOff(Integer customerId, Integer bookId, LocalDate dropOffDate, Date pickUpDate);
 }

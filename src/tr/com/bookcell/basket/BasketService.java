@@ -6,7 +6,7 @@ import tr.com.bookcell.user.customer.Customer;
 import java.util.List;
 
 public interface BasketService {
-    void add(Customer customer, Book book);
-    void remove(Customer customer, Book book);
-    List<Book> get(Customer customer);
+    void add(Integer customerId, String bookName, String authorName, String authorSurname);
+    void remove(Integer customerId, String bookName, String authorName, String authorSurname);
+    List<Basket> getByCustomerId(Integer customerId);
 }

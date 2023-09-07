@@ -47,11 +47,9 @@ public class DefaultPublisherRepository implements PublisherRepository {
             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_PUBLISHERS_WHERE_NAME);
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.first()) {
+            while (resultSet.next()) {
                 publisher.setId(resultSet.getInt("ID"));
                 publisher.setName(resultSet.getString("NAME"));
-            } else {
-                System.out.println("THERE IS NO DATA IN THIS TABLE");
             }
         } catch (Exception e) {
             e.printStackTrace();

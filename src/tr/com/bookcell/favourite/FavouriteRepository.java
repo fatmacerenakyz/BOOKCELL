@@ -1,6 +1,7 @@
 package tr.com.bookcell.favourite;
 
 import tr.com.bookcell.BaseRepository;
+import tr.com.bookcell.reservation.Reservation;
 
 import java.util.List;
 

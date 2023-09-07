@@ -5,7 +5,7 @@ import tr.com.bookcell.publisher.*;
 
 import java.util.List;
 
-import static tr.com.bookcell.util.InputFormatter.capitalizeFirst;
+import static tr.com.bookcell.util.InputFormatter.*;
 
 public class DefaultBookService implements BookService {
     private final BookRepository bookRepository;
@@ -17,10 +17,11 @@ public class DefaultBookService implements BookService {
 
     @Override
     public void add(String name, String authorName, String authorSurname, String publisherName, String genre, int publicationYear, int pageNumber, boolean isAvailable) {
-        String formattedName = capitalizeFirst(name);
+        String formattedName = capitalizeForBookName(name);
         String formattedAuthorName = capitalizeFirst(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         String formattedPublisherName = capitalizeFirst(publisherName);
+        String formattedGenre = capitalizeForMultipleStrings(genre);
         AuthorRepository defaultAuthorRepository = new DefaultAuthorRepository();
         AuthorService defaultAuthorService = new DefaultAuthorService(defaultAuthorRepository);
         PublisherRepository defaultPublisherRepository = new DefaultPublisherRepository();
@@ -29,14 +30,20 @@ public class DefaultBookService implements BookService {
         Author author = new Author();
         author = defaultAuthorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
         publisher = defaultPublisherService.getByName(formattedPublisherName);
-        Book book = new Book(formattedName, author.getId(), publisher.getId(), genre, publicationYear, pageNumber, isAvailable);
-        for (Book tempBook : getAll()) {
-            if (tempBook.getName().equals(book.getName()) && tempBook.getAuthorId().equals(book.getAuthorId()) && tempBook.getPublisherId().equals(book.getPublisherId())) {
-                System.out.println("THERE IS ALREADY " + formattedName + " IN BOOKS LIST");
-                break;
+        if (author != null && publisher != null) {
+            Book book = new Book(formattedName, author.getId(), publisher.getId(), formattedGenre, publicationYear, pageNumber, isAvailable);
+            boolean bool = false;
+            for (Book tempBook : getAll()) {
+                if (tempBook.getName().equals(book.getName()) && tempBook.getAuthorId().equals(book.getAuthorId())) {
+                    System.out.println("THERE IS ALREADY " + formattedName + " IN BOOKS LIST");
+                    bool = true;
+                    break;
+                }
             }
-            bookRepository.add(book);
+            if(!bool)
+                bookRepository.add(book);
         }
+
     }
 
     @Override
@@ -46,36 +53,51 @@ public class DefaultBookService implements BookService {
 
     @Override
     public List<Book> getByName(String name) {
-        String formattedName = capitalizeFirst(name);
-        return bookRepository.getByName(formattedName);
+        String formattedName = capitalizeForBookName(name);
+        for (Book tempBook : getAll()) {
+            if (tempBook.getName().equals(formattedName))
+                return bookRepository.getByName(formattedName);
+        }
+        System.out.println("THERE IS NO" + formattedName + " IN BOOKS LIST!");
+        return null;
     }
 
     @Override
     public Book getByNameAndAuthor(String name, String authorName, String authorSurname) {
-        String formattedName = capitalizeFirst(name);
+        String formattedName = capitalizeForBookName(name);
         String formattedAuthorName = capitalizeFirst(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         Author author = new Author();
         AuthorRepository defaultAuthorRepository = new DefaultAuthorRepository();
         AuthorService defaultAuthorService = new DefaultAuthorService(defaultAuthorRepository);
         author = defaultAuthorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
-        return bookRepository.getByNameAndAuthor(formattedName, author.getId());
+        if (author != null) {
+            for (Book tempBook : getAll()) {
+                if (tempBook.getName().equals(formattedName) && tempBook.getAuthorId().equals(author.getId())) {
+                    return bookRepository.getByNameAndAuthor(formattedName, author.getId());
+                }
+            }
+        }
+        System.out.println("THERE IS NO" + formattedName + " IN BOOKS LIST!");
+        return null;
     }
 
 
     @Override
     public void remove(String name, String authorName, String authorSurname) {
-        String formattedName = capitalizeFirst(name);
+        String formattedName = capitalizeForBookName(name);
         String formattedAuthorName = capitalizeFirst(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         Author author = new Author();
         AuthorRepository defaultAuthorRepository = new DefaultAuthorRepository();
         AuthorService defaultAuthorService = new DefaultAuthorService(defaultAuthorRepository);
         author = defaultAuthorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
-        for (Book tempBook : getAll()) {
-            if (tempBook.getName().equals(formattedName) && tempBook.getAuthorId().equals(author.getId())) {
-                bookRepository.remove(formattedName, author.getId());
-                break;
+        if(author != null){
+            for (Book tempBook : getAll()) {
+                if (tempBook.getName().equals(formattedName) && tempBook.getAuthorId().equals(author.getId())) {
+                    bookRepository.remove(formattedName, author.getId());
+                    return;
+                }
             }
             System.out.println("THERE IS NO" + formattedName + " IN BOOKS LIST!");
         }
@@ -83,7 +105,7 @@ public class DefaultBookService implements BookService {
 
     @Override
     public void setAvailable(String name, Integer authorId, boolean isAvailable) {
-        String formattedName = capitalizeFirst(name);
+        String formattedName = capitalizeForBookName(name);
         bookRepository.setAvailable(formattedName, authorId, isAvailable);
     }
 
