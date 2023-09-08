@@ -7,5 +7,5 @@ import java.time.LocalDate;
 
 public interface LandingRepository extends BaseRepository {
     void setPickUp(Landing landing);
-    void setDropOff(Integer customerId, Integer bookId, LocalDate dropOffDate, Date pickUpDate);
+    void setDropOff(Integer customerId, Integer bookId, LocalDate dropOffDate, LocalDate pickUpDate);
 }

@@ -16,7 +16,7 @@ public class DefaultBasketService implements BasketService {
     @Override
     public void add(Integer customerId, String bookName, String authorName, String authorSurname) {
         String formattedBookName = capitalizeForBookName(bookName);
-        String formattedAuthorName = capitalizeFirst(authorName);
+        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         BookRepository defaultBookRepository = new DefaultBookRepository();
         BookService defaultBookService = new DefaultBookService(defaultBookRepository);
@@ -42,7 +42,7 @@ public class DefaultBasketService implements BasketService {
     @Override
     public void remove(Integer customerId, String bookName, String authorName, String authorSurname) {
         String formattedBookName = capitalizeForBookName(bookName);
-        String formattedAuthorName = capitalizeFirst(authorName);
+        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         BookRepository defaultBookRepository = new DefaultBookRepository();
         BookService defaultBookService = new DefaultBookService(defaultBookRepository);

@@ -4,20 +4,17 @@ import java.util.Objects;
 
 public abstract class User {
     private String id;
-    private String email;
     private String password;
 
     public User() {
     }
 
-    public User(String email, String password) {
-        this.email = email;
+    public User(String password) {
         this.password = password;
     }
 
-    public User(String id, String email, String password) {
+    public User(String id, String password) {
         this.id = id;
-        this.email = email;
         this.password = password;
     }
 
@@ -29,13 +26,6 @@ public abstract class User {
         this.id = id;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     public String getPassword() {
         return password;
@@ -49,19 +39,18 @@ public abstract class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User user)) return false;
-        return Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(password, user.password);
+        return Objects.equals(id, user.id) && Objects.equals(password, user.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, password);
+        return Objects.hash(id, password);
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "id='" + id + '\'' +
-                ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }

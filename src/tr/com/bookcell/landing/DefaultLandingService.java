@@ -7,8 +7,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import static tr.com.bookcell.util.DateFormatter.dateFormatter;
-import static tr.com.bookcell.util.InputFormatter.capitalizeFirst;
-import static tr.com.bookcell.util.InputFormatter.capitalizeForBookName;
+import static tr.com.bookcell.util.InputFormatter.*;
 
 public class DefaultLandingService implements LandingService {
     private final LandingRepository landingRepository;
@@ -20,7 +19,7 @@ public class DefaultLandingService implements LandingService {
     @Override
     public void setPickUp(Integer customerId, String bookName, String authorName, String authorSurname) {
         String formattedBookName = capitalizeForBookName(bookName);
-        String formattedAuthorName = capitalizeFirst(authorName);
+        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         Book book = new Book();
         BookRepository defaultBookRepository = new DefaultBookRepository();
@@ -38,7 +37,7 @@ public class DefaultLandingService implements LandingService {
     @Override
     public void setDropOff(Integer customerId, String bookName, String authorName, String authorSurname, String pickUpDate) {
         String formattedBookName = capitalizeForBookName(bookName);
-        String formattedAuthorName = capitalizeFirst(authorName);
+        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         Book book = new Book();
         BookRepository defaultBookRepository = new DefaultBookRepository();
@@ -47,7 +46,7 @@ public class DefaultLandingService implements LandingService {
         if (book != null) {
             DateTimeFormatter formatter = dateFormatter();
             LocalDate formattedPickUpDate = LocalDate.parse(pickUpDate, formatter);
-            landingRepository.setDropOff(customerId, book.getId(), LocalDate.now(), Date.valueOf(formattedPickUpDate));
+            landingRepository.setDropOff(customerId, book.getId(), LocalDate.now(), formattedPickUpDate);
         }
 
     }

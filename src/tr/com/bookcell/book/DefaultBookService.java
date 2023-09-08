@@ -18,9 +18,9 @@ public class DefaultBookService implements BookService {
     @Override
     public void add(String name, String authorName, String authorSurname, String publisherName, String genre, int publicationYear, int pageNumber, boolean isAvailable) {
         String formattedName = capitalizeForBookName(name);
-        String formattedAuthorName = capitalizeFirst(authorName);
+        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
-        String formattedPublisherName = capitalizeFirst(publisherName);
+        String formattedPublisherName = capitalizeForMultipleStrings(publisherName);
         String formattedGenre = capitalizeForMultipleStrings(genre);
         AuthorRepository defaultAuthorRepository = new DefaultAuthorRepository();
         AuthorService defaultAuthorService = new DefaultAuthorService(defaultAuthorRepository);
@@ -65,7 +65,7 @@ public class DefaultBookService implements BookService {
     @Override
     public Book getByNameAndAuthor(String name, String authorName, String authorSurname) {
         String formattedName = capitalizeForBookName(name);
-        String formattedAuthorName = capitalizeFirst(authorName);
+        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         Author author = new Author();
         AuthorRepository defaultAuthorRepository = new DefaultAuthorRepository();
@@ -86,7 +86,7 @@ public class DefaultBookService implements BookService {
     @Override
     public void remove(String name, String authorName, String authorSurname) {
         String formattedName = capitalizeForBookName(name);
-        String formattedAuthorName = capitalizeFirst(authorName);
+        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         Author author = new Author();
         AuthorRepository defaultAuthorRepository = new DefaultAuthorRepository();

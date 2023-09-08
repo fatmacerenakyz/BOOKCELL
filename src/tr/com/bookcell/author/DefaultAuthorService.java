@@ -3,6 +3,7 @@ package tr.com.bookcell.author;
 import java.util.List;
 
 import static tr.com.bookcell.util.InputFormatter.capitalizeFirst;
+import static tr.com.bookcell.util.InputFormatter.capitalizeForMultipleStrings;
 
 public class DefaultAuthorService implements AuthorService {
     private final AuthorRepository authorRepository;
@@ -13,7 +14,7 @@ public class DefaultAuthorService implements AuthorService {
 
     @Override
     public void add(String name, String surname) {
-        String formattedName = capitalizeFirst(name);
+        String formattedName = capitalizeForMultipleStrings(name);
         String formattedSurname = capitalizeFirst(surname);
         Author author = new Author(formattedName, formattedSurname);
         boolean bool = false;
@@ -36,7 +37,7 @@ public class DefaultAuthorService implements AuthorService {
 
     @Override
     public List<Author> getByName(String name) {
-        String formattedName = capitalizeFirst(name);
+        String formattedName = capitalizeForMultipleStrings(name);
         for(Author tempAuthor : getAll()){
             if(tempAuthor.getName().equals(formattedName))
                 return authorRepository.getByName(formattedName);
@@ -47,7 +48,7 @@ public class DefaultAuthorService implements AuthorService {
 
     @Override
     public Author getByNameAndSurname(String name, String surname) {
-        String formattedName = capitalizeFirst(name);
+        String formattedName = capitalizeForMultipleStrings(name);
         String formattedSurname = capitalizeFirst(surname);
         for(Author tempAuthor:getAll()){
             if(tempAuthor.getName().equals(formattedName)&&tempAuthor.getSurname().equals(formattedSurname))
@@ -59,7 +60,7 @@ public class DefaultAuthorService implements AuthorService {
 
     @Override
     public void remove(String name, String surname) {
-        String formattedName = capitalizeFirst(name);
+        String formattedName = capitalizeForMultipleStrings(name);
         String formattedSurname = capitalizeFirst(surname);
         for(Author author : getAll()){
             if(author.getName().equals(formattedName) && author.getSurname().equals(formattedSurname)){

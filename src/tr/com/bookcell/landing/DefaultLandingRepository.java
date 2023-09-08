@@ -23,13 +23,13 @@ public class DefaultLandingRepository implements LandingRepository {
     }
 
     @Override
-    public void setDropOff(Integer customerId, Integer bookId, LocalDate dropOffDate, Date pickUpDate) {
+    public void setDropOff(Integer customerId, Integer bookId, LocalDate dropOffDate, LocalDate pickUpDate) {
         try(Connection connection = connect()){
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_LANDINGS_DROP_OFF_DATE);
             preparedStatement.setDate(1, Date.valueOf(dropOffDate));
             preparedStatement.setInt(2, customerId);
             preparedStatement.setInt(3, bookId);
-            preparedStatement.setDate(4, pickUpDate);
+            preparedStatement.setDate(4, Date.valueOf(pickUpDate));
         }catch(Exception e){
             e.printStackTrace();
         }

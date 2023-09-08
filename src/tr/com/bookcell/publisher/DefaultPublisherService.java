@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static tr.com.bookcell.util.InputFormatter.capitalizeFirst;
+import static tr.com.bookcell.util.InputFormatter.capitalizeForMultipleStrings;
 
 public class DefaultPublisherService implements PublisherService{
     private final PublisherRepository publisherRepository;
@@ -14,7 +15,7 @@ public class DefaultPublisherService implements PublisherService{
 
     @Override
     public void add(String name) {
-        String formattedName = capitalizeFirst(name);
+        String formattedName = capitalizeForMultipleStrings(name);
         Publisher publisher = new Publisher(formattedName);
         boolean bool = false;
         for(Publisher tempPublisher : getAll()){
@@ -36,7 +37,7 @@ public class DefaultPublisherService implements PublisherService{
 
     @Override
     public Publisher getByName(String name) {
-        String formattedName = capitalizeFirst(name);
+        String formattedName = capitalizeForMultipleStrings(name);
         for(Publisher tempPublisher : getAll()){
             if(tempPublisher.getName().equals(formattedName)){
                 return publisherRepository.getByName(formattedName);
@@ -48,7 +49,7 @@ public class DefaultPublisherService implements PublisherService{
 
     @Override
     public void remove(String name) {
-        String formattedName = capitalizeFirst(name);
+        String formattedName = capitalizeForMultipleStrings(name);
         for(Publisher tempPublisher : getAll()){
             if(tempPublisher.getName().equals(formattedName)){
                 publisherRepository.remove(name);

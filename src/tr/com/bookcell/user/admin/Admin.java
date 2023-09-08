@@ -10,13 +10,13 @@ public class Admin extends User {
     public Admin() {
     }
 
-    public Admin(String email, String password, String userName) {
-        super(email, password);
+    public Admin(String password, String userName) {
+        super(password);
         this.userName = userName;
     }
 
-    public Admin(String id, String email, String password, String userName) {
-        super(id, email, password);
+    public Admin(String id, String password, String userName) {
+        super(id, password);
         this.userName = userName;
     }
 

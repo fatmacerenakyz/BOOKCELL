@@ -7,8 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static tr.com.bookcell.util.DateFormatter.dateFormatter;
-import static tr.com.bookcell.util.InputFormatter.capitalizeFirst;
-import static tr.com.bookcell.util.InputFormatter.capitalizeForBookName;
+import static tr.com.bookcell.util.InputFormatter.*;
 
 public class DefaultReservationService implements ReservationService {
     private final ReservationRepository reservationRepository;
@@ -21,7 +20,7 @@ public class DefaultReservationService implements ReservationService {
     @Override
     public void add(Integer customerId, String bookName, String authorName, String authorSurname, String startDate, String deliveryDate) {
         String formattedBookName = capitalizeForBookName(bookName);
-        String formattedAuthorName = capitalizeFirst(authorName);
+        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         DateTimeFormatter formatter = dateFormatter();
         LocalDate formattedStartDate = LocalDate.parse(startDate, formatter);
@@ -53,7 +52,7 @@ public class DefaultReservationService implements ReservationService {
     @Override
     public void remove(Integer customerId, String bookName, String authorName, String authorSurname) {
         String formattedBookName = capitalizeForBookName(bookName);
-        String formattedAuthorName = capitalizeFirst(authorName);
+        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         BookRepository defaultBookRepository = new DefaultBookRepository();
         BookService defaultBookService = new DefaultBookService(defaultBookRepository);
@@ -73,7 +72,7 @@ public class DefaultReservationService implements ReservationService {
     @Override
     public void setStartDate(Integer customerId, String bookName, String authorName, String authorSurname, String startDate) {
         String formattedBookName = capitalizeForBookName(bookName);
-        String formattedAuthorName = capitalizeFirst(authorName);
+        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         DateTimeFormatter formatter = dateFormatter();
         LocalDate formattedStartDate = LocalDate.parse(startDate, formatter);
@@ -95,7 +94,7 @@ public class DefaultReservationService implements ReservationService {
     @Override
     public void setDeliveryDate(Integer customerId, String bookName, String authorName, String authorSurname, String deliveryDate) {
         String formattedBookName = capitalizeForBookName(bookName);
-        String formattedAuthorName = capitalizeFirst(authorName);
+        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         DateTimeFormatter formatter = dateFormatter();
         LocalDate formattedDeliveryDate = LocalDate.parse(deliveryDate, formatter);
@@ -119,7 +118,7 @@ public class DefaultReservationService implements ReservationService {
     @Override
     public Reservation getByCustomerAndBook(Integer customerId, String bookName, String authorName, String authorSurname) {
         String formattedBookName = capitalizeForBookName(bookName);
-        String formattedAuthorName = capitalizeFirst(authorName);
+        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         BookRepository defaultBookRepository = new DefaultBookRepository();
         BookService defaultBookService = new DefaultBookService(defaultBookRepository);

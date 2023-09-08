@@ -9,22 +9,25 @@ public class Customer extends User {
     private String name;
     private String surname;
     private LocalDate registrationDate;
+    private String email;
 
     public Customer() {
     }
 
-    public Customer(String email, String password, String name, String surname, LocalDate registrationDate) {
-        super(email, password);
+    public Customer(String password, String name, String surname, LocalDate registrationDate, String email) {
+        super(password);
         this.name = name;
         this.surname = surname;
         this.registrationDate = registrationDate;
+        this.email = email;
     }
 
-    public Customer(String id, String email, String password, String name, String surname, LocalDate registrationDate) {
-        super(id, email, password);
+    public Customer(String id, String password, String name, String surname, LocalDate registrationDate, String email) {
+        super(id, password);
         this.name = name;
         this.surname = surname;
         this.registrationDate = registrationDate;
+        this.email = email;
     }
 
     public String getName() {
@@ -51,25 +54,34 @@ public class Customer extends User {
         this.registrationDate = registrationDate;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Customer customer)) return false;
         if (!super.equals(o)) return false;
-        return Objects.equals(name, customer.name) && Objects.equals(surname, customer.surname) && Objects.equals(registrationDate, customer.registrationDate);
+        return Objects.equals(name, customer.name) && Objects.equals(surname, customer.surname) && Objects.equals(registrationDate, customer.registrationDate) && Objects.equals(email, customer.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), name, surname, registrationDate);
+        return Objects.hash(super.hashCode(), name, surname, registrationDate, email);
     }
 
     @Override
     public String toString() {
         return "Customer{" +
                 "name='" + name + '\'' +
-                ", surName='" + surname + '\'' +
+                ", surname='" + surname + '\'' +
                 ", registrationDate=" + registrationDate +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

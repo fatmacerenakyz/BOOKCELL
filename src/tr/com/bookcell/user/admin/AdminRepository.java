@@ -1,4 +1,8 @@
 package tr.com.bookcell.user.admin;
 
-public interface AdminRepository {
+import tr.com.bookcell.BaseRepository;
+
+public interface AdminRepository extends BaseRepository {
+    void add(Admin admin);
+
 }

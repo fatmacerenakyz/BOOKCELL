@@ -4,8 +4,7 @@ import tr.com.bookcell.book.*;
 
 import java.util.List;
 
-import static tr.com.bookcell.util.InputFormatter.capitalizeFirst;
-import static tr.com.bookcell.util.InputFormatter.capitalizeForBookName;
+import static tr.com.bookcell.util.InputFormatter.*;
 
 public class DefaultFavouriteService implements FavouriteService {
     private final FavouriteRepository favouriteRepository;
@@ -17,7 +16,7 @@ public class DefaultFavouriteService implements FavouriteService {
     @Override
     public void add(Integer customerId, String bookName, String authorName, String authorSurname) {
         String formattedBookName = capitalizeForBookName(bookName);
-        String formattedAuthorName = capitalizeFirst(authorName);
+        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         BookRepository defaultBookRepository = new DefaultBookRepository();
         BookService defaultBookService = new DefaultBookService(defaultBookRepository);
@@ -42,7 +41,7 @@ public class DefaultFavouriteService implements FavouriteService {
     @Override
     public void remove(Integer customerId, String bookName, String authorName, String authorSurname) {
         String formattedBookName = capitalizeForBookName(bookName);
-        String formattedAuthorName = capitalizeFirst(authorName);
+        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         BookRepository defaultBookRepository = new DefaultBookRepository();
         BookService defaultBookService = new DefaultBookService(defaultBookRepository);
