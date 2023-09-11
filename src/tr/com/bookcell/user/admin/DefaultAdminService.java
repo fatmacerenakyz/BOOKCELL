@@ -8,9 +8,14 @@ public class DefaultAdminService implements AdminService {
     }
 
     @Override
-    public void add(String userName, String password) {
-        Admin admin = new Admin(userName, password);
+    public void add(String password, String userName) {
+        Admin admin = new Admin(password, userName);
         adminRepository.add(admin);
+    }
+
+    @Override
+    public Admin get() {
+        return adminRepository.get();
     }
 
 

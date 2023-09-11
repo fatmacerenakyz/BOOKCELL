@@ -11,5 +11,5 @@ public interface ReservationRepository extends BaseRepository {
     void setStartDate(Integer customerId, Integer bookId, LocalDate startDate);
     void setDeliveryDate(Integer customerId, Integer bookId, LocalDate deliveryDate);
     Reservation getByCustomerAndBook(Integer customerId, Integer bookId);
-    List<Reservation> getByCustomer(Integer customerId);
+    List<Reservation> getByCustomerId(Integer customerId);
 }

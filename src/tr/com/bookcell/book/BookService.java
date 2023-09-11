@@ -14,6 +14,6 @@ public interface BookService {
 
     void remove(String name, String authorName, String authorSurname);
 
-    void setAvailable(String name, Integer authorId, boolean isAvailable);
+    void setAvailable(String name, String authorName, String authorSurname, boolean isAvailable);
 
 }

@@ -26,10 +26,8 @@ public class DefaultBookService implements BookService {
         AuthorService defaultAuthorService = new DefaultAuthorService(defaultAuthorRepository);
         PublisherRepository defaultPublisherRepository = new DefaultPublisherRepository();
         PublisherService defaultPublisherService = new DefaultPublisherService(defaultPublisherRepository);
-        Publisher publisher = new Publisher();
-        Author author = new Author();
-        author = defaultAuthorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
-        publisher = defaultPublisherService.getByName(formattedPublisherName);
+        Author author = defaultAuthorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
+        Publisher publisher = defaultPublisherService.getByName(formattedPublisherName);
         if (author != null && publisher != null) {
             Book book = new Book(formattedName, author.getId(), publisher.getId(), formattedGenre, publicationYear, pageNumber, isAvailable);
             boolean bool = false;
@@ -67,10 +65,9 @@ public class DefaultBookService implements BookService {
         String formattedName = capitalizeForBookName(name);
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
-        Author author = new Author();
         AuthorRepository defaultAuthorRepository = new DefaultAuthorRepository();
         AuthorService defaultAuthorService = new DefaultAuthorService(defaultAuthorRepository);
-        author = defaultAuthorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
+        Author author = defaultAuthorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
         if (author != null) {
             for (Book tempBook : getAll()) {
                 if (tempBook.getName().equals(formattedName) && tempBook.getAuthorId().equals(author.getId())) {
@@ -88,10 +85,9 @@ public class DefaultBookService implements BookService {
         String formattedName = capitalizeForBookName(name);
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
-        Author author = new Author();
         AuthorRepository defaultAuthorRepository = new DefaultAuthorRepository();
         AuthorService defaultAuthorService = new DefaultAuthorService(defaultAuthorRepository);
-        author = defaultAuthorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
+        Author author = defaultAuthorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
         if(author != null){
             for (Book tempBook : getAll()) {
                 if (tempBook.getName().equals(formattedName) && tempBook.getAuthorId().equals(author.getId())) {
@@ -104,9 +100,14 @@ public class DefaultBookService implements BookService {
     }
 
     @Override
-    public void setAvailable(String name, Integer authorId, boolean isAvailable) {
+    public void setAvailable(String name, String authorName, String authorSurname, boolean isAvailable) {
         String formattedName = capitalizeForBookName(name);
-        bookRepository.setAvailable(formattedName, authorId, isAvailable);
+        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
+        String formattedAuthorSurname = capitalizeFirst(authorSurname);
+        AuthorRepository defaultAuthorRepository = new DefaultAuthorRepository();
+        AuthorService defaultAuthorService = new DefaultAuthorService(defaultAuthorRepository);
+        Author author = defaultAuthorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
+        bookRepository.setAvailable(formattedName, author.getId(), isAvailable);
     }
 
 

@@ -1,6 +1,7 @@
 package tr.com.bookcell.favourite;
 
 import tr.com.bookcell.book.*;
+import tr.com.bookcell.user.customer.*;
 
 import java.util.List;
 
@@ -14,17 +15,19 @@ public class DefaultFavouriteService implements FavouriteService {
     }
 
     @Override
-    public void add(Integer customerId, String bookName, String authorName, String authorSurname) {
+    public void add(String customerEmail, String bookName, String authorName, String authorSurname) {
         String formattedBookName = capitalizeForBookName(bookName);
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         BookRepository defaultBookRepository = new DefaultBookRepository();
         BookService defaultBookService = new DefaultBookService(defaultBookRepository);
-        Book book = new Book();
-        book = defaultBookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
+        CustomerRepository defaultCustomerRepository = new DefaultCustomerRepository();
+        CustomerService defaultCustomerService = new DefaultCustomerService(defaultCustomerRepository);
+        Book book = defaultBookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
+        Customer customer = defaultCustomerService.getByEmail(customerEmail);
         if (book != null) {
             boolean bool = false;
-            for (Favourite tempFavourite : getByCustomerId(customerId)) {
+            for (Favourite tempFavourite : getByCustomerEmail(customer.getEmail())) {
                 if (tempFavourite.getBookId().equals(book.getId())) {
                     System.out.println("THERE IS ALREADY " + formattedBookName + " IN FAVOURITES LIST");
                     bool = true;
@@ -32,25 +35,27 @@ public class DefaultFavouriteService implements FavouriteService {
                 }
             }
             if(!bool){
-                Favourite favourite = new Favourite(customerId, book.getId());
+                Favourite favourite = new Favourite(customer.getId(), book.getId());
                 favouriteRepository.add(favourite);
             }
         }
     }
 
     @Override
-    public void remove(Integer customerId, String bookName, String authorName, String authorSurname) {
+    public void remove(String customerEmail, String bookName, String authorName, String authorSurname) {
         String formattedBookName = capitalizeForBookName(bookName);
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         BookRepository defaultBookRepository = new DefaultBookRepository();
         BookService defaultBookService = new DefaultBookService(defaultBookRepository);
-        Book book = new Book();
-        book = defaultBookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
+        Book book = defaultBookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
+        CustomerRepository defaultCustomerRepository = new DefaultCustomerRepository();
+        CustomerService defaultCustomerService = new DefaultCustomerService(defaultCustomerRepository);
+        Customer customer = defaultCustomerService.getByEmail(customerEmail);
         if (book != null) {
-            for (Favourite tempFavourite : getByCustomerId(customerId)) {
+            for (Favourite tempFavourite : getByCustomerEmail(customer.getEmail())) {
                 if (tempFavourite.getBookId().equals(book.getId())) {
-                    favouriteRepository.remove(customerId, book.getId());
+                    favouriteRepository.remove(customer.getId(), book.getId());
                     return;
                 }
             }
@@ -60,7 +65,10 @@ public class DefaultFavouriteService implements FavouriteService {
     }
 
     @Override
-    public List<Favourite> getByCustomerId(Integer customerId) {
-        return favouriteRepository.getByCustomerId(customerId);
+    public List<Favourite> getByCustomerEmail(String customerEmail) {
+        CustomerRepository defaultCustomerRepository = new DefaultCustomerRepository();
+        CustomerService defaultCustomerService = new DefaultCustomerService(defaultCustomerRepository);
+        Customer customer = defaultCustomerService.getByEmail(customerEmail);
+        return favouriteRepository.getByCustomerId(customer.getId());
     }
 }

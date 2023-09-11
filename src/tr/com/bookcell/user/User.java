@@ -3,7 +3,7 @@ package tr.com.bookcell.user;
 import java.util.Objects;
 
 public abstract class User {
-    private String id;
+    private Integer id;
     private String password;
 
     public User() {
@@ -13,16 +13,16 @@ public abstract class User {
         this.password = password;
     }
 
-    public User(String id, String password) {
+    public User(Integer id, String password) {
         this.id = id;
         this.password = password;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

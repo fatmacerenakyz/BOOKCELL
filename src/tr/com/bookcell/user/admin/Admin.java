@@ -15,7 +15,7 @@ public class Admin extends User {
         this.userName = userName;
     }
 
-    public Admin(String id, String password, String userName) {
+    public Admin(Integer id, String password, String userName) {
         super(id, password);
         this.userName = userName;
     }
@@ -43,8 +43,10 @@ public class Admin extends User {
 
     @Override
     public String toString() {
-        return "Admin{" +
-                "userName='" + userName + '\'' +
-                '}';
+        return "Admin = [" +
+                "id = '" + getId() + "'" +
+                ", password = '" + getPassword() + "'" +
+                ", username = '" + userName + '\'' +
+                ']';
     }
 }

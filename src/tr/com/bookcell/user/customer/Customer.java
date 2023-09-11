@@ -22,7 +22,7 @@ public class Customer extends User {
         this.email = email;
     }
 
-    public Customer(String id, String password, String name, String surname, LocalDate registrationDate, String email) {
+    public Customer(Integer id, String password, String name, String surname, LocalDate registrationDate, String email) {
         super(id, password);
         this.name = name;
         this.surname = surname;
@@ -78,10 +78,12 @@ public class Customer extends User {
     @Override
     public String toString() {
         return "Customer{" +
-                "name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", registrationDate=" + registrationDate +
-                ", email='" + email + '\'' +
+                "id = '" + getId() + "'" +
+                ", password = '" + getPassword() + "'" +
+                ", name ='" + name + '\'' +
+                ", surname ='" + surname + '\'' +
+                ", registrationDate =" + registrationDate +
+                ", email ='" + email + '\'' +
                 '}';
     }
 }

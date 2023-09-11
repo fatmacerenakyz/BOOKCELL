@@ -1,6 +1,7 @@
 package tr.com.bookcell.basket;
 
 import tr.com.bookcell.book.*;
+import tr.com.bookcell.user.customer.*;
 
 import java.util.List;
 
@@ -14,17 +15,20 @@ public class DefaultBasketService implements BasketService {
     }
 
     @Override
-    public void add(Integer customerId, String bookName, String authorName, String authorSurname) {
+    public void add(String customerEmail, String bookName, String authorName, String authorSurname) {
         String formattedBookName = capitalizeForBookName(bookName);
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         BookRepository defaultBookRepository = new DefaultBookRepository();
         BookService defaultBookService = new DefaultBookService(defaultBookRepository);
-        Book book = new Book();
-        book = defaultBookService.getByNameAndAuthor(bookName, authorName, authorSurname);
+        CustomerRepository defaultCustomerRepository = new DefaultCustomerRepository();
+        CustomerService defaultCustomerService = new DefaultCustomerService(defaultCustomerRepository);
+        Book book = defaultBookService.getByNameAndAuthor(bookName, authorName, authorSurname);
+        Customer customer = defaultCustomerService.getByEmail(customerEmail);
+
         if(book!=null){
             boolean bool = false;
-            for(Basket tempBasket : getByCustomerId(customerId)){
+            for(Basket tempBasket : getByCustomerEmail(customerEmail)){
                 if(tempBasket.getBookId().equals(book.getId())){
                     System.out.println("THERE IS ALREADY "+formattedBookName+" IN YOUR BASKET");
                     bool = true;
@@ -32,7 +36,7 @@ public class DefaultBasketService implements BasketService {
                 }
             }
             if(!bool){
-                Basket basket = new Basket(customerId, book.getId());
+                Basket basket = new Basket(customer.getId(), book.getId());
                 basketRepository.add(basket);
 
             }
@@ -40,18 +44,20 @@ public class DefaultBasketService implements BasketService {
     }
 
     @Override
-    public void remove(Integer customerId, String bookName, String authorName, String authorSurname) {
+    public void remove(String customerEmail, String bookName, String authorName, String authorSurname) {
         String formattedBookName = capitalizeForBookName(bookName);
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         BookRepository defaultBookRepository = new DefaultBookRepository();
         BookService defaultBookService = new DefaultBookService(defaultBookRepository);
-        Book book = new Book();
-        book = defaultBookService.getByNameAndAuthor(bookName, authorName, authorSurname);
+        CustomerRepository defaultCustomerRepository = new DefaultCustomerRepository();
+        CustomerService defaultCustomerService = new DefaultCustomerService(defaultCustomerRepository);
+        Book book = defaultBookService.getByNameAndAuthor(bookName, authorName, authorSurname);
+        Customer customer = defaultCustomerService.getByEmail(customerEmail);
         if(book != null){
-            for(Basket tempBasket : getByCustomerId(customerId)){
+            for(Basket tempBasket : getByCustomerEmail(customerEmail)){
                 if(tempBasket.getBookId().equals(book.getId())){
-                    basketRepository.remove(customerId,book.getId());
+                    basketRepository.remove(customer.getId(),book.getId());
                     return;
                 }
             }
@@ -60,8 +66,11 @@ public class DefaultBasketService implements BasketService {
     }
 
     @Override
-    public List<Basket> getByCustomerId(Integer customerId) {
-        return basketRepository.getByCustomerId(customerId);
+    public List<Basket> getByCustomerEmail(String customerEmail) {
+        CustomerRepository defaultCustomerRepository = new DefaultCustomerRepository();
+        CustomerService defaultCustomerService = new DefaultCustomerService(defaultCustomerRepository);
+        Customer customer = defaultCustomerService.getByEmail(customerEmail);
+        return basketRepository.getByCustomerId(customer.getId());
     }
 
 

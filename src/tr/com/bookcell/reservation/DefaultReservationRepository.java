@@ -89,7 +89,7 @@ public class DefaultReservationRepository implements ReservationRepository {
     }
 
     @Override
-    public List<Reservation> getByCustomer(Integer customerId) {
+    public List<Reservation> getByCustomerId(Integer customerId) {
         ArrayList<Reservation> reservations = new ArrayList<>();
         try(Connection connection = connect()){
             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_RESERVATIONS_WHERE_CUSTOMER_ID);

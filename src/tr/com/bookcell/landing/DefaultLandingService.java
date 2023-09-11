@@ -1,6 +1,7 @@
 package tr.com.bookcell.landing;
 
 import tr.com.bookcell.book.*;
+import tr.com.bookcell.user.customer.*;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -17,17 +18,19 @@ public class DefaultLandingService implements LandingService {
     }
 
     @Override
-    public void setPickUp(Integer customerId, String bookName, String authorName, String authorSurname) {
+    public void setPickUp(String customerEmail, String bookName, String authorName, String authorSurname) {
         String formattedBookName = capitalizeForBookName(bookName);
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
-        Book book = new Book();
         BookRepository defaultBookRepository = new DefaultBookRepository();
         BookService defaultBookService = new DefaultBookService(defaultBookRepository);
-        book = defaultBookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
+        Book book = defaultBookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
+        CustomerRepository defaultCustomerRepository = new DefaultCustomerRepository();
+        CustomerService defaultCustomerService = new DefaultCustomerService(defaultCustomerRepository);
+        Customer customer = defaultCustomerService.getByEmail(customerEmail);
         if (book != null) {
             Landing landing = new Landing();
-            landing.setCustomerId(customerId);
+            landing.setCustomerId(customer.getId());
             landing.setBookId(book.getId());
             landing.setPickUpDate(LocalDate.now());
             landingRepository.setPickUp(landing);
@@ -35,18 +38,20 @@ public class DefaultLandingService implements LandingService {
     }
 
     @Override
-    public void setDropOff(Integer customerId, String bookName, String authorName, String authorSurname, String pickUpDate) {
+    public void setDropOff(String customerEmail, String bookName, String authorName, String authorSurname, String pickUpDate) {
         String formattedBookName = capitalizeForBookName(bookName);
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
-        Book book = new Book();
         BookRepository defaultBookRepository = new DefaultBookRepository();
         BookService defaultBookService = new DefaultBookService(defaultBookRepository);
-        book = defaultBookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
+        Book book = defaultBookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
+        CustomerRepository defaultCustomerRepository = new DefaultCustomerRepository();
+        CustomerService defaultCustomerService = new DefaultCustomerService(defaultCustomerRepository);
+        Customer customer = defaultCustomerService.getByEmail(customerEmail);
         if (book != null) {
             DateTimeFormatter formatter = dateFormatter();
             LocalDate formattedPickUpDate = LocalDate.parse(pickUpDate, formatter);
-            landingRepository.setDropOff(customerId, book.getId(), LocalDate.now(), formattedPickUpDate);
+            landingRepository.setDropOff(customer.getId(), book.getId(), LocalDate.now(), formattedPickUpDate);
         }
 
     }
