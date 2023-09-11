@@ -1,7 +1,11 @@
 package tr.com.bookcell.user.customer;
 
+import tr.com.bookcell.util.PatternMatcher;
+
 import java.time.LocalDate;
 import java.util.List;
+
+import static tr.com.bookcell.util.PatternMatcher.emailPattern;
 
 public class DefaultCustomerService implements CustomerService {
     private final CustomerRepository customerRepository;
@@ -18,6 +22,14 @@ public class DefaultCustomerService implements CustomerService {
         customer.setName(name);
         customer.setSurname(surname);
         customer.setRegistrationDate(LocalDate.now());
+        Integer integerCustomerType = emailPattern(email);
+        CustomerType customerType = null;
+        switch (integerCustomerType) {
+            case (0) -> customerType = CustomerType.DEFAULT;
+            case (1) -> customerType = CustomerType.STUDENT;
+            case (2) -> customerType = CustomerType.VIP;
+            case (-1) -> System.out.println("NOT EMAIL FOUND.");
+        }
         customerRepository.add(customer);
     }
 

@@ -6,10 +6,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PatternMatcher {
-    public static CustomerType emailPattern(String text){
+    public static Integer emailPattern(String text){
         String defaultEmailPattern = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,7}\\b";
-        String studentEmailPattern = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.edu\\.tr\\b";
-        String vipEmailPattern = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.turkcell\\.com\\.tr\\b";
+        String studentEmailPattern = "\\S+@+\\S+\\.edu\\.tr";
+        String vipEmailPattern = "\\bturkcell\\.com\\.tr\\b";
 
         Pattern defaultPattern = Pattern.compile(defaultEmailPattern);
         Pattern studentPattern = Pattern.compile(studentEmailPattern);
@@ -19,18 +19,17 @@ public class PatternMatcher {
         Matcher studentMatcher = studentPattern.matcher(text);
         Matcher vipMatcher = vipPattern.matcher(text);
 
-        if(defaultMatcher.find()){
-            return CustomerType.DEFAULT;
-        }
-        else if(studentMatcher.find()){
-            return CustomerType.STUDENT;
+        if(studentMatcher.find()){
+            return 1;
         }
         else if(vipMatcher.find()){
-            return CustomerType.VIP;
+            return 2;
+        }
+        else if(defaultMatcher.find()){
+            return 0;
         }
         else{
-            System.out.println("email address was not found.");
-            return null;
+            return -1;
         }
 
     }
