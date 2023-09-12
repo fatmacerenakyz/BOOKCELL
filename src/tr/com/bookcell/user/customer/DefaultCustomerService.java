@@ -28,7 +28,7 @@ public class DefaultCustomerService implements CustomerService {
             case (0) -> customerType = CustomerType.DEFAULT;
             case (1) -> customerType = CustomerType.STUDENT;
             case (2) -> customerType = CustomerType.VIP;
-            case (-1) -> System.out.println("NOT EMAIL FOUND.");
+            default -> System.out.println("NOT EMAIL FOUND.");
         }
         customerRepository.add(customer);
     }

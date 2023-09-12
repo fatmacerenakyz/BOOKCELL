@@ -9,9 +9,12 @@ import static tr.com.bookcell.util.InputFormatter.*;
 
 public class DefaultBasketService implements BasketService {
     private final BasketRepository basketRepository;
-
-    public DefaultBasketService(BasketRepository basketRepository) {
+    private final BookService bookService;
+    private final CustomerService customerService;
+    public DefaultBasketService(BasketRepository basketRepository, BookService bookService, CustomerService customexrService) {
         this.basketRepository = basketRepository;
+        this.bookService = bookService;
+        this.customerService = customexrService;
     }
 
     @Override
@@ -19,12 +22,8 @@ public class DefaultBasketService implements BasketService {
         String formattedBookName = capitalizeForBookName(bookName);
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
-        BookRepository defaultBookRepository = new DefaultBookRepository();
-        BookService defaultBookService = new DefaultBookService(defaultBookRepository);
-        CustomerRepository defaultCustomerRepository = new DefaultCustomerRepository();
-        CustomerService defaultCustomerService = new DefaultCustomerService(defaultCustomerRepository);
-        Book book = defaultBookService.getByNameAndAuthor(bookName, authorName, authorSurname);
-        Customer customer = defaultCustomerService.getByEmail(customerEmail);
+        Book book = bookService.getByNameAndAuthor(bookName, authorName, authorSurname);
+        Customer customer = customerService.getByEmail(customerEmail);
 
         if(book!=null){
             boolean bool = false;
@@ -48,12 +47,9 @@ public class DefaultBasketService implements BasketService {
         String formattedBookName = capitalizeForBookName(bookName);
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
-        BookRepository defaultBookRepository = new DefaultBookRepository();
-        BookService defaultBookService = new DefaultBookService(defaultBookRepository);
-        CustomerRepository defaultCustomerRepository = new DefaultCustomerRepository();
-        CustomerService defaultCustomerService = new DefaultCustomerService(defaultCustomerRepository);
-        Book book = defaultBookService.getByNameAndAuthor(bookName, authorName, authorSurname);
-        Customer customer = defaultCustomerService.getByEmail(customerEmail);
+
+        Book book = bookService.getByNameAndAuthor(bookName, authorName, authorSurname);
+        Customer customer = customerService.getByEmail(customerEmail);
         if(book != null){
             for(Basket tempBasket : getByCustomerEmail(customerEmail)){
                 if(tempBasket.getBookId().equals(book.getId())){
@@ -67,9 +63,8 @@ public class DefaultBasketService implements BasketService {
 
     @Override
     public List<Basket> getByCustomerEmail(String customerEmail) {
-        CustomerRepository defaultCustomerRepository = new DefaultCustomerRepository();
-        CustomerService defaultCustomerService = new DefaultCustomerService(defaultCustomerRepository);
-        Customer customer = defaultCustomerService.getByEmail(customerEmail);
+
+        Customer customer = customerService.getByEmail(customerEmail);
         return basketRepository.getByCustomerId(customer.getId());
     }
 

@@ -1,7 +1,9 @@
 package tr.com.bookcell.favourite;
 
-import tr.com.bookcell.book.*;
-import tr.com.bookcell.user.customer.*;
+import tr.com.bookcell.book.Book;
+import tr.com.bookcell.book.BookService;
+import tr.com.bookcell.user.customer.Customer;
+import tr.com.bookcell.user.customer.CustomerService;
 
 import java.util.List;
 
@@ -9,9 +11,13 @@ import static tr.com.bookcell.util.InputFormatter.*;
 
 public class DefaultFavouriteService implements FavouriteService {
     private final FavouriteRepository favouriteRepository;
+    private final BookService bookService;
+    private final CustomerService customerService;
 
-    public DefaultFavouriteService(FavouriteRepository favouriteRepository) {
+    public DefaultFavouriteService(FavouriteRepository favouriteRepository, BookService bookService, CustomerService customerService) {
         this.favouriteRepository = favouriteRepository;
+        this.bookService = bookService;
+        this.customerService = customerService;
     }
 
     @Override
@@ -19,12 +25,10 @@ public class DefaultFavouriteService implements FavouriteService {
         String formattedBookName = capitalizeForBookName(bookName);
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
-        BookRepository defaultBookRepository = new DefaultBookRepository();
-        BookService defaultBookService = new DefaultBookService(defaultBookRepository);
-        CustomerRepository defaultCustomerRepository = new DefaultCustomerRepository();
-        CustomerService defaultCustomerService = new DefaultCustomerService(defaultCustomerRepository);
-        Book book = defaultBookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
-        Customer customer = defaultCustomerService.getByEmail(customerEmail);
+
+
+        Book book = bookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
+        Customer customer = customerService.getByEmail(customerEmail);
         if (book != null) {
             boolean bool = false;
             for (Favourite tempFavourite : getByCustomerEmail(customer.getEmail())) {
@@ -34,7 +38,7 @@ public class DefaultFavouriteService implements FavouriteService {
                     break;
                 }
             }
-            if(!bool){
+            if (!bool) {
                 Favourite favourite = new Favourite(customer.getId(), book.getId());
                 favouriteRepository.add(favourite);
             }
@@ -46,12 +50,10 @@ public class DefaultFavouriteService implements FavouriteService {
         String formattedBookName = capitalizeForBookName(bookName);
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
-        BookRepository defaultBookRepository = new DefaultBookRepository();
-        BookService defaultBookService = new DefaultBookService(defaultBookRepository);
-        Book book = defaultBookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
-        CustomerRepository defaultCustomerRepository = new DefaultCustomerRepository();
-        CustomerService defaultCustomerService = new DefaultCustomerService(defaultCustomerRepository);
-        Customer customer = defaultCustomerService.getByEmail(customerEmail);
+
+        Book book = bookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
+
+        Customer customer = customerService.getByEmail(customerEmail);
         if (book != null) {
             for (Favourite tempFavourite : getByCustomerEmail(customer.getEmail())) {
                 if (tempFavourite.getBookId().equals(book.getId())) {
@@ -66,9 +68,8 @@ public class DefaultFavouriteService implements FavouriteService {
 
     @Override
     public List<Favourite> getByCustomerEmail(String customerEmail) {
-        CustomerRepository defaultCustomerRepository = new DefaultCustomerRepository();
-        CustomerService defaultCustomerService = new DefaultCustomerService(defaultCustomerRepository);
-        Customer customer = defaultCustomerService.getByEmail(customerEmail);
+
+        Customer customer = customerService.getByEmail(customerEmail);
         return favouriteRepository.getByCustomerId(customer.getId());
     }
 }

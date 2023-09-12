@@ -9,9 +9,13 @@ import static tr.com.bookcell.util.InputFormatter.*;
 
 public class DefaultBookService implements BookService {
     private final BookRepository bookRepository;
+    private final AuthorService authorService;
+    private final PublisherService publisherService;
 
-    public DefaultBookService(BookRepository bookRepository) {
+    public DefaultBookService(BookRepository bookRepository, AuthorService authorService, PublisherService publisherService) {
         this.bookRepository = bookRepository;
+        this.authorService = authorService;
+        this.publisherService = publisherService;
     }
 
 
@@ -22,12 +26,10 @@ public class DefaultBookService implements BookService {
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         String formattedPublisherName = capitalizeForMultipleStrings(publisherName);
         String formattedGenre = capitalizeForMultipleStrings(genre);
-        AuthorRepository defaultAuthorRepository = new DefaultAuthorRepository();
-        AuthorService defaultAuthorService = new DefaultAuthorService(defaultAuthorRepository);
-        PublisherRepository defaultPublisherRepository = new DefaultPublisherRepository();
-        PublisherService defaultPublisherService = new DefaultPublisherService(defaultPublisherRepository);
-        Author author = defaultAuthorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
-        Publisher publisher = defaultPublisherService.getByName(formattedPublisherName);
+
+
+        Author author = authorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
+        Publisher publisher = publisherService.getByName(formattedPublisherName);
         if (author != null && publisher != null) {
             Book book = new Book(formattedName, author.getId(), publisher.getId(), formattedGenre, publicationYear, pageNumber, isAvailable);
             boolean bool = false;
@@ -65,9 +67,8 @@ public class DefaultBookService implements BookService {
         String formattedName = capitalizeForBookName(name);
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
-        AuthorRepository defaultAuthorRepository = new DefaultAuthorRepository();
-        AuthorService defaultAuthorService = new DefaultAuthorService(defaultAuthorRepository);
-        Author author = defaultAuthorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
+
+        Author author = authorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
         if (author != null) {
             for (Book tempBook : getAll()) {
                 if (tempBook.getName().equals(formattedName) && tempBook.getAuthorId().equals(author.getId())) {
@@ -85,9 +86,8 @@ public class DefaultBookService implements BookService {
         String formattedName = capitalizeForBookName(name);
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
-        AuthorRepository defaultAuthorRepository = new DefaultAuthorRepository();
-        AuthorService defaultAuthorService = new DefaultAuthorService(defaultAuthorRepository);
-        Author author = defaultAuthorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
+
+        Author author = authorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
         if(author != null){
             for (Book tempBook : getAll()) {
                 if (tempBook.getName().equals(formattedName) && tempBook.getAuthorId().equals(author.getId())) {
@@ -104,9 +104,8 @@ public class DefaultBookService implements BookService {
         String formattedName = capitalizeForBookName(name);
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
-        AuthorRepository defaultAuthorRepository = new DefaultAuthorRepository();
-        AuthorService defaultAuthorService = new DefaultAuthorService(defaultAuthorRepository);
-        Author author = defaultAuthorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
+
+        Author author = authorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
         bookRepository.setAvailable(formattedName, author.getId(), isAvailable);
     }
 
