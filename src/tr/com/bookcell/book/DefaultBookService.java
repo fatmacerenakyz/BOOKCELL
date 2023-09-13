@@ -100,13 +100,9 @@ public class DefaultBookService implements BookService {
     }
 
     @Override
-    public void setAvailable(String name, String authorName, String authorSurname, boolean isAvailable) {
-        String formattedName = capitalizeForBookName(name);
-        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
-        String formattedAuthorSurname = capitalizeFirst(authorSurname);
+    public void setAvailable(Book book, boolean isAvailable) {
 
-        Author author = authorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
-        bookRepository.setAvailable(formattedName, author.getId(), isAvailable);
+        bookRepository.setAvailable(book, isAvailable);
     }
 
 

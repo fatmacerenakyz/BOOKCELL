@@ -5,6 +5,7 @@ import tr.com.bookcell.user.customer.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 
 import static tr.com.bookcell.util.DateFormatter.dateFormatter;
 import static tr.com.bookcell.util.InputFormatter.*;
@@ -25,13 +26,13 @@ public class DefaultLandingService implements LandingService {
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         Book book = bookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
-
         Customer customer = customerService.getByEmail(customerEmail);
         if (book != null && customer != null) {
             Landing landing = new Landing();
             landing.setCustomerId(customer.getId());
             landing.setBookId(book.getId());
             landing.setPickUpDate(LocalDate.now());
+            bookService.setAvailable(book, false);
             landingRepository.setPickUp(landing);
         }
 
@@ -39,7 +40,12 @@ public class DefaultLandingService implements LandingService {
 
     @Override
     public void setDropOff(String customerEmail, String bookName, String authorName, String authorSurname, String pickUpDate) {
-        List<Landing> landings = getByCustomerAndBook(customerEmail, bookName, authorName, authorSurname);
+        String formattedBookName = capitalizeForBookName(bookName);
+        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
+        String formattedAuthorSurname = capitalizeFirst(authorSurname);
+        Book book = bookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
+        Customer customer = customerService.getByEmail(customerEmail);
+        List<Landing> landings = getByCustomerAndBook(customer, book);
         LocalDate formattedPickUpDate = dateFormatter(pickUpDate);
         if (formattedPickUpDate == null) {
             System.out.println("Please enter the date according to the format (dd-mm-yyyy)");
@@ -47,7 +53,9 @@ public class DefaultLandingService implements LandingService {
             if (landings != null) {
                 for (Landing tempLanding : landings) {
                     if (tempLanding.getPickUpDate().equals(formattedPickUpDate)) {
-                        landingRepository.setDropOff(tempLanding, formattedPickUpDate);
+                        bookService.setAvailable(book, true);
+                        landingRepository.setDropOff(tempLanding, LocalDate.now());
+
                     }
                 }
             }
@@ -58,14 +66,7 @@ public class DefaultLandingService implements LandingService {
 }
 
     @Override
-    public List<Landing> getByCustomerAndBook(String customerEmail, String bookName, String authorName, String authorSurname) {
-        String formattedBookName = capitalizeForBookName(bookName);
-        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
-        String formattedAuthorSurname = capitalizeFirst(authorSurname);
-
-        Book book = bookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
-
-        Customer customer = customerService.getByEmail(customerEmail);
+    public List<Landing> getByCustomerAndBook(Customer customer, Book book) {
 
         if (book != null && customer != null) {
             for (Landing temp : getAll()) {

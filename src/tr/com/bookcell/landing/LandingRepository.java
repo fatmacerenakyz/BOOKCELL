@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface LandingRepository extends BaseRepository {
     void setPickUp(Landing landing);
-    void setDropOff(Landing landing, LocalDate pickUpDate);
+    void setDropOff(Landing landing, LocalDate dropOffDate);
     List<Landing> getByCustomerAndBook(Integer customerId, Integer bookId);
     List<Landing> getAll();
 }

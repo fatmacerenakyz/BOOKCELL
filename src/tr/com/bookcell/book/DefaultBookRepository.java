@@ -118,12 +118,12 @@ public class DefaultBookRepository implements BookRepository {
     }
 
     @Override
-    public void setAvailable(String name, Integer authorId, boolean isAvailable) {
+    public void setAvailable(Book book, boolean isAvailable) {
         try (Connection connection = connect()) {
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_BOOKS_IS_AVAILABLE);
             preparedStatement.setBoolean(1, isAvailable);
-            preparedStatement.setString(2, name);
-            preparedStatement.setInt(3, authorId);
+            preparedStatement.setString(2, book.getName());
+            preparedStatement.setInt(3, book.getAuthorId());
             preparedStatement.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

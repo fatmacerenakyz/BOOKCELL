@@ -7,9 +7,10 @@ import java.util.List;
 
 public interface ReservationRepository extends BaseRepository {
     void add(Reservation reservation);
-    void remove(Integer customerId, Integer bookId);
-    void setStartDate(Integer customerId, Integer bookId, LocalDate startDate);
-    void setDeliveryDate(Integer customerId, Integer bookId, LocalDate deliveryDate);
-    Reservation getByCustomerAndBook(Integer customerId, Integer bookId);
-    List<Reservation> getByCustomerId(Integer customerId);
+    void remove(Integer customerId, Integer bookId, LocalDate startDate);
+    void setStartDate(Integer customerId, Integer bookId, LocalDate startDate, LocalDate deliveryDate);
+    void setDeliveryDate(Integer customerId, Integer bookId, LocalDate startDate, LocalDate deliveryDate);
+    Reservation getByStartDate(Integer customerId, Integer bookId, LocalDate startDate);
+    Reservation getByDeliveryDate(Integer customerId, Integer bookId, LocalDate deliveryDate);
+    List<Reservation> getByCustomer(Integer customerId);
 }
