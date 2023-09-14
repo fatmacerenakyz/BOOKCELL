@@ -1,7 +1,5 @@
 package tr.com.bookcell.user.customer;
 
-import tr.com.bookcell.util.PatternMatcher;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -20,10 +18,9 @@ public class DefaultCustomerService implements CustomerService {
     @Override
     public void add(String email, String password, String name, String surname) {
         Customer customer = getByEmail(email);
-        if(customer != null){
+        if (customer != null) {
             System.out.println("You are already registered. Please enter your email and password.");
-        }
-        else {
+        } else {
             Integer integerCustomerType = emailPattern(email);
             CustomerType customerType = null;
             switch (integerCustomerType) {
@@ -32,7 +29,7 @@ public class DefaultCustomerService implements CustomerService {
                 case (2) -> customerType = CustomerType.VIP;
                 default -> System.out.println("EMAIL ADDRESS IS NOT FOUND.");
             }
-            if(customerType != null && passwordPattern(password)){
+            if (customerType != null && passwordPattern(password)) {
                 String formattedName = capitalizeForMultipleStrings(name);
                 String formattedSurname = capitalizeFirst(surname);
                 Customer newCustomer = new Customer(password, formattedName, formattedSurname, LocalDate.now(), email);
@@ -45,10 +42,9 @@ public class DefaultCustomerService implements CustomerService {
     @Override
     public void remove(String email) {
         Customer customer = getByEmail(email);
-        if(customer == null){
-            System.out.println("THERE IS NO CUSTOMER WITH "+email+" IN CUSTOMERS LIST!");
-        }
-        else {
+        if (customer == null) {
+            System.out.println("THERE IS NO CUSTOMER WITH " + email + " IN CUSTOMERS LIST!");
+        } else {
             for (Customer temp : getAll()) {
                 if (temp.getEmail().equals(email)) {
                     customerRepository.remove(email);
@@ -76,12 +72,7 @@ public class DefaultCustomerService implements CustomerService {
     @Override
     public boolean isExist(String email, String password) {
         Customer customer = getByEmail(email);
-        if(customer != null && customer.getPassword().equals(password)){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return customer != null && customer.getPassword().equals(password);
     }
 
 }
