@@ -20,6 +20,7 @@ public class DefaultCustomerService implements CustomerService {
         Customer customer = getByEmail(email);
         if (customer != null) {
             System.out.println("You are already registered. Please enter your email and password.");
+            return false;
         } else {
             Integer integerCustomerType = emailPattern(email);
             CustomerType customerType = null;
@@ -27,7 +28,7 @@ public class DefaultCustomerService implements CustomerService {
                 case (0) -> customerType = CustomerType.DEFAULT;
                 case (1) -> customerType = CustomerType.STUDENT;
                 case (2) -> customerType = CustomerType.VIP;
-                default -> {System.out.println("EMAIL ADDRESS IS NOT FOUND.");return false;}
+                default -> {System.out.println("EMAIL ADDRESS IS NOT PROPER.");return false;}
             }
             if (passwordPattern(password)) {
                 String formattedName = capitalizeForMultipleStrings(name);
@@ -72,7 +73,7 @@ public class DefaultCustomerService implements CustomerService {
     }
 
     @Override
-    public boolean isExist(String email, String password) {
+    public boolean isPasswordCorrect(String email, String password) {
         Customer customer = getByEmail(email);
         return customer != null && customer.getPassword().equals(password);
     }

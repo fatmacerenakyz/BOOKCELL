@@ -7,5 +7,5 @@ public interface CustomerService {
     void remove(String email);
     List<Customer> getAll();
     Customer getByEmail(String email);
-    boolean isExist(String email, String password);
+    boolean isPasswordCorrect(String email, String password);
 }
