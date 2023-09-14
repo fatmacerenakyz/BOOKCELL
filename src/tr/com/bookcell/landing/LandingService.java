@@ -1,8 +1,4 @@
 package tr.com.bookcell.landing;
-
-import tr.com.bookcell.book.Book;
-import tr.com.bookcell.user.customer.Customer;
-
 import java.util.List;
 
 public interface LandingService {

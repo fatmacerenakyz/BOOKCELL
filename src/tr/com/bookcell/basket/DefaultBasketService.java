@@ -23,8 +23,6 @@ public class DefaultBasketService implements BasketService {
     @Override
     public boolean add(String customerEmail, String bookName, String authorName, String authorSurname) {
         String formattedBookName = capitalizeForBookName(bookName);
-        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
-        String formattedAuthorSurname = capitalizeFirst(authorSurname);
         Book book = bookService.getByNameAndAuthor(bookName, authorName, authorSurname);
         Customer customer = customerService.getByEmail(customerEmail);
 
