@@ -16,7 +16,7 @@ public class DefaultCustomerService implements CustomerService {
     }
 
     @Override
-    public void add(String email, String password, String name, String surname) {
+    public boolean add(String email, String password, String name, String surname) {
         Customer customer = getByEmail(email);
         if (customer != null) {
             System.out.println("You are already registered. Please enter your email and password.");
@@ -27,16 +27,18 @@ public class DefaultCustomerService implements CustomerService {
                 case (0) -> customerType = CustomerType.DEFAULT;
                 case (1) -> customerType = CustomerType.STUDENT;
                 case (2) -> customerType = CustomerType.VIP;
-                default -> System.out.println("EMAIL ADDRESS IS NOT FOUND.");
+                default -> {System.out.println("EMAIL ADDRESS IS NOT FOUND.");return false;}
             }
-            if (customerType != null && passwordPattern(password)) {
+            if (passwordPattern(password)) {
                 String formattedName = capitalizeForMultipleStrings(name);
                 String formattedSurname = capitalizeFirst(surname);
                 Customer newCustomer = new Customer(password, formattedName, formattedSurname, LocalDate.now(), email);
                 customerRepository.add(newCustomer);
                 System.out.println("You have successfully registered!");
+                return true;
             }
         }
+        return true;
     }
 
     @Override
