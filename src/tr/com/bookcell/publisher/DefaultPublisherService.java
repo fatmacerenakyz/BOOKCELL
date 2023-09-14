@@ -43,7 +43,6 @@ public class DefaultPublisherService implements PublisherService{
                 return publisherRepository.getByName(formattedName);
             }
         }
-        System.out.println("THERE IS NO "+formattedName+" IN PUBLISHERS LIST");
         return null;
     }
 

@@ -1,7 +1,9 @@
 package tr.com.bookcell.basket;
 
-import tr.com.bookcell.book.*;
-import tr.com.bookcell.user.customer.*;
+import tr.com.bookcell.book.Book;
+import tr.com.bookcell.book.BookService;
+import tr.com.bookcell.user.customer.Customer;
+import tr.com.bookcell.user.customer.CustomerService;
 
 import java.util.List;
 
@@ -11,49 +13,44 @@ public class DefaultBasketService implements BasketService {
     private final BasketRepository basketRepository;
     private final BookService bookService;
     private final CustomerService customerService;
-    public DefaultBasketService(BasketRepository basketRepository, BookService bookService, CustomerService customexrService) {
+
+    public DefaultBasketService(BasketRepository basketRepository, BookService bookService, CustomerService customerService) {
         this.basketRepository = basketRepository;
         this.bookService = bookService;
-        this.customerService = customexrService;
+        this.customerService = customerService;
     }
 
     @Override
-    public void add(String customerEmail, String bookName, String authorName, String authorSurname) {
+    public boolean add(String customerEmail, String bookName, String authorName, String authorSurname) {
         String formattedBookName = capitalizeForBookName(bookName);
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         Book book = bookService.getByNameAndAuthor(bookName, authorName, authorSurname);
         Customer customer = customerService.getByEmail(customerEmail);
 
-        if(book!=null){
-            boolean bool = false;
-            for(Basket tempBasket : getByCustomerEmail(customerEmail)){
-                if(tempBasket.getBookId().equals(book.getId())){
-                    System.out.println("THERE IS ALREADY "+formattedBookName+" IN YOUR BASKET");
-                    bool = true;
-                    break;
+        if (book != null) {
+            for (Basket tempBasket : getByCustomer(customerEmail)) {
+                if (tempBasket.getBookId().equals(book.getId())) {
+                    System.out.println("THERE IS ALREADY " + formattedBookName + " IN YOUR BASKET");
+                    return false;
                 }
             }
-            if(!bool){
-                Basket basket = new Basket(customer.getId(), book.getId());
-                basketRepository.add(basket);
 
-            }
+            Basket basket = new Basket(customer.getId(), book.getId());
+            basketRepository.add(basket);
         }
+        return true;
     }
 
     @Override
     public void remove(String customerEmail, String bookName, String authorName, String authorSurname) {
         String formattedBookName = capitalizeForBookName(bookName);
-        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
-        String formattedAuthorSurname = capitalizeFirst(authorSurname);
-
         Book book = bookService.getByNameAndAuthor(bookName, authorName, authorSurname);
         Customer customer = customerService.getByEmail(customerEmail);
-        if(book != null){
-            for(Basket tempBasket : getByCustomerEmail(customerEmail)){
-                if(tempBasket.getBookId().equals(book.getId())){
-                    basketRepository.remove(customer.getId(),book.getId());
+        if (book != null && customer != null) {
+            for (Basket tempBasket : getByCustomer(customerEmail)) {
+                if (tempBasket.getBookId().equals(book.getId())) {
+                    basketRepository.remove(customer.getId(), book.getId());
                     return;
                 }
             }
@@ -62,10 +59,19 @@ public class DefaultBasketService implements BasketService {
     }
 
     @Override
-    public List<Basket> getByCustomerEmail(String customerEmail) {
+    public List<Basket> getByCustomer(String customerEmail) {
 
         Customer customer = customerService.getByEmail(customerEmail);
-        return basketRepository.getByCustomerId(customer.getId());
+        if (customer != null) {
+            return basketRepository.getByCustomer(customer.getId());
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public List<Basket> getAll() {
+        return basketRepository.getAll();
     }
 
 

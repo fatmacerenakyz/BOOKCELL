@@ -5,7 +5,10 @@ import tr.com.bookcell.util.PatternMatcher;
 import java.time.LocalDate;
 import java.util.List;
 
+import static tr.com.bookcell.util.InputFormatter.capitalizeFirst;
+import static tr.com.bookcell.util.InputFormatter.capitalizeForMultipleStrings;
 import static tr.com.bookcell.util.PatternMatcher.emailPattern;
+import static tr.com.bookcell.util.PatternMatcher.passwordPattern;
 
 public class DefaultCustomerService implements CustomerService {
     private final CustomerRepository customerRepository;
@@ -16,32 +19,43 @@ public class DefaultCustomerService implements CustomerService {
 
     @Override
     public void add(String email, String password, String name, String surname) {
-        Customer customer = new Customer();
-        customer.setEmail(email);
-        customer.setPassword(password);
-        customer.setName(name);
-        customer.setSurname(surname);
-        customer.setRegistrationDate(LocalDate.now());
-        Integer integerCustomerType = emailPattern(email);
-        CustomerType customerType = null;
-        switch (integerCustomerType) {
-            case (0) -> customerType = CustomerType.DEFAULT;
-            case (1) -> customerType = CustomerType.STUDENT;
-            case (2) -> customerType = CustomerType.VIP;
-            default -> System.out.println("NOT EMAIL FOUND.");
+        Customer customer = getByEmail(email);
+        if(customer != null){
+            System.out.println("You are already registered. Please enter your email and password.");
         }
-        customerRepository.add(customer);
+        else {
+            Integer integerCustomerType = emailPattern(email);
+            CustomerType customerType = null;
+            switch (integerCustomerType) {
+                case (0) -> customerType = CustomerType.DEFAULT;
+                case (1) -> customerType = CustomerType.STUDENT;
+                case (2) -> customerType = CustomerType.VIP;
+                default -> System.out.println("EMAIL ADDRESS IS NOT FOUND.");
+            }
+            if(customerType != null && passwordPattern(password)){
+                String formattedName = capitalizeForMultipleStrings(name);
+                String formattedSurname = capitalizeFirst(surname);
+                Customer newCustomer = new Customer(password, formattedName, formattedSurname, LocalDate.now(), email);
+                customerRepository.add(newCustomer);
+                System.out.println("You have successfully registered!");
+            }
+        }
     }
 
     @Override
     public void remove(String email) {
-        for (Customer temp : getAll()) {
-            if (temp.getEmail().equals(email)) {
-                customerRepository.remove(email);
-                return;
+        Customer customer = getByEmail(email);
+        if(customer == null){
+            System.out.println("THERE IS NO CUSTOMER WITH "+email+" IN CUSTOMERS LIST!");
+        }
+        else {
+            for (Customer temp : getAll()) {
+                if (temp.getEmail().equals(email)) {
+                    customerRepository.remove(email);
+                    return;
+                }
             }
         }
-        System.out.println(email + " WAS NOT FOUND.");
     }
 
     @Override
@@ -56,7 +70,18 @@ public class DefaultCustomerService implements CustomerService {
                 return customerRepository.getByEmail(email);
             }
         }
-        System.out.println(email + " WAS NOT FOUND.");
         return null;
     }
+
+    @Override
+    public boolean isExist(String email, String password) {
+        Customer customer = getByEmail(email);
+        if(customer != null && customer.getPassword().equals(password)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
 }

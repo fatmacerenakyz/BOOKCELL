@@ -27,21 +27,21 @@ public class DefaultBookService implements BookService {
         String formattedPublisherName = capitalizeForMultipleStrings(publisherName);
         String formattedGenre = capitalizeForMultipleStrings(genre);
 
-
         Author author = authorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
         Publisher publisher = publisherService.getByName(formattedPublisherName);
         if (author != null && publisher != null) {
-            Book book = new Book(formattedName, author.getId(), publisher.getId(), formattedGenre, publicationYear, pageNumber, isAvailable);
             boolean bool = false;
             for (Book tempBook : getAll()) {
-                if (tempBook.getName().equals(book.getName()) && tempBook.getAuthorId().equals(book.getAuthorId())) {
+                if (tempBook.getName().equals(formattedName) && tempBook.getAuthorId().equals(author.getId())) {
                     System.out.println("THERE IS ALREADY " + formattedName + " IN BOOKS LIST");
                     bool = true;
                     break;
                 }
             }
-            if(!bool)
+            if(!bool) {
+                Book book = new Book(formattedName, author.getId(), publisher.getId(), formattedGenre, publicationYear, pageNumber, isAvailable);
                 bookRepository.add(book);
+            }
         }
 
     }
@@ -58,7 +58,6 @@ public class DefaultBookService implements BookService {
             if (tempBook.getName().equals(formattedName))
                 return bookRepository.getByName(formattedName);
         }
-        System.out.println("THERE IS NO" + formattedName + " IN BOOKS LIST!");
         return null;
     }
 
@@ -76,7 +75,6 @@ public class DefaultBookService implements BookService {
                 }
             }
         }
-        System.out.println("THERE IS NO" + formattedName + " IN BOOKS LIST!");
         return null;
     }
 
@@ -100,9 +98,8 @@ public class DefaultBookService implements BookService {
     }
 
     @Override
-    public void setAvailable(Book book, boolean isAvailable) {
-
-        bookRepository.setAvailable(book, isAvailable);
+    public void setAvailable(Integer bookId, boolean isAvailable) {
+        bookRepository.setAvailable(bookId, isAvailable);
     }
 
 

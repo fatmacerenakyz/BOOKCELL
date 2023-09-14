@@ -10,7 +10,7 @@ public class DefaultBookRepository implements BookRepository {
     private static final String INSERT_BOOKS = "INSERT INTO public.\"BOOK\"(\"NAME\", \"AUTHOR_ID\", \"PUBLISHER_ID\", \"GENRE\", \"PUBLICATION_YEAR\", \"PAGE_NUMBER\", \"IS_AVAILABLE\") VALUES (?, ?, ?, ?, ?, ?, ?);";
     private static final String SELECT_BOOKS = "SELECT * FROM public.\"BOOK\";";
     private static final String DELETE_BOOKS = "DELETE FROM public.\"BOOK\" WHERE \"NAME\" = ? AND \"AUTHOR_ID\" = ?;";
-    private static final String UPDATE_BOOKS_IS_AVAILABLE = "UPDATE public.\"BOOK\" SET \"IS_AVAILABLE\"=? WHERE \"NAME\"=? AND \"AUTHOR_ID\"=?;";
+    private static final String UPDATE_BOOKS_IS_AVAILABLE = "UPDATE public.\"BOOK\" SET \"IS_AVAILABLE\"=? WHERE \"ID\"=?;";
     private static final String SELECT_BOOKS_WHERE_NAME = "SELECT * FROM public.\"BOOK\" WHERE \"NAME\" = ?;";
     private static final String SELECT_BOOKS_WHERE_NAME_AND_AUTHOR_ID = "SELECT * FROM public.\"BOOK\" WHERE \"NAME\" = ? AND \"AUTHOR_ID\" = ?;";
 
@@ -118,12 +118,11 @@ public class DefaultBookRepository implements BookRepository {
     }
 
     @Override
-    public void setAvailable(Book book, boolean isAvailable) {
+    public void setAvailable(Integer bookId, boolean isAvailable) {
         try (Connection connection = connect()) {
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_BOOKS_IS_AVAILABLE);
             preparedStatement.setBoolean(1, isAvailable);
-            preparedStatement.setString(2, book.getName());
-            preparedStatement.setInt(3, book.getAuthorId());
+            preparedStatement.setInt(2, bookId);
             preparedStatement.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

@@ -16,16 +16,16 @@ public class DefaultAuthorService implements AuthorService {
     public void add(String name, String surname) {
         String formattedName = capitalizeForMultipleStrings(name);
         String formattedSurname = capitalizeFirst(surname);
-        Author author = new Author(formattedName, formattedSurname);
         boolean bool = false;
         for (Author tempAuthor : getAll()) {
-            if (tempAuthor.getName().equals(author.getName()) && tempAuthor.getSurname().equals(author.getSurname())) {
+            if (tempAuthor.getName().equals(formattedName) && tempAuthor.getSurname().equals(formattedSurname)) {
                 System.out.println("THERE IS ALREADY "+formattedName+" "+formattedSurname+" IN AUTHORS LIST");
                 bool = true;
                 break;
             }
         }
         if(!bool){
+            Author author = new Author(formattedName, formattedSurname);
             authorRepository.add(author);
         }
     }
@@ -42,7 +42,6 @@ public class DefaultAuthorService implements AuthorService {
             if(tempAuthor.getName().equals(formattedName))
                 return authorRepository.getByName(formattedName);
         }
-        System.out.println("THERE IS NO "+formattedName+" IN AUTHORS LIST!");
         return null;
     }
 
@@ -54,7 +53,6 @@ public class DefaultAuthorService implements AuthorService {
             if(tempAuthor.getName().equals(formattedName)&&tempAuthor.getSurname().equals(formattedSurname))
                 return authorRepository.getByNameAndSurname(formattedName, formattedSurname);
         }
-        System.out.println("THERE IS NO "+formattedName+" "+formattedSurname+" IN AUTHORS LIST!");
         return null;
     }
 

@@ -31,6 +31,12 @@ public class PatternMatcher {
         else{
             return -1;
         }
-
+    }
+    public static boolean passwordPattern(String text){
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[.,_]).{8,}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text);
+        System.out.println("Please enter a proper password.");
+        return matcher.matches();
     }
 }

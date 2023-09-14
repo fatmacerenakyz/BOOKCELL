@@ -7,7 +7,6 @@ import tr.com.bookcell.user.customer.CustomerService;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.spi.AbstractResourceBundleProvider;
 
 import static tr.com.bookcell.util.DateFormatter.dateFormatter;
 import static tr.com.bookcell.util.InputFormatter.*;
@@ -24,7 +23,7 @@ public class DefaultReservationService implements ReservationService {
     }
 
     @Override
-    public void add(String customerEmail, String bookName, String authorName, String authorSurname, String startDate, String deliveryDate) {
+    public boolean add(String customerEmail, String bookName, String authorName, String authorSurname, String startDate, String deliveryDate) {
 
         LocalDate formattedStartDate = dateFormatter(startDate);
         LocalDate formattedDeliveryDate = dateFormatter(deliveryDate);
@@ -41,32 +40,30 @@ public class DefaultReservationService implements ReservationService {
                 Book book = bookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
                 Customer customer = customerService.getByEmail(customerEmail);
                 if (book != null && customer != null) {
-                    boolean bool = false;
                     List<Reservation> reservations = getByCustomer(customerEmail);
                     Reservation temp = getByStartDate(customerEmail, bookName, authorName, authorSurname, startDate);
                     if (temp != null) {
                         System.out.println("You booked this book for this dates already");
-                        bool = true;
+                        return false;
                     } else {
                         for (Reservation tempReservation : reservations) {
-                            if (!((tempReservation.getStartDate().isBefore(formattedStartDate) && tempReservation.getDeliveryDate().isBefore(formattedStartDate))||(tempReservation.getStartDate().isAfter(formattedDeliveryDate)&&tempReservation.getDeliveryDate().isAfter(formattedDeliveryDate)))) {
+                            if (!((tempReservation.getStartDate().isBefore(formattedStartDate) && tempReservation.getDeliveryDate().isBefore(formattedStartDate)) || (tempReservation.getStartDate().isAfter(formattedDeliveryDate) && tempReservation.getDeliveryDate().isAfter(formattedDeliveryDate)))) {
                                 System.out.println("You have another reservation for these dates.");
-                                bool = true;
-                                break;
+                                return false;
                             }
                         }
                     }
-                    if (!bool) {
-                        Reservation reservation = new Reservation(customer.getId(), book.getId(), formattedStartDate, formattedDeliveryDate);
-                        reservationRepository.add(reservation);
-                    }
+                    Reservation reservation = new Reservation(customer.getId(), book.getId(), formattedStartDate, formattedDeliveryDate);
+                    reservationRepository.add(reservation);
+
                 }
             }
         }
+        return true;
     }
 
     @Override
-    public void remove(String customerEmail, String bookName, String authorName, String authorSurname, String startDate) {
+    public boolean remove(String customerEmail, String bookName, String authorName, String authorSurname, String startDate) {
         LocalDate formattedStartDate = dateFormatter(startDate);
         if (formattedStartDate == null) {
             System.out.println("Please enter the date according to the format (dd-mm-yyyy)");
@@ -74,68 +71,60 @@ public class DefaultReservationService implements ReservationService {
             String formattedBookName = capitalizeForBookName(bookName);
             String formattedAuthorName = capitalizeForMultipleStrings(authorName);
             String formattedAuthorSurname = capitalizeFirst(authorSurname);
-            Reservation reservation = getByStartDate(customerEmail, formattedBookName, formattedAuthorName, formattedAuthorSurname, startDate);
-            if (reservation == null) {
-                System.out.println("THERE IS NO RESERVATION MADE FOR " + formattedBookName + " IN THIS CUSTOMER'S RESERVATION LIST.");
-            } else {
-                Book book = bookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
-                Customer customer = customerService.getByEmail(customerEmail);
-                if (book != null && customer != null) {
-                    for (Reservation tempReservation : getByCustomer(customerEmail)) {
-                        if (tempReservation.getBookId().equals(book.getId()) && tempReservation.getStartDate().equals(formattedStartDate)) {
-                            reservationRepository.remove(customer.getId(), book.getId(), formattedStartDate);
-                            return;
-                        }
+            Book book = bookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
+            Customer customer = customerService.getByEmail(customerEmail);
+            if (book != null && customer != null) {
+                for (Reservation tempReservation : getByCustomer(customerEmail)) {
+                    if (tempReservation.getBookId().equals(book.getId()) && tempReservation.getStartDate().equals(formattedStartDate)) {
+                        reservationRepository.remove(customer.getId(), book.getId(), formattedStartDate);
+                        return true;
                     }
-                    System.out.println("THERE IS NO RESERVATION MADE FOR " + formattedBookName + "  IN THIS CUSTOMER'S RESERVATION LIST.");
                 }
+                System.out.println("THERE IS NO RESERVATION MADE FOR " + formattedBookName + "  IN THIS CUSTOMER'S RESERVATION LIST.");
+                return false;
             }
         }
+        return true;
     }
 
     @Override
-    public void setStartDate(String customerEmail, String bookName, String authorName, String authorSurname, String newStartDate, String deliveryDate) {
+    public boolean setStartDate(String customerEmail, String bookName, String authorName, String authorSurname, String newStartDate, String deliveryDate) {
         LocalDate formattedStartDate = dateFormatter(newStartDate);
         LocalDate formattedDeliveryDate = dateFormatter(deliveryDate);
         if (formattedStartDate == null || formattedDeliveryDate == null) {
             System.out.println("Please enter the date according to the format (dd-mm-yyyy)");
-        }
-        else {
+        } else {
             String formattedBookName = capitalizeForBookName(bookName);
             String formattedAuthorName = capitalizeForMultipleStrings(authorName);
             String formattedAuthorSurname = capitalizeFirst(authorSurname);
             Reservation reservation = getByDeliveryDate(customerEmail, formattedBookName, formattedAuthorName, formattedAuthorSurname, deliveryDate);
             if (reservation == null) {
                 System.out.println("THERE IS NO RESERVATION MADE FOR " + formattedBookName + " IN THIS CUSTOMER'S RESERVATION LIST.");
+                return false;
             } else if (reservation.getStartDate().isAfter(reservation.getDeliveryDate()) || reservation.getStartDate().isBefore(LocalDate.now())) {
                 System.out.println("Please enter a valid date");
             } else {
-                boolean bool = false;
                 List<Reservation> reservations = getByCustomer(customerEmail);
                 for (Reservation reservation1 : reservations) {
                     if (reservation.equals(reservation1)) {
                         continue;
                     } else if (!((reservation1.getStartDate().isBefore(formattedStartDate) && reservation1.getDeliveryDate().isBefore(formattedStartDate)) || (reservation1.getStartDate().isAfter(formattedDeliveryDate) && reservation1.getDeliveryDate().isAfter(formattedDeliveryDate)))) {
-                        System.out.println("There is already a reservation in this dates.");
-                        bool = true;
-                        break;
+                        System.out.println("THERE IS ALREADY A RESERVATION IN THIS DATES");
+                        return false;
                     }
                 }
-                if (!bool) {
-
-                    Book book = bookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
-                    if (book != null) {
-
-                        Customer customer = customerService.getByEmail(customerEmail);
-                        reservationRepository.setStartDate(customer.getId(), book.getId(), formattedStartDate, formattedDeliveryDate);
-                    }
+                Book book = bookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
+                Customer customer = customerService.getByEmail(customerEmail);
+                if (book != null && customer != null) {
+                    reservationRepository.setStartDate(customer.getId(), book.getId(), formattedStartDate, formattedDeliveryDate);
                 }
             }
         }
+        return true;
     }
 
     @Override
-    public void setDeliveryDate(String customerEmail, String bookName, String authorName, String authorSurname, String startDate, String newDeliveryDate) {
+    public boolean setDeliveryDate(String customerEmail, String bookName, String authorName, String authorSurname, String startDate, String newDeliveryDate) {
 
         LocalDate formattedDeliveryDate = dateFormatter(newDeliveryDate);
         LocalDate formattedStartDate = dateFormatter(startDate);
@@ -148,6 +137,7 @@ public class DefaultReservationService implements ReservationService {
             Reservation reservation = getByStartDate(customerEmail, formattedBookName, formattedAuthorName, formattedAuthorSurname, startDate);
             if (reservation == null) {
                 System.out.println("THERE IS NO RESERVATION MADE FOR " + formattedBookName + " IN THIS CUSTOMER'S RESERVATION LIST.");
+                return false;
             } else if (formattedDeliveryDate.isBefore(reservation.getStartDate()) || formattedDeliveryDate.isBefore(LocalDate.now())) {
                 System.out.println("Please enter a valid date");
             } else {
@@ -156,11 +146,9 @@ public class DefaultReservationService implements ReservationService {
                 for (Reservation reservation1 : reservations) {
                     if (reservation.equals(reservation1)) {
                         continue;
-                    }
-                    else if(!((reservation1.getStartDate().isBefore(formattedStartDate) && reservation1.getDeliveryDate().isBefore(formattedStartDate))||(reservation1.getStartDate().isAfter(formattedDeliveryDate)&&reservation1.getDeliveryDate().isAfter(formattedDeliveryDate)))){
-                        System.out.println("There is already a reservation in this dates.");
-                        bool = true;
-                        break;
+                    } else if (!((reservation1.getStartDate().isBefore(formattedStartDate) && reservation1.getDeliveryDate().isBefore(formattedStartDate)) || (reservation1.getStartDate().isAfter(formattedDeliveryDate) && reservation1.getDeliveryDate().isAfter(formattedDeliveryDate)))) {
+                        System.out.println("THERE IS ALREADY A RESERVATION IN THIS DATES!");
+                        return false;
                     }
                 }
                 if (!bool) {
@@ -172,6 +160,7 @@ public class DefaultReservationService implements ReservationService {
                 }
             }
         }
+        return true;
     }
 
     @Override
@@ -197,7 +186,8 @@ public class DefaultReservationService implements ReservationService {
         }
         return null;
     }
-    public Reservation getByDeliveryDate(String customerEmail, String bookName, String authorName, String authorSurname, String deliveryDate){
+
+    public Reservation getByDeliveryDate(String customerEmail, String bookName, String authorName, String authorSurname, String deliveryDate) {
         LocalDate formattedDeliveryDate = dateFormatter(deliveryDate);
         if (formattedDeliveryDate == null) {
             System.out.println("Please enter the date according to the format (dd-mm-yyyy)");

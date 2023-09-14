@@ -37,7 +37,7 @@ public class DefaultFavouriteRepository implements FavouriteRepository {
     }
 
     @Override
-    public List<Favourite> getByCustomerId(Integer customerId) {
+    public List<Favourite> getByCustomer(Integer customerId) {
         ArrayList<Favourite> favourites = new ArrayList<>();
         try (Connection connection = connect()) {
             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_FAVOURITES_WITH_CUSTOMER_ID);
