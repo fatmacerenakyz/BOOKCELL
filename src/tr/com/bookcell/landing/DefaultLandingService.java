@@ -60,19 +60,19 @@ public class DefaultLandingService implements LandingService {
         LocalDate formattedPickUpDate = dateFormatter(pickUpDate);
         if (formattedPickUpDate == null) {
             System.out.println("Please enter the date according to the format (dd-mm-yyyy)");
-        } else {
-            if (landings != null) {
-                for (Landing tempLanding : landings) {
-                    if (tempLanding.getPickUpDate().equals(formattedPickUpDate)) {
-                        bookService.setAvailable(tempLanding.getBookId(), true);
-                        landingRepository.setDropOff(tempLanding, LocalDate.now());
-                        return true;
-                    }
+            return false;
+        }
+        if (landings != null) {
+            for (Landing tempLanding : landings) {
+                if (tempLanding.getPickUpDate().equals(formattedPickUpDate)) {
+                    bookService.setAvailable(tempLanding.getBookId(), true);
+                    landingRepository.setDropOff(tempLanding, LocalDate.now());
+                    return true;
                 }
             }
-            System.out.println("THERE IS NO SUCH THAT LANDING IN LANDINGS LIST");
         }
-        return true;
+        System.out.println("THERE IS NO SUCH THAT LANDING IN LANDINGS LIST");
+        return false;
     }
 
     @Override

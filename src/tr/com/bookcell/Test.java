@@ -4,15 +4,9 @@ import tr.com.bookcell.author.AuthorRepository;
 import tr.com.bookcell.author.AuthorService;
 import tr.com.bookcell.author.DefaultAuthorRepository;
 import tr.com.bookcell.author.DefaultAuthorService;
-import tr.com.bookcell.basket.BasketRepository;
-import tr.com.bookcell.basket.BasketService;
-import tr.com.bookcell.basket.DefaultBasketRepository;
-import tr.com.bookcell.basket.DefaultBasketService;
+import tr.com.bookcell.basket.*;
 import tr.com.bookcell.book.*;
-import tr.com.bookcell.favourite.DefaultFavouriteRepository;
-import tr.com.bookcell.favourite.DefaultFavouriteService;
-import tr.com.bookcell.favourite.FavouriteRepository;
-import tr.com.bookcell.favourite.FavouriteService;
+import tr.com.bookcell.favourite.*;
 import tr.com.bookcell.landing.DefaultLandingRepository;
 import tr.com.bookcell.landing.DefaultLandingService;
 import tr.com.bookcell.landing.LandingRepository;
@@ -21,16 +15,14 @@ import tr.com.bookcell.publisher.DefaultPublisherRepository;
 import tr.com.bookcell.publisher.DefaultPublisherService;
 import tr.com.bookcell.publisher.PublisherRepository;
 import tr.com.bookcell.publisher.PublisherService;
-import tr.com.bookcell.reservation.DefaultReservationRepository;
-import tr.com.bookcell.reservation.DefaultReservationService;
-import tr.com.bookcell.reservation.ReservationRepository;
-import tr.com.bookcell.reservation.ReservationService;
+import tr.com.bookcell.reservation.*;
 import tr.com.bookcell.user.admin.AdminRepository;
 import tr.com.bookcell.user.admin.AdminService;
 import tr.com.bookcell.user.admin.DefaultAdminRepository;
 import tr.com.bookcell.user.admin.DefaultAdminService;
 import tr.com.bookcell.user.customer.*;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -94,24 +86,24 @@ public class Test {
             String userType = "";
             boolean newCustomer = true;
             do {
-                System.out.println(ANSI_YELLOW_BG+ANSI_BLACK+ "PLEASE ENTER YOUR USER TYPE (CUSTOMER/ADMIN): " + ANSI_RESET);
+                System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "PLEASE ENTER YOUR USER TYPE (CUSTOMER/ADMIN): " + ANSI_RESET);
                 userType = scanner.nextLine();
                 if (userType.equalsIgnoreCase("customer")) {
                     String isNewCustomer = "";
                     do {
-                        System.out.println(ANSI_YELLOW_BG+ANSI_BLACK + "ARE YOU A NEW CUSTOMER? (YES/NO) " + ANSI_RESET);
+                        System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "ARE YOU A NEW CUSTOMER? (YES/NO) " + ANSI_RESET);
                         isNewCustomer = scanner.nextLine();
                     } while (!(isNewCustomer.equalsIgnoreCase("yes") || isNewCustomer.equalsIgnoreCase("no")));
                     Customer tempCustomer = null;
                     if (isNewCustomer.equalsIgnoreCase("YES")) {
-                        boolean isCustomerAdded = true;
+                        boolean isCustomerAdded;
                         do {
-                            System.out.println(ANSI_YELLOW_BG+ANSI_BLACK+"PLEASE ENTER THE REQUIRED INFORMATION FOR REGISTERING."+ANSI_RESET);
+                            System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "PLEASE ENTER THE REQUIRED INFORMATION FOR REGISTERING." + ANSI_RESET);
                             System.out.println("Email:  ");
                             customerEmail = scanner.nextLine();
                             tempCustomer = defaultCustomerService.getByEmail(customerEmail);
                             if (tempCustomer != null) {
-                                System.out.println(ANSI_YELLOW+"YOUR EMAIL ADDRESS IS REGISTERED. YOU'RE DIRECTED TO THE SIGN IN PAGE!!"+ANSI_RESET);
+                                System.out.println(ANSI_YELLOW + "YOUR EMAIL ADDRESS IS REGISTERED. YOU'RE DIRECTED TO THE SIGN IN PAGE!!" + ANSI_RESET);
                                 break;
                             }
                             System.out.println("Name:  ");
@@ -125,15 +117,14 @@ public class Test {
                     }
                     if (tempCustomer != null || isNewCustomer.equalsIgnoreCase("NO")) {
                         do {
-                            if(!newCustomer){
-                                System.out.println(ANSI_YELLOW+"YOUR PASSWORD IS NOT CORRECT."+ANSI_RESET);
+                            if (!newCustomer) {
+                                System.out.println(ANSI_YELLOW + "YOUR PASSWORD IS NOT CORRECT." + ANSI_RESET);
                                 System.out.println("Password:  ");
                                 customerPassword = scanner.nextLine();
-                            }
-                            else {
+                            } else {
                                 boolean tryAgain = false;
                                 do {
-                                    System.out.println(ANSI_YELLOW_BG+ANSI_BLACK + "\nWELCOME BACK!! PLEASE ENTER YOUR EMAIL AND PASSWORD." + ANSI_RESET);
+                                    System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "\nWELCOME BACK!! PLEASE ENTER YOUR EMAIL AND PASSWORD." + ANSI_RESET);
                                     System.out.println("Email:  ");
                                     customerEmail = scanner.nextLine();
                                     System.out.println("Password:  ");
@@ -142,7 +133,7 @@ public class Test {
                                     if (tempCustomer != null) {
                                         newCustomer = false;
                                     } else {
-                                        boolean correnctAnswer = true;
+                                        boolean correnctAnswer;
                                         do {
                                             System.out.println(ANSI_YELLOW + "YOUR EMAIL IS NOT FOUND. WOULD YOU TRY AGAIN (again) OR GO BACK TO SIGN UP PAGE (back)??" + ANSI_RESET);
                                             String answer = scanner.nextLine();
@@ -157,17 +148,17 @@ public class Test {
                                                     correnctAnswer = true;
                                                 }
                                                 default -> {
-                                                    System.out.println(ANSI_YELLOW + "PLEASE ENTER \"again\" or \"back\"");
+                                                    System.out.println(ANSI_YELLOW + "PLEASE ENTER \"again\" or \"back\""+ANSI_RESET);
                                                     correnctAnswer = false;
                                                 }
                                             }
-                                        }while(!correnctAnswer);
+                                        } while (!correnctAnswer);
                                     }
-                                }while(tryAgain);
+                                } while (tryAgain);
                             }
                         } while (tempCustomer != null && !defaultCustomerService.isPasswordCorrect(customerEmail, customerPassword));
 
-                        if(tempCustomer != null) {
+                        if (tempCustomer != null) {
                             Customer customer = defaultCustomerService.getByEmail(customerEmail);
                             customerName = customer.getName();
                             customerSurname = customer.getSurname();
@@ -176,9 +167,12 @@ public class Test {
                 }
             } while (newCustomer || (!(userType.equalsIgnoreCase("customer") || userType.equalsIgnoreCase("admin"))));
 
+            boolean yesOrNoAnswer = true;
+            boolean isBackToMenu = true;
+            String backToMenuInput="";
             while (true) {
-                System.out.println(ANSI_YELLOW_BG+ANSI_BLACK+"HELLO " + customerName + " " + customerSurname + " PLEASE ENTER A INPUT APPROPRIATE TO YOUR REQUEST."+ANSI_CYAN);
-                System.out.println("1 for SEARCHING A BOOK.");
+                System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "HELLO " + customerName + " " + customerSurname + " PLEASE ENTER A INPUT APPROPRIATE TO YOUR REQUEST." + ANSI_RESET);
+                System.out.println(ANSI_CYAN+"1 for SEARCHING A BOOK.");
                 System.out.println("2 for ADDING BOOKS TO FAVOURITE.");
                 System.out.println("3 for ADDING BOOKS TO BASKET.");
                 System.out.println("4 for RESERVING A BOOK.");
@@ -189,7 +183,7 @@ public class Test {
                 System.out.println("9 for SEEING MY RESERVATIONS.");
                 System.out.println("10 for SEEING MY FAVOURITES.");
                 System.out.println("11 for SEEING MY BASKET.");
-                System.out.println("12 for exit"+ANSI_RESET);
+                System.out.println("12 for exit" + ANSI_RESET);
                 String option = scanner.nextLine();
                 switch (option) {
                     case ("1") -> {
@@ -228,86 +222,213 @@ public class Test {
                         if (!isBasketAdded) continue;
                     }
                     case ("4") -> {
-                        System.out.println("Book Name:  ");
-                        String bookName = scanner.nextLine();
-                        System.out.println("Author Name:  ");
-                        String authorName = scanner.nextLine();
-                        System.out.println("Author Surname:  ");
-                        String authorSurname = scanner.nextLine();
-                        System.out.println("Book Purchase Date (DD/MM/YYYY): ");
-                        String reservationStartDate = scanner.nextLine();
-                        System.out.println("Book Release Date (DD/MM/YYYY): ");
-                        String reservationDeliveryDate = scanner.nextLine();
-                        boolean isReserved = defaultReservationService.add(customerEmail, bookName, authorName, authorSurname, reservationStartDate, reservationDeliveryDate);
-                        if (!isReserved) continue;
+                        boolean isReserved;
+                        do {
+                            System.out.println("Book Name:  ");
+                            String bookName = scanner.nextLine();
+                            System.out.println("Author Name:  ");
+                            String authorName = scanner.nextLine();
+                            System.out.println("Author Surname:  ");
+                            String authorSurname = scanner.nextLine();
+                            System.out.println("Book Purchase Date (DD/MM/YYYY): ");
+                            String reservationStartDate = scanner.nextLine();
+                            System.out.println("Book Release Date (DD/MM/YYYY): ");
+                            String reservationDeliveryDate = scanner.nextLine();
+                            isReserved = defaultReservationService.add(customerEmail, bookName, authorName, authorSurname, reservationStartDate, reservationDeliveryDate);
+                            if (!isReserved) {
+                                do {
+                                    System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "WOULD YOU LIKE TO GO BACK TO MENU? (Y/N)" + ANSI_RESET);
+                                    backToMenuInput = scanner.nextLine();
+                                    backToMenuInput = backToMenuInput.toUpperCase();
+                                    switch (backToMenuInput) {
+                                        case ("Y") ->
+                                                System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "YOU ARE REDIRECTED TO THE MENU." + ANSI_RESET);
+                                        case ("N") -> isBackToMenu = false;
+                                        default -> {
+                                            System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "ENTER Y OR N!" + ANSI_RESET);
+                                            yesOrNoAnswer = false;
+                                        }
+                                    }
+                                } while (!yesOrNoAnswer);
+                            }
+                        }
+                        while (!isReserved && !isBackToMenu);
                     }
                     case ("5") -> {
-                        System.out.println("Book Name:  ");
-                        String bookName = scanner.nextLine();
-                        System.out.println("Author Name:  ");
-                        String authorName = scanner.nextLine();
-                        System.out.println("Author Surname:  ");
-                        String authorSurname = scanner.nextLine();
-                        System.out.println("Reservation Start Date (DD/MM/YYYY): ");
-                        String startDate = scanner.nextLine();
-                        boolean isReservationCanceled = defaultReservationService.remove(customerEmail, bookName, authorName, authorSurname, startDate);
-                        if (!isReservationCanceled) continue;
+                        boolean isReservationCanceled;
+                        do {
+                            System.out.println("Book Name:  ");
+                            String bookName = scanner.nextLine();
+                            System.out.println("Author Name:  ");
+                            String authorName = scanner.nextLine();
+                            System.out.println("Author Surname:  ");
+                            String authorSurname = scanner.nextLine();
+                            System.out.println("Reservation Start Date (DD/MM/YYYY): ");
+                            String startDate = scanner.nextLine();
+                            isReservationCanceled = defaultReservationService.remove(customerEmail, bookName, authorName, authorSurname, startDate);
+                            if(!isReservationCanceled){
+                                do {
+                                    System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "WOULD YOU LIKE TO GO BACK TO MENU? (Y/N)" + ANSI_RESET);
+                                    backToMenuInput = scanner.nextLine();
+                                    backToMenuInput = backToMenuInput.toUpperCase();
+                                    switch (backToMenuInput) {
+                                        case ("Y") ->
+                                                System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "YOU ARE REDIRECTED TO THE MENU." + ANSI_RESET);
+                                        case ("N") -> isBackToMenu = false;
+                                        default -> {
+                                            System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "ENTER Y OR N!" + ANSI_RESET);
+                                            yesOrNoAnswer = false;
+                                        }
+                                    }
+                                } while (!yesOrNoAnswer);
+                            }
+                        } while (!isReservationCanceled&&!isBackToMenu);
                     }
                     case ("6") -> {
-                        System.out.println("Book Name:  ");
-                        String bookName = scanner.nextLine();
-                        System.out.println("Author Name:  ");
-                        String authorName = scanner.nextLine();
-                        System.out.println("Author Surname:  ");
-                        String authorSurname = scanner.nextLine();
-                        System.out.println("Reservation Start Date (DD/MM/YYYY): ");
-                        String startDate = scanner.nextLine();
-                        System.out.println("Reservation Expiry Date (DD/MM/YYYY): ");
-                        String deliveryDate = scanner.nextLine();
-                        System.out.println("WHICH ONE DO YOU WANT TO SET: purchase date (enter P)/release date (enter R)? ");
-                        String setReservationOption = scanner.nextLine();
-                        switch (setReservationOption) {
-                            case ("P") -> {
-                                System.out.println("New Purchase Date: ");
-                                String newStartDate = scanner.nextLine();
-                                boolean isReservationStartDateSet = defaultReservationService.setStartDate(customerEmail, bookName, authorName, authorSurname, newStartDate, deliveryDate);
-                                if (!isReservationStartDateSet) continue;
-                            }
-                            case ("R") -> {
-                                System.out.println("New Release Date: ");
-                                String newReleaseDate = scanner.nextLine();
-                                boolean isReservationReleaseDateSet = defaultReservationService.setDeliveryDate(customerEmail, bookName, authorName, authorSurname, startDate, newReleaseDate);
-                                if (!isReservationReleaseDateSet) continue;
-                            }
-                            default -> System.out.println("ENTER P or R");
-                        }
+                        boolean isReservationStartDateSet = true;
+                        boolean isReservationReleaseDateSet = true;
+                        do {
+                            System.out.println("Book Name:  ");
+                            String bookName = scanner.nextLine();
+                            System.out.println("Author Name:  ");
+                            String authorName = scanner.nextLine();
+                            System.out.println("Author Surname:  ");
+                            String authorSurname = scanner.nextLine();
+                            System.out.println("Reservation Start Date (DD/MM/YYYY): ");
+                            String startDate = scanner.nextLine();
+                            System.out.println("Reservation Expiry Date (DD/MM/YYYY): ");
+                            String deliveryDate = scanner.nextLine();
+                            boolean isPurchaseOrRelease = true;
+                            do {
+                                System.out.println("WHICH ONE DO YOU WANT TO SET: purchase date (enter P)/release date (enter R)? ");
+                                String setReservationOption = scanner.nextLine();
+                                switch (setReservationOption) {
+                                    case ("P") -> {
+                                        System.out.println("New Purchase Date: ");
+                                        String newStartDate = scanner.nextLine();
+                                        isReservationStartDateSet = defaultReservationService.setStartDate(customerEmail, bookName, authorName, authorSurname, newStartDate, deliveryDate);
+                                        if (!isReservationStartDateSet) {
+                                            do {
+                                                System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "WOULD YOU LIKE TO GO BACK TO MENU? (Y/N)" + ANSI_RESET);
+                                                backToMenuInput = scanner.nextLine();
+                                                backToMenuInput = backToMenuInput.toUpperCase();
+                                                switch (backToMenuInput) {
+                                                    case ("Y") -> System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "YOU ARE REDIRECTED TO THE MENU." + ANSI_RESET);
+                                                    case ("N") -> isBackToMenu = false;
+                                                    default -> {
+                                                        System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "ENTER Y OR N!" + ANSI_RESET);
+                                                        yesOrNoAnswer = false;
+                                                    }
+                                                }
+                                            } while (!yesOrNoAnswer);
+                                        }
+                                    }
+                                    case ("R") -> {
+                                        System.out.println("New Release Date: ");
+                                        String newReleaseDate = scanner.nextLine();
+                                        isReservationReleaseDateSet = defaultReservationService.setDeliveryDate(customerEmail, bookName, authorName, authorSurname, startDate, newReleaseDate);
+                                        if (!isReservationReleaseDateSet) {
+                                            do {
+                                                System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "WOULD YOU LIKE TO GO BACK TO MENU? (Y/N)" + ANSI_RESET);
+                                                backToMenuInput = scanner.nextLine();
+                                                backToMenuInput = backToMenuInput.toUpperCase();
+                                                switch (backToMenuInput) {
+                                                    case ("Y") -> System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "YOU ARE REDIRECTED TO THE MENU." + ANSI_RESET);
+                                                    case ("N") -> isBackToMenu = false;
+                                                    default -> {
+                                                        System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "ENTER Y OR N!" + ANSI_RESET);
+                                                        yesOrNoAnswer = false;
+                                                    }
+                                                }
+                                            } while (!yesOrNoAnswer);
+                                        }
+                                    }
+                                    default -> {
+                                        System.out.println("ENTER P or R");
+                                        isPurchaseOrRelease = false;
+                                    }
+                                }
+                            }while(!isPurchaseOrRelease);
+                        }while((!isReservationStartDateSet||!isReservationReleaseDateSet)&&!isBackToMenu);
                     }
                     case ("7") -> {
-                        System.out.println("Book Name:  ");
-                        String bookName = scanner.nextLine();
-                        System.out.println("Author Name:  ");
-                        String authorName = scanner.nextLine();
-                        System.out.println("Author Surname:  ");
-                        String authorSurname = scanner.nextLine();
-                        boolean isLanded = defaultLandingService.setPickUp(customerEmail, bookName, authorName, authorSurname);
-                        if (!isLanded) continue;
+                        boolean isLanded;
+                        do {
+                            System.out.println("Book Name:  ");
+                            String bookName = scanner.nextLine();
+                            System.out.println("Author Name:  ");
+                            String authorName = scanner.nextLine();
+                            System.out.println("Author Surname:  ");
+                            String authorSurname = scanner.nextLine();
+                            isLanded = defaultLandingService.setPickUp(customerEmail, bookName, authorName, authorSurname);
+                            if(!isLanded){
+                                do {
+                                    System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "WOULD YOU LIKE TO GO BACK TO MENU? (Y/N)" + ANSI_RESET);
+                                    backToMenuInput = scanner.nextLine();
+                                    backToMenuInput = backToMenuInput.toUpperCase();
+                                    switch (backToMenuInput) {
+                                        case ("Y") ->
+                                                System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "YOU ARE REDIRECTED TO THE MENU." + ANSI_RESET);
+                                        case ("N") -> isBackToMenu = false;
+                                        default -> {
+                                            System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "ENTER Y OR N!" + ANSI_RESET);
+                                            yesOrNoAnswer = false;
+                                        }
+                                    }
+                                } while (!yesOrNoAnswer);
+                            }
+                        }while(!isLanded&&!isBackToMenu);
                     }
                     case ("8") -> {
-                        System.out.println("Book Name:  ");
-                        String bookName = scanner.nextLine();
-                        System.out.println("Author Name:  ");
-                        String authorName = scanner.nextLine();
-                        System.out.println("Author Surname:  ");
-                        String authorSurname = scanner.nextLine();
-                        System.out.println("Book Landing Date (DD/MM/YYYY): ");
-                        String pickUpDate = scanner.nextLine();
-                        boolean isDropped = defaultLandingService.setDropOff(customerEmail, bookName, authorName, authorSurname, pickUpDate);
-                        if (!isDropped) continue;
+                        boolean isDropped;
+                        do {
+                            System.out.println("Book Name:  ");
+                            String bookName = scanner.nextLine();
+                            System.out.println("Author Name:  ");
+                            String authorName = scanner.nextLine();
+                            System.out.println("Author Surname:  ");
+                            String authorSurname = scanner.nextLine();
+                            System.out.println("Book Landing Date (DD/MM/YYYY): ");
+                            String pickUpDate = scanner.nextLine();
+                            isDropped = defaultLandingService.setDropOff(customerEmail, bookName, authorName, authorSurname, pickUpDate);
+                            if(!isDropped){
+                                do {
+                                    System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "WOULD YOU LIKE TO GO BACK TO MENU? (Y/N)" + ANSI_RESET);
+                                    backToMenuInput = scanner.nextLine();
+                                    backToMenuInput = backToMenuInput.toUpperCase();
+                                    switch (backToMenuInput) {
+                                        case ("Y") ->
+                                                System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "YOU ARE REDIRECTED TO THE MENU." + ANSI_RESET);
+                                        case ("N") -> isBackToMenu = false;
+                                        default -> {
+                                            System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "ENTER Y OR N!" + ANSI_RESET);
+                                            yesOrNoAnswer = false;
+                                        }
+                                    }
+                                } while (!yesOrNoAnswer);
+                            }
+                        }while(!isDropped&&isBackToMenu);
                     }
-                    case ("9") -> System.out.println(defaultReservationService.getByCustomer(customerEmail));
-                    case ("10") -> System.out.println(defaultFavouriteService.getByCustomer(customerEmail));
-                    case ("11") -> System.out.println(defaultBasketService.getByCustomer(customerEmail));
+                    case ("9") -> {
+                        List<Reservation> reservations = defaultReservationService.getByCustomer(customerEmail);
+                        if(reservations.isEmpty()){System.out.println(ANSI_YELLOW_BG + ANSI_BLACK+"YOU DON'T HAVE ANY RESERVATIONS!"+ANSI_RESET);}
+                        else{System.out.println(defaultReservationService.getByCustomer(customerEmail));}
+                        System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "YOU ARE REDIRECTED TO THE MENU." + ANSI_RESET);
+                    }
+                    case ("10") ->{
+                        List<Favourite> favourites = defaultFavouriteService.getByCustomer(customerEmail);
+                        if(favourites.isEmpty()){System.out.println(ANSI_YELLOW_BG + ANSI_BLACK+"YOU DON'T HAVE ANY FAVOURITES!"+ANSI_RESET);}
+                        else{System.out.println(defaultFavouriteService.getByCustomer(customerEmail));}
+                        System.out.println(ANSI_YELLOW_BG + ANSI_BLACK + "YOU ARE REDIRECTED TO THE MENU." + ANSI_RESET);
+                    }
+                    case ("11") ->{
+                        List<Basket> baskets = defaultBasketService.getByCustomer(customerEmail);
+                        if(baskets.isEmpty()){System.out.println(ANSI_YELLOW_BG + ANSI_BLACK+"YOU DON'T HAVE ANY FAVOURITES!"+ANSI_RESET);}
+                        else{System.out.println(defaultFavouriteService.getByCustomer(customerEmail));}
+                        System.out.println(defaultBasketService.getByCustomer(customerEmail));
+                    }
                     case ("12") -> {
+                        System.out.println("THE SESSION IS ENDING.");
                         return;
                     }
                     default -> System.out.println("PLEASE CHOOSE ON OF THE OPTIONS IN THE MENU!!");
