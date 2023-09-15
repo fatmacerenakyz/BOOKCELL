@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface BookService {
 
-    void add(String name, String authorName, String authorSurname, String publisherName, String genre, int publicationYear, int pageNumber, boolean isAvailable);
+    boolean add(String name, String authorName, String authorSurname, String publisherName, String genre, int publicationYear, int pageNumber, boolean isAvailable);
 
     List<Book> getAll();
 

@@ -1,7 +1,9 @@
 package tr.com.bookcell.book;
 
-import tr.com.bookcell.author.*;
-import tr.com.bookcell.publisher.*;
+import tr.com.bookcell.author.Author;
+import tr.com.bookcell.author.AuthorService;
+import tr.com.bookcell.publisher.Publisher;
+import tr.com.bookcell.publisher.PublisherService;
 
 import java.util.List;
 
@@ -20,7 +22,7 @@ public class DefaultBookService implements BookService {
 
 
     @Override
-    public void add(String name, String authorName, String authorSurname, String publisherName, String genre, int publicationYear, int pageNumber, boolean isAvailable) {
+    public boolean add(String name, String authorName, String authorSurname, String publisherName, String genre, int publicationYear, int pageNumber, boolean isAvailable) {
         String formattedName = capitalizeForBookName(name);
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
@@ -30,20 +32,16 @@ public class DefaultBookService implements BookService {
         Author author = authorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
         Publisher publisher = publisherService.getByName(formattedPublisherName);
         if (author != null && publisher != null) {
-            boolean bool = false;
             for (Book tempBook : getAll()) {
                 if (tempBook.getName().equals(formattedName) && tempBook.getAuthorId().equals(author.getId())) {
                     System.out.println("THERE IS ALREADY " + formattedName + " IN BOOKS LIST");
-                    bool = true;
-                    break;
+                    return false;
                 }
             }
-            if(!bool) {
-                Book book = new Book(formattedName, author.getId(), publisher.getId(), formattedGenre, publicationYear, pageNumber, isAvailable);
-                bookRepository.add(book);
-            }
+            Book book = new Book(formattedName, author.getId(), publisher.getId(), formattedGenre, publicationYear, pageNumber, isAvailable);
+            bookRepository.add(book);
         }
-
+        return true;
     }
 
     @Override
@@ -86,7 +84,7 @@ public class DefaultBookService implements BookService {
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
 
         Author author = authorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
-        if(author != null){
+        if (author != null) {
             for (Book tempBook : getAll()) {
                 if (tempBook.getName().equals(formattedName) && tempBook.getAuthorId().equals(author.getId())) {
                     bookRepository.remove(formattedName, author.getId());
@@ -101,6 +99,5 @@ public class DefaultBookService implements BookService {
     public void setAvailable(Integer bookId, boolean isAvailable) {
         bookRepository.setAvailable(bookId, isAvailable);
     }
-
 
 }
