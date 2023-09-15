@@ -22,12 +22,13 @@ public class DefaultBasketService implements BasketService {
 
     @Override
     public boolean add(String customerEmail, String bookName, String authorName, String authorSurname) {
+        String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
         String formattedBookName = capitalizeForBookName(bookName);
         Book book = bookService.getByNameAndAuthor(bookName, authorName, authorSurname);
-        Customer customer = customerService.getByEmail(customerEmail);
+        Customer customer = customerService.getByEmail(formattedCustomerEmail);
 
         if (book != null) {
-            for (Basket tempBasket : getByCustomer(customerEmail)) {
+            for (Basket tempBasket : getByCustomer(formattedCustomerEmail)) {
                 if (tempBasket.getBookId().equals(book.getId())) {
                     System.out.println("THERE IS ALREADY " + formattedBookName + " IN YOUR BASKET");
                     return false;
@@ -42,11 +43,12 @@ public class DefaultBasketService implements BasketService {
 
     @Override
     public void remove(String customerEmail, String bookName, String authorName, String authorSurname) {
+        String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
         String formattedBookName = capitalizeForBookName(bookName);
         Book book = bookService.getByNameAndAuthor(bookName, authorName, authorSurname);
-        Customer customer = customerService.getByEmail(customerEmail);
+        Customer customer = customerService.getByEmail(formattedCustomerEmail);
         if (book != null && customer != null) {
-            for (Basket tempBasket : getByCustomer(customerEmail)) {
+            for (Basket tempBasket : getByCustomer(formattedCustomerEmail)) {
                 if (tempBasket.getBookId().equals(book.getId())) {
                     basketRepository.remove(customer.getId(), book.getId());
                     return;
@@ -58,8 +60,8 @@ public class DefaultBasketService implements BasketService {
 
     @Override
     public List<Basket> getByCustomer(String customerEmail) {
-
-        Customer customer = customerService.getByEmail(customerEmail);
+        String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
+        Customer customer = customerService.getByEmail(formattedCustomerEmail);
         if (customer != null) {
             return basketRepository.getByCustomer(customer.getId());
         } else {

@@ -8,7 +8,7 @@ public class InputFormatter {
     }
     public static String capitalizeForBookName(String str){
         String[] strArr = str.split(" ");
-        String finalString = "";
+        StringBuilder finalString = new StringBuilder();
         for(String temp : strArr){
             if(temp.equalsIgnoreCase("and") || temp.equalsIgnoreCase("ve")){
                 temp = temp.toLowerCase(Locale.ENGLISH);
@@ -16,24 +16,27 @@ public class InputFormatter {
             else{
                 temp = temp.substring(0,1).toUpperCase(Locale.ENGLISH) + temp.substring(1).toLowerCase(Locale.ENGLISH);
             }
-            if(finalString.equals("")){
-                finalString = finalString+temp;
+            if(finalString.isEmpty()){
+                finalString.append(temp);
             }
             else{
-                finalString=finalString+" "+temp;
+                finalString.append(" ").append(temp);
             }
         }
 
-        return finalString;
+        return finalString.toString();
     }
     public static String capitalizeForMultipleStrings(String str){
         String[] strArr = str.split(" ");
-        String finalString = "";
+        StringBuilder finalString = new StringBuilder();
         for(String temp : strArr){
             temp = temp.substring(0,1).toUpperCase(Locale.ENGLISH)+temp.substring(1).toLowerCase(Locale.ENGLISH);
-            if(finalString.equals("")) finalString=finalString+temp;
-            else finalString=finalString+" "+temp;
+            if(finalString.isEmpty()) finalString.append(temp);
+            else finalString.append(" ").append(temp);
         }
-        return finalString;
+        return finalString.toString();
+    }
+    public static String lowerCaseForEmail(String str){
+        return str.toLowerCase(Locale.ENGLISH);
     }
 }

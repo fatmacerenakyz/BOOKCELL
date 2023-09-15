@@ -3,8 +3,7 @@ package tr.com.bookcell.user.customer;
 import java.time.LocalDate;
 import java.util.List;
 
-import static tr.com.bookcell.util.InputFormatter.capitalizeFirst;
-import static tr.com.bookcell.util.InputFormatter.capitalizeForMultipleStrings;
+import static tr.com.bookcell.util.InputFormatter.*;
 import static tr.com.bookcell.util.PatternMatcher.emailPattern;
 import static tr.com.bookcell.util.PatternMatcher.passwordPattern;
 
@@ -17,12 +16,13 @@ public class DefaultCustomerService implements CustomerService {
 
     @Override
     public boolean add(String email, String password, String name, String surname) {
-        Customer customer = getByEmail(email);
+        String formattedEmail = lowerCaseForEmail(email);
+        Customer customer = getByEmail(formattedEmail);
         if (customer != null) {
             System.out.println("You are already registered. Please enter your email and password.");
             return false;
         } else {
-            Integer integerCustomerType = emailPattern(email);
+            Integer integerCustomerType = emailPattern(formattedEmail);
             CustomerType customerType = null;
             switch (integerCustomerType) {
                 case (0) -> customerType = CustomerType.DEFAULT;
@@ -33,7 +33,7 @@ public class DefaultCustomerService implements CustomerService {
             if (passwordPattern(password)) {
                 String formattedName = capitalizeForMultipleStrings(name);
                 String formattedSurname = capitalizeFirst(surname);
-                Customer newCustomer = new Customer(password, formattedName, formattedSurname, LocalDate.now(), email);
+                Customer newCustomer = new Customer(password, formattedName, formattedSurname, LocalDate.now(), formattedEmail);
                 customerRepository.add(newCustomer);
                 System.out.println("You have successfully registered!");
                 return true;
@@ -44,13 +44,14 @@ public class DefaultCustomerService implements CustomerService {
 
     @Override
     public void remove(String email) {
-        Customer customer = getByEmail(email);
+        String formattedEmail = lowerCaseForEmail(email);
+        Customer customer = getByEmail(formattedEmail);
         if (customer == null) {
-            System.out.println("THERE IS NO CUSTOMER WITH " + email + " IN CUSTOMERS LIST!");
+            System.out.println("THERE IS NO CUSTOMER WITH " + formattedEmail + " IN CUSTOMERS LIST!");
         } else {
             for (Customer temp : getAll()) {
-                if (temp.getEmail().equals(email)) {
-                    customerRepository.remove(email);
+                if (temp.getEmail().equals(formattedEmail)) {
+                    customerRepository.remove(formattedEmail);
                     return;
                 }
             }
@@ -64,9 +65,10 @@ public class DefaultCustomerService implements CustomerService {
 
     @Override
     public Customer getByEmail(String email) {
+        String formattedEmail = lowerCaseForEmail(email);
         for (Customer temp : getAll()) {
-            if (temp.getEmail().equals(email)) {
-                return customerRepository.getByEmail(email);
+            if (temp.getEmail().equals(formattedEmail)) {
+                return customerRepository.getByEmail(formattedEmail);
             }
         }
         return null;
@@ -74,7 +76,8 @@ public class DefaultCustomerService implements CustomerService {
 
     @Override
     public boolean isPasswordCorrect(String email, String password) {
-        Customer customer = getByEmail(email);
+        String formattedEmail = lowerCaseForEmail(email);
+        Customer customer = getByEmail(formattedEmail);
         return customer != null && customer.getPassword().equals(password);
     }
 

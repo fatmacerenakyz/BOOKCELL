@@ -22,12 +22,13 @@ public class DefaultFavouriteService implements FavouriteService {
 
     @Override
     public boolean add(String customerEmail, String bookName, String authorName, String authorSurname) {
+        String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
         String formattedBookName = capitalizeForBookName(bookName);
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
 
         Book book = bookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
-        Customer customer = customerService.getByEmail(customerEmail);
+        Customer customer = customerService.getByEmail(formattedCustomerEmail);
         if (book != null && customer != null) {
             for (Favourite tempFavourite : getByCustomer(customer.getEmail())) {
                 if (tempFavourite.getBookId().equals(book.getId())) {
@@ -46,9 +47,10 @@ public class DefaultFavouriteService implements FavouriteService {
         String formattedBookName = capitalizeForBookName(bookName);
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
+        String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
 
         Book book = bookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
-        Customer customer = customerService.getByEmail(customerEmail);
+        Customer customer = customerService.getByEmail(formattedCustomerEmail);
         if (book != null) {
             for (Favourite tempFavourite : getByCustomer(customer.getEmail())) {
                 if (tempFavourite.getBookId().equals(book.getId())) {
@@ -63,7 +65,8 @@ public class DefaultFavouriteService implements FavouriteService {
 
     @Override
     public List<Favourite> getByCustomer(String customerEmail) {
-        Customer customer = customerService.getByEmail(customerEmail);
+        String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
+        Customer customer = customerService.getByEmail(formattedCustomerEmail);
         return favouriteRepository.getByCustomer(customer.getId());
     }
 }
