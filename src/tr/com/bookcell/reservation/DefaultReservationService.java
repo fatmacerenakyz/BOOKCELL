@@ -10,6 +10,8 @@ import java.util.List;
 
 import static tr.com.bookcell.util.DateFormatter.dateFormatter;
 import static tr.com.bookcell.util.InputFormatter.*;
+import static tr.com.bookcell.util.TestClassMethods.ansiColorRed;
+import static tr.com.bookcell.util.TestClassMethods.ansiColorReset;
 
 public class DefaultReservationService implements ReservationService {
     private final ReservationRepository reservationRepository;
@@ -42,24 +44,24 @@ public class DefaultReservationService implements ReservationService {
             List<Reservation> reservations = getByCustomer(formattedCustomerEmail);
             Reservation temp = getByStartDate(formattedCustomerEmail, bookName, authorName, authorSurname, startDate);
             if (temp != null) {
-                System.out.println("You booked this book for this dates already");
+                System.out.println(ansiColorRed()+"YOU BOOKED THIS BOOK FOR THIS DATES ALREADY. "+ansiColorReset());
                 return false;
             } else {
                 for (Reservation tempReservation : reservations) {
                     if (!((tempReservation.getStartDate().isBefore(formattedStartDate) && tempReservation.getDeliveryDate().isBefore(formattedStartDate)) || (tempReservation.getStartDate().isAfter(formattedDeliveryDate) && tempReservation.getDeliveryDate().isAfter(formattedDeliveryDate)))) {
-                        System.out.println("You have another reservation for these dates.");
+                        System.out.println(ansiColorRed()+"YOU HAVE ANOTHER RESERVATION FOR THIS DATES. "+ansiColorReset());
                         return false;
                     }
                 }
             }
-            Reservation reservation = new Reservation(customer.getId(), book.getId(), formattedStartDate, formattedDeliveryDate);
+            Reservation reservation = new Reservation(customer.getId(), book.getId(), formattedStartDate, formattedDeliveryDate, false, false);
             reservationRepository.add(reservation);
         }
         return true;
     }
 
     @Override
-    public boolean remove(String customerEmail, String bookName, String authorName, String authorSurname, String startDate) {
+    public boolean cancel(String customerEmail, String bookName, String authorName, String authorSurname, String startDate) {
         LocalDate formattedStartDate = dateFormatter(startDate);
         if (formattedStartDate == null) {
             System.out.println("Please enter the date according to the format (dd-mm-yyyy)");
@@ -74,7 +76,7 @@ public class DefaultReservationService implements ReservationService {
         if (book != null && customer != null) {
             for (Reservation tempReservation : getByCustomer(formattedCustomerEmail)) {
                 if (tempReservation.getBookId().equals(book.getId()) && tempReservation.getStartDate().equals(formattedStartDate)) {
-                    reservationRepository.remove(customer.getId(), book.getId(), formattedStartDate);
+                    reservationRepository.setCanceled(customer.getId(), book.getId(), formattedStartDate);
                     return true;
                 }
             }
@@ -218,4 +220,23 @@ public class DefaultReservationService implements ReservationService {
         Customer customer = customerService.getByEmail(formattedCustomerEmail);
         return reservationRepository.getByCustomer(customer.getId());
     }
+
+    @Override
+    public List<Reservation> getByCustomerAndBook(String customerEmail, String bookName, String authorName, String authorSurname) {
+        String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
+        String formattedBookName = capitalizeForBookName(bookName);
+        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
+        String formattedAuthorSurname = capitalizeFirst(authorSurname);
+        Book book = bookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
+        Customer customer = customerService.getByEmail(formattedCustomerEmail);
+        if (book != null && customer != null) {
+            for (Reservation temp : getByCustomer(customerEmail)) {
+                if (temp.getBookId().equals(book.getId())) {
+                    return reservationRepository.getByCustomerAndBook(customer.getId(), book.getId());
+                }
+            }
+        }
+        return null;
+    }
+
 }

@@ -1,5 +1,6 @@
 package tr.com.bookcell.landing;
 
+import javax.naming.ldap.LdapName;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -13,6 +14,8 @@ public class DefaultLandingRepository implements LandingRepository {
     private static final String INSERT_LANDINGS = "INSERT INTO public.\"LANDING\"(\"CUSTOMER_ID\", \"BOOK_ID\", \"PICK_UP_DATE\", \"DROP_OFF_DATE\") VALUES (?, ?, ?, ?);";
     private static final String UPDATE_LANDINGS_DROP_OFF_DATE = "UPDATE public.\"LANDING\" SET \"DROP_OFF_DATE\"=? WHERE \"CUSTOMER_ID\"=? AND \"BOOK_ID\"=? AND \"PICK_UP_DATE\"=?;";
     private static final String SELECT_LANDINGS = "SELECT * FROM public.\"LANDING\";";
+    private static final String SELECT_LANDINGS_WITH_CUSTOMER = "SELECT * FROM public.\"LANDING\" WHERE \"CUSTOMER_ID\"=?;";
+
     private static final String SELECT_LANDINGS_WITH_CUSTOMER_AND_BOOK = "SELECT * FROM public.\"LANDING\" WHERE \"CUSTOMER_ID\"=? AND \"BOOK_ID\"=?;";
 
     @Override
@@ -62,6 +65,31 @@ public class DefaultLandingRepository implements LandingRepository {
                 }
                 landings.add(landing);
             }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return landings;
+    }
+
+    @Override
+    public List<Landing> getByCustomer(Integer customerId) {
+        List<Landing> landings = new ArrayList<>();
+        try(Connection connection = connect()){
+            PreparedStatement preparedStatement = connection.prepareStatement(SELECT_LANDINGS_WITH_CUSTOMER);
+            preparedStatement.setInt(1, customerId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                Landing landing = new Landing();
+                landing.setId(resultSet.getInt("ID"));
+                landing.setCustomerId(resultSet.getInt("CUSTOMER_ID"));
+                landing.setBookId(resultSet.getInt("BOOK_ID"));
+                landing.setPickUpDate(resultSet.getDate("PICK_UP_DATE").toLocalDate());
+                if(landing.getDropOffDate()!=null){
+                    landing.setDropOffDate(resultSet.getDate("DROP_OFF_DATE").toLocalDate());
+                }
+                landings.add(landing);
+            }
+
         }catch (Exception e){
             e.printStackTrace();
         }

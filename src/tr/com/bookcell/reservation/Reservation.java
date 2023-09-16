@@ -9,24 +9,30 @@ public class Reservation {
     private Integer bookId;
     private LocalDate startDate;
     private LocalDate deliveryDate;
+    private boolean isCanceled;
+    private boolean isPickedUp;
 
 
     public Reservation() {
     }
 
-    public Reservation(Integer customerId, Integer bookId, LocalDate startDate, LocalDate deliveryDate) {
-        this.customerId = customerId;
-        this.bookId = bookId;
-        this.startDate = startDate;
-        this.deliveryDate = deliveryDate;
-    }
-
-    public Reservation(Integer id, Integer customerId, Integer bookId, LocalDate startDate, LocalDate deliveryDate) {
+    public Reservation(Integer id, Integer customerId, Integer bookId, LocalDate startDate, LocalDate deliveryDate, boolean isCanceled, boolean isPickedUp) {
         this.id = id;
         this.customerId = customerId;
         this.bookId = bookId;
         this.startDate = startDate;
         this.deliveryDate = deliveryDate;
+        this.isCanceled = isCanceled;
+        this.isPickedUp = isPickedUp;
+    }
+
+    public Reservation(Integer customerId, Integer bookId, LocalDate startDate, LocalDate deliveryDate, boolean isCanceled, boolean isPickedUp) {
+        this.customerId = customerId;
+        this.bookId = bookId;
+        this.startDate = startDate;
+        this.deliveryDate = deliveryDate;
+        this.isCanceled = isCanceled;
+        this.isPickedUp = isPickedUp;
     }
 
     public Integer getId() {
@@ -69,16 +75,32 @@ public class Reservation {
         this.deliveryDate = deliveryDate;
     }
 
+    public boolean isCanceled() {
+        return isCanceled;
+    }
+
+    public void setCanceled(boolean canceled) {
+        isCanceled = canceled;
+    }
+
+    public boolean isPickedUp() {
+        return isPickedUp;
+    }
+
+    public void setPickedUp(boolean pickedUp) {
+        isPickedUp = pickedUp;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Reservation that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(customerId, that.customerId) && Objects.equals(bookId, that.bookId) && Objects.equals(startDate, that.startDate) && Objects.equals(deliveryDate, that.deliveryDate);
+        return isCanceled == that.isCanceled && isPickedUp == that.isPickedUp && Objects.equals(id, that.id) && Objects.equals(customerId, that.customerId) && Objects.equals(bookId, that.bookId) && Objects.equals(startDate, that.startDate) && Objects.equals(deliveryDate, that.deliveryDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, customerId, bookId, startDate, deliveryDate);
+        return Objects.hash(id, customerId, bookId, startDate, deliveryDate, isCanceled, isPickedUp);
     }
 
     @Override
@@ -88,7 +110,9 @@ public class Reservation {
                 ", customerId=" + customerId +
                 ", bookId=" + bookId +
                 ", startDate=" + startDate +
-                ", expiryDate=" + deliveryDate +
+                ", deliveryDate=" + deliveryDate +
+                ", isCanceled=" + isCanceled +
+                ", isPickedUp=" + isPickedUp +
                 '}';
     }
 }

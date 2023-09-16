@@ -7,10 +7,7 @@ import tr.com.bookcell.author.DefaultAuthorService;
 import tr.com.bookcell.basket.*;
 import tr.com.bookcell.book.*;
 import tr.com.bookcell.favourite.*;
-import tr.com.bookcell.landing.DefaultLandingRepository;
-import tr.com.bookcell.landing.DefaultLandingService;
-import tr.com.bookcell.landing.LandingRepository;
-import tr.com.bookcell.landing.LandingService;
+import tr.com.bookcell.landing.*;
 import tr.com.bookcell.publisher.DefaultPublisherRepository;
 import tr.com.bookcell.publisher.DefaultPublisherService;
 import tr.com.bookcell.publisher.PublisherRepository;
@@ -49,7 +46,7 @@ public class Test {
         ReservationService defaultReservationService = new DefaultReservationService(defaultReservationRepository, defaultBookService, defaultCustomerService);
 
         LandingRepository defaultLandingRepository = new DefaultLandingRepository();
-        LandingService defaultLandingService = new DefaultLandingService(defaultLandingRepository, defaultBookService, defaultCustomerService);
+        LandingService defaultLandingService = new DefaultLandingService(defaultLandingRepository, defaultBookService, defaultCustomerService, defaultReservationService);
 
         AdminRepository defaultAdminRepository = new DefaultAdminRepository();
         AdminService defaultAdminService = new DefaultAdminService(defaultAdminRepository);
@@ -86,7 +83,7 @@ public class Test {
                             customerEmail = scanner.nextLine();
                             tempCustomer = defaultCustomerService.getByEmail(customerEmail);
                             if (tempCustomer != null) {
-                                System.out.println(ansiColorYellowBackGround() + ansiColorBlack() + "YOUR EMAIL ADDRESS IS REGISTERED. YOU'RE DIRECTED TO THE SIGN IN PAGE!!" + ansiColorReset());
+                                System.out.println(ansiColorGreenBackGround() +ansiColorBlack()+ "YOU HAVE ALREADY REGISTERED. YOU'RE DIRECTED TO THE SIGN IN PAGE!!" + ansiColorReset());
                                 break;
                             }
                             System.out.println("Name:  ");
@@ -101,7 +98,7 @@ public class Test {
                     if (tempCustomer != null || isNewCustomer.equalsIgnoreCase("NO")) {
                         do {
                             if (!newCustomer) {
-                                System.out.println(ansiColorYellowBackGround() + ansiColorBlack() + "YOUR PASSWORD IS NOT CORRECT." + ansiColorReset());
+                                System.out.println(ansiColorRed() + "YOUR PASSWORD IS NOT CORRECT." + ansiColorReset());
                                 System.out.println("Password:  ");
                                 customerPassword = scanner.nextLine();
                             } else {
@@ -128,11 +125,11 @@ public class Test {
                                                     correnctAnswer = true;
                                                 }
                                                 case ("back") -> {
-                                                    System.out.println(ansiColorYellowBackGround() + ansiColorBlack() + "YOU ARE REDIRECTED TO THE SIGN UP PAGE." + ansiColorReset());
+                                                    System.out.println(ansiColorGreenBackGround() +ansiColorBlack()+ "YOU ARE REDIRECTED TO THE SIGN UP PAGE." + ansiColorReset());
                                                     correnctAnswer = true;
                                                 }
                                                 default -> {
-                                                    System.out.println(ansiColorYellowBackGround() + ansiColorBlack() + "PLEASE ENTER \"again\" or \"back\""+ansiColorReset());
+                                                    System.out.println(ansiColorRed() + "PLEASE ENTER \"again\" or \"back\""+ansiColorReset());
                                                     correnctAnswer = false;
                                                 }
                                             }
@@ -169,7 +166,8 @@ public class Test {
                 System.out.println("9 for SEEING MY RESERVATIONS.");
                 System.out.println("10 for SEEING MY FAVOURITES.");
                 System.out.println("11 for SEEING MY BASKET.");
-                System.out.println("12 for exit" + ansiColorReset());
+                System.out.println("12 for SEEING MY LANDINGS. ");
+                System.out.println("13 for exit" + ansiColorReset());
                 String option = scanner.nextLine();
                 switch (option) {
                     case ("1") -> {
@@ -180,9 +178,9 @@ public class Test {
                         System.out.println("Author Surname:  ");
                         String authorSurname = scanner.nextLine();
                         Book book = defaultBookService.getByNameAndAuthor(bookName, authorName, authorSurname);
-                        if(book==null){System.out.println(ansiColorYellowBackGround() + ansiColorBlack()+"THERE IS NO "+ bookName +" IN BOOKS LIST!"+ansiColorReset());}
+                        if(book==null){System.out.println(ansiColorRed()+"THERE IS NO "+ bookName +" IN BOOKS LIST!"+ansiColorReset());}
                         else{System.out.println(book);}
-                        System.out.println(ansiColorYellowBackGround() + ansiColorBlack() + "YOU ARE REDIRECTED TO THE MENU." + ansiColorReset());
+                        System.out.println(ansiColorGreenBackGround() +ansiColorBlack()+ "YOU ARE REDIRECTED TO THE MENU." + ansiColorReset());
                     }
                     case ("2") -> {
                         boolean isFavouriteAdded;
@@ -244,7 +242,7 @@ public class Test {
                             String authorSurname = scanner.nextLine();
                             System.out.println("Reservation Start Date (DD/MM/YYYY): ");
                             String startDate = scanner.nextLine();
-                            isReservationCanceled = defaultReservationService.remove(customerEmail, bookName, authorName, authorSurname, startDate);
+                            isReservationCanceled = defaultReservationService.cancel(customerEmail, bookName, authorName, authorSurname, startDate);
                             if(!isReservationCanceled){
                                   isBackToMenu = backToMenuWhile(backToMenuInput, isBackToMenu, yesOrNoAnswer, scanner);
                             }
@@ -267,7 +265,7 @@ public class Test {
                             boolean isPurchaseOrRelease;
                             do {
                                 isPurchaseOrRelease = true;
-                                System.out.println("WHICH ONE DO YOU WANT TO SET: purchase date (enter P)/release date (enter R)? ");
+                                System.out.println(ansiColorYellowBackGround()+ansiColorBlack()+"WHICH ONE DO YOU WANT TO SET: purchase date (enter P)/release date (enter R)? "+ansiColorReset());
                                 String setReservationOption = scanner.nextLine();
                                 switch (setReservationOption) {
                                     case ("P") -> {
@@ -287,7 +285,7 @@ public class Test {
                                         }
                                     }
                                     default -> {
-                                        System.out.println("ENTER P or R");
+                                        System.out.println(ansiColorRed()+"ENTER P or R"+ansiColorReset());
                                         isPurchaseOrRelease = false;
                                     }
                                 }
@@ -328,28 +326,34 @@ public class Test {
                     }
                     case ("9") -> {
                         List<Reservation> reservations = defaultReservationService.getByCustomer(customerEmail);
-                        if(reservations.isEmpty()){System.out.println(ansiColorYellowBackGround() + ansiColorBlack()+"YOU DON'T HAVE ANY RESERVATIONS!"+ansiColorReset());}
+                        if(reservations.isEmpty()){System.out.println(ansiColorRed()+"YOU DON'T HAVE ANY RESERVATIONS!"+ansiColorReset());}
                         else{System.out.println(defaultReservationService.getByCustomer(customerEmail));}
-                        System.out.println(ansiColorYellowBackGround() + ansiColorBlack() + "YOU ARE REDIRECTED TO THE MENU." + ansiColorReset());
+                        System.out.println(ansiColorGreenBackGround() + ansiColorBlack() + "YOU ARE REDIRECTED TO THE MENU." + ansiColorReset());
                     }
                     case ("10") ->{
                         List<Favourite> favourites = defaultFavouriteService.getByCustomer(customerEmail);
-                        if(favourites.isEmpty()){System.out.println(ansiColorYellowBackGround() + ansiColorBlack()+"YOU DON'T HAVE ANY FAVOURITES!"+ansiColorReset());}
+                        if(favourites.isEmpty()){System.out.println(ansiColorRed()+"YOU DON'T HAVE ANY FAVOURITES!"+ansiColorReset());}
                         else{System.out.println(defaultFavouriteService.getByCustomer(customerEmail));}
-                        System.out.println(ansiColorYellowBackGround() + ansiColorBlack() + "YOU ARE REDIRECTED TO THE MENU." + ansiColorReset());
+                        System.out.println(ansiColorGreenBackGround() + "YOU ARE REDIRECTED TO THE MENU." + ansiColorReset());
                     }
                     case ("11") ->{
                         List<Basket> baskets = defaultBasketService.getByCustomer(customerEmail);
-                        if(baskets.isEmpty()){System.out.println(ansiColorYellowBackGround() + ansiColorBlack()+"YOU DON'T HAVE ANY FAVOURITES!"+ansiColorReset());}
+                        if(baskets.isEmpty()){System.out.println(ansiColorRed()+"YOU DON'T HAVE ANY FAVOURITES!"+ansiColorReset());}
                         else{System.out.println(defaultFavouriteService.getByCustomer(customerEmail));}
                         System.out.println(defaultBasketService.getByCustomer(customerEmail));
                     }
-                    case ("12") -> {
-                        System.out.println("THE SESSION IS ENDING.");
+                    case("12") -> {
+                        List<Landing> landings = defaultLandingService.getByCustomer(customerEmail);
+                        if(landings.isEmpty()){System.out.println(ansiColorRed()+"YOU DON'T HAVE ANY LANDINGS!"+ansiColorReset());}
+                        else{System.out.println(defaultLandingService.getByCustomer(customerEmail));}
+                        System.out.println(defaultLandingService.getByCustomer(customerEmail));
+                    }
+                    case ("13") -> {
+                        System.out.println(ansiColorMagentaBackGround()+ansiColorBlack()+"THE SESSION IS ENDING."+ansiColorReset());
                         return;
                     }
                     default -> {
-                        System.out.println("PLEASE CHOOSE ON OF THE OPTIONS IN THE MENU!!");
+                        System.out.println(ansiColorRed()+"PLEASE CHOOSE ON OF THE OPTIONS IN THE MENU!!"+ansiColorReset());
                         chooseOption=false;
                     }
                 }

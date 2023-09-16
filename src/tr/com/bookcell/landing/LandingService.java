@@ -7,6 +7,7 @@ public interface LandingService {
     boolean setDropOff(String customerEmail, String bookName, String authorName, String authorSurname, String pickUpDate);
 
     List<Landing> getByCustomerAndBook(String customerEmail, String bookName, String authorName, String authorSurname);
+    List<Landing> getByCustomer(String customerEmail);
 
     List<Landing> getAll();
 }

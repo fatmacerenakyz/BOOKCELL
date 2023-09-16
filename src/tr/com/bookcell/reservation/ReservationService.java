@@ -5,7 +5,7 @@ import java.util.List;
 public interface ReservationService {
     boolean add(String customerEmail, String bookName, String authorName, String authorSurname, String startDate, String deliveryDate);
 
-    boolean remove(String customerEmail, String bookName, String authorName, String authorSurname, String startDate);
+    boolean cancel(String customerEmail, String bookName, String authorName, String authorSurname, String startDate);
 
     boolean setStartDate(String customerEmail, String bookName, String authorName, String authorSurname, String newStartDate, String deliveryDate);
 
@@ -16,4 +16,6 @@ public interface ReservationService {
     Reservation getByDeliveryDate(String customerEmail, String bookName, String authorName, String authorSurname, String deliveryDate);
 
     List<Reservation> getByCustomer(String customerEmail);
+    List<Reservation> getByCustomerAndBook(String customerEmail, String bookName, String authorName, String authorSurname);
+
 }

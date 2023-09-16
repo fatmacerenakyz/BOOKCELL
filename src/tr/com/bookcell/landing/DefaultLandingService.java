@@ -2,6 +2,8 @@ package tr.com.bookcell.landing;
 
 import tr.com.bookcell.book.Book;
 import tr.com.bookcell.book.BookService;
+import tr.com.bookcell.reservation.Reservation;
+import tr.com.bookcell.reservation.ReservationService;
 import tr.com.bookcell.user.customer.Customer;
 import tr.com.bookcell.user.customer.CustomerService;
 
@@ -10,16 +12,20 @@ import java.util.List;
 
 import static tr.com.bookcell.util.DateFormatter.dateFormatter;
 import static tr.com.bookcell.util.InputFormatter.*;
+import static tr.com.bookcell.util.TestClassMethods.ansiColorRed;
+import static tr.com.bookcell.util.TestClassMethods.ansiColorReset;
 
 public class DefaultLandingService implements LandingService {
     private final LandingRepository landingRepository;
     private final BookService bookService;
     private final CustomerService customerService;
+    private final ReservationService reservationService;
 
-    public DefaultLandingService(LandingRepository landingRepository, BookService bookService, CustomerService customerService) {
+    public DefaultLandingService(LandingRepository landingRepository, BookService bookService, CustomerService customerService, ReservationService reservationService) {
         this.landingRepository = landingRepository;
         this.bookService = bookService;
         this.customerService = customerService;
+        this.reservationService = reservationService;
     }
 
     @Override
@@ -31,19 +37,40 @@ public class DefaultLandingService implements LandingService {
         Book book = bookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
         Customer customer = customerService.getByEmail(formattedCustomerEmail);
         if (book != null && customer != null) {
-            List<Landing> landings = getByCustomerAndBook(formattedCustomerEmail, formattedBookName, formattedAuthorName, formattedAuthorSurname);
-            for (Landing tempLanding : landings) {
-                if (tempLanding.getDropOffDate() == null) {
-                    System.out.println("You have already borrowed this book. Please deliver the book first.");
-                    return false;
-                }
+            if(!(book.isAvailable())){
+                System.out.println(ansiColorRed()+"THIS BOOK IS NOT AVAILABLE. "+ansiColorReset());
+                return false;
             }
-            Landing landing = new Landing();
-            landing.setCustomerId(customer.getId());
-            landing.setBookId(book.getId());
-            landing.setPickUpDate(LocalDate.now());
-            bookService.setAvailable(book.getId(), false);
-            landingRepository.setPickUp(landing);
+            else {
+                List<Landing> landings = getByCustomerAndBook(formattedCustomerEmail, formattedBookName, formattedAuthorName, formattedAuthorSurname);
+                for (Landing tempLanding : landings) {
+                    if (tempLanding.getDropOffDate() == null) {
+                        System.out.println(ansiColorRed() + "YOU HAVE ALREADY BORROW THIS BOOK. PLEASE DELIVER IT FIRST!!!" + ansiColorReset());
+                        return false;
+                    }
+                }
+                List<Reservation> reservations = reservationService.getByCustomerAndBook(customerEmail, bookName, authorName, authorSurname);
+                for (Reservation tempReservation : reservations) {
+                    if (!(tempReservation.isCanceled()) && !(tempReservation.isPickedUp())) {
+                        if (tempReservation.getStartDate().isBefore(LocalDate.now())) {
+                            System.out.println(ansiColorRed() + "YOUR PICK UP DATE HAS EXPIRED. YOUR RESERVATION HAS BEEN CANCELED.");
+                            tempReservation.setCanceled(true);
+                            return false;
+                        } else if (tempReservation.getStartDate().isAfter(LocalDate.now())) {
+                            System.out.println(ansiColorRed() + "YOUR PICK UP DATE HAS NOT COME YET." + ansiColorReset());
+                            return false;
+                        } else {
+                            tempReservation.setPickedUp(true);
+                        }
+                    }
+                }
+                Landing landing = new Landing();
+                landing.setCustomerId(customer.getId());
+                landing.setBookId(book.getId());
+                landing.setPickUpDate(LocalDate.now());
+                bookService.setAvailable(book.getId(), false);
+                landingRepository.setPickUp(landing);
+            }
 
         }
         return true;
@@ -56,22 +83,37 @@ public class DefaultLandingService implements LandingService {
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
 
-        List<Landing> landings = getByCustomerAndBook(formattedCustomerEmail, formattedBookName, formattedAuthorName, formattedAuthorSurname);
         LocalDate formattedPickUpDate = dateFormatter(pickUpDate);
         if (formattedPickUpDate == null) {
-            System.out.println("Please enter the date according to the format (dd-mm-yyyy)");
+            System.out.println(ansiColorRed()+"PLEASE ENTER THE DATE ACCORDING TO FORMAT (DD-MM-YYYY)"+ansiColorReset());
             return false;
         }
-        if (landings != null) {
-            for (Landing tempLanding : landings) {
-                if (tempLanding.getPickUpDate().equals(formattedPickUpDate)) {
-                    bookService.setAvailable(tempLanding.getBookId(), true);
-                    landingRepository.setDropOff(tempLanding, LocalDate.now());
-                    return true;
+        List<Reservation> reservations = reservationService.getByCustomerAndBook(customerEmail, bookName, authorName, authorSurname);
+        List<Landing> landings = getByCustomerAndBook(formattedCustomerEmail, formattedBookName, formattedAuthorName, formattedAuthorSurname);
+        for(Reservation tempReservation : reservations){
+            if(!(tempReservation.isCanceled()) && (tempReservation.isPickedUp())){
+                if (tempReservation.getDeliveryDate().isBefore(LocalDate.now())) {
+                    System.out.println(ansiColorRed() + "YOUR DELIVERY DATE HAS NOT COME YET");
+                    return false;
+                } else if (tempReservation.getDeliveryDate().isAfter(LocalDate.now())) {
+                    System.out.println(ansiColorRed() + "YOUR DELIVERY DATE HAS EXPIRED. YOUR RESERVATION HAS BEEN CANCELED." + ansiColorReset());
+                    tempReservation.setCanceled(true);
+                    return false;
+                } else {
+                    if (landings != null) {
+                        for (Landing tempLanding : landings) {
+                            if (tempLanding.getPickUpDate().equals(formattedPickUpDate)) {
+                                bookService.setAvailable(tempLanding.getBookId(), true);
+                                landingRepository.setDropOff(tempLanding, LocalDate.now());
+                                return true;
+                            }
+                        }
+                    }
                 }
             }
         }
-        System.out.println("THERE IS NO SUCH THAT LANDING IN LANDINGS LIST");
+
+        System.out.println(ansiColorRed()+"THERE IS NO SUCH THAT LANDING IN LANDINGS LIST"+ansiColorReset());
         return false;
     }
 
@@ -92,6 +134,13 @@ public class DefaultLandingService implements LandingService {
         }
         return null;
 
+    }
+
+    @Override
+    public List<Landing> getByCustomer(String customerEmail) {
+        String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
+        Customer customer = customerService.getByEmail(formattedCustomerEmail);
+        return landingRepository.getByCustomer(customer.getId());
     }
 
     @Override

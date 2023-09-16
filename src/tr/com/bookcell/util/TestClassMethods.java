@@ -13,10 +13,10 @@ public class TestClassMethods {
             backToMenuInput = backToMenuInput.toUpperCase();
             switch (backToMenuInput) {
                 case ("Y") ->
-                        System.out.println(ansiColorYellowBackGround() + ansiColorBlack() + "YOU ARE REDIRECTED TO THE MENU." + ansiColorReset());
+                        System.out.println(ansiColorGreenBackGround() + ansiColorBlack() + "YOU ARE REDIRECTED TO THE MENU." + ansiColorReset());
                 case ("N") -> isBackToMenu = false;
                 default -> {
-                    System.out.println(ansiColorYellowBackGround() + ansiColorBlack() + "ENTER Y OR N!" + ansiColorReset());
+                    System.out.println(ansiColorRed() + "ENTER Y OR N!" + ansiColorReset());
                     yesOrNoAnswer = false;
                 }
             }
