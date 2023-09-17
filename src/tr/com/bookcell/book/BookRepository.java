@@ -15,5 +15,6 @@ public interface BookRepository extends BaseRepository {
     void remove(String name, Integer authorId);
 
     void setAvailable(Integer bookId, boolean isAvailable);
+    Book getById(Integer id);
 
 }

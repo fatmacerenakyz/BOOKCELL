@@ -22,7 +22,7 @@ public class DefaultBookService implements BookService {
 
 
     @Override
-    public boolean add(String name, String authorName, String authorSurname, String publisherName, String genre, int publicationYear, int pageNumber, boolean isAvailable) {
+    public boolean add(String name, String authorName, String authorSurname, String publisherName, String genre, int publicationYear, int pageNumber) {
         String formattedName = capitalizeForBookName(name);
         String formattedAuthorName = capitalizeForMultipleStrings(authorName);
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
@@ -38,7 +38,7 @@ public class DefaultBookService implements BookService {
                     return false;
                 }
             }
-            Book book = new Book(formattedName, author.getId(), publisher.getId(), formattedGenre, publicationYear, pageNumber, isAvailable);
+            Book book = new Book(formattedName, author.getId(), publisher.getId(), formattedGenre, publicationYear, pageNumber, true);
             bookRepository.add(book);
         }
         return true;
@@ -98,6 +98,16 @@ public class DefaultBookService implements BookService {
     @Override
     public void setAvailable(Integer bookId, boolean isAvailable) {
         bookRepository.setAvailable(bookId, isAvailable);
+    }
+
+    @Override
+    public Book getById(Integer id) {
+        for(Book temp : getAll()){
+            if(temp.getId().equals(id)){
+                return bookRepository.getById(id);
+            }
+        }
+        return null;
     }
 
 }

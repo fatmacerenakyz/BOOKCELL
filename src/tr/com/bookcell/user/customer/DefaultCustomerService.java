@@ -28,17 +28,19 @@ public class DefaultCustomerService implements CustomerService {
                 case (0) -> customerType = CustomerType.DEFAULT;
                 case (1) -> customerType = CustomerType.STUDENT;
                 case (2) -> customerType = CustomerType.VIP;
-                default -> {System.out.println(ansiColorRed()+"EMAIL ADDRESS IS NOT PROPER."+ansiColorReset());return false;}
+                default -> {
+                    System.out.println(ansiColorRed() + "EMAIL ADDRESS IS NOT PROPER." + ansiColorReset());
+                    return false;
+                }
             }
             if (passwordPattern(password)) {
                 String formattedName = capitalizeForMultipleStrings(name);
                 String formattedSurname = capitalizeFirst(surname);
                 Customer newCustomer = new Customer(password, formattedName, formattedSurname, LocalDate.now(), formattedEmail);
                 customerRepository.add(newCustomer);
-                System.out.println(ansiColorGreen()+"YOU HAVE SUCCESSFULLY REGISTERED!"+ansiColorReset());
+                System.out.println(ansiColorGreen() + "YOU HAVE SUCCESSFULLY REGISTERED!" + ansiColorReset());
                 return true;
-            }
-            else{
+            } else {
                 System.out.println(ansiColorRed() + "THIS PASSWORD IS NOT VALID." + ansiColorReset());
             }
         }
@@ -50,16 +52,15 @@ public class DefaultCustomerService implements CustomerService {
         String formattedEmail = lowerCaseForEmail(email);
         Customer customer = getByEmail(formattedEmail);
         if (customer == null) {
-            System.out.println(ansiColorRed()+"THERE IS NO CUSTOMER WITH " + formattedEmail + " IN CUSTOMERS LIST!"+ansiColorReset());
+            System.out.println(ansiColorRed() + "THERE IS NO CUSTOMER WITH " + formattedEmail + " IN CUSTOMERS LIST!" + ansiColorReset());
         } else {
-            for (Customer temp : getAll()) {
-                if (temp.getEmail().equals(formattedEmail)) {
-                    customerRepository.remove(formattedEmail);
-                    return;
-                }
-            }
+
+            customerRepository.remove(formattedEmail);
+
         }
+
     }
+
 
     @Override
     public List<Customer> getAll() {
@@ -68,10 +69,9 @@ public class DefaultCustomerService implements CustomerService {
 
     @Override
     public Customer getByEmail(String email) {
-        String formattedEmail = lowerCaseForEmail(email);
         for (Customer temp : getAll()) {
-            if (temp.getEmail().equals(formattedEmail)) {
-                return customerRepository.getByEmail(formattedEmail);
+            if (temp.getEmail().equalsIgnoreCase(email)) {
+                return customerRepository.getByEmail(email.toLowerCase());
             }
         }
         return null;

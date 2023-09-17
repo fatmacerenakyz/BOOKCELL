@@ -6,6 +6,7 @@ import tr.com.bookcell.user.customer.Customer;
 import tr.com.bookcell.user.customer.CustomerService;
 
 import java.util.List;
+import java.util.Locale;
 
 import static tr.com.bookcell.util.InputFormatter.*;
 
@@ -65,8 +66,7 @@ public class DefaultFavouriteService implements FavouriteService {
 
     @Override
     public List<Favourite> getByCustomer(String customerEmail) {
-        String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
-        Customer customer = customerService.getByEmail(formattedCustomerEmail);
+        Customer customer = customerService.getByEmail(customerEmail.toLowerCase(Locale.ENGLISH));
         return favouriteRepository.getByCustomer(customer.getId());
     }
 }

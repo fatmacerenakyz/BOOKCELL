@@ -12,6 +12,7 @@ public class DefaultBookRepository implements BookRepository {
     private static final String DELETE_BOOKS = "DELETE FROM public.\"BOOK\" WHERE \"NAME\" = ? AND \"AUTHOR_ID\" = ?;";
     private static final String UPDATE_BOOKS_IS_AVAILABLE = "UPDATE public.\"BOOK\" SET \"IS_AVAILABLE\"=? WHERE \"ID\"=?;";
     private static final String SELECT_BOOKS_WHERE_NAME = "SELECT * FROM public.\"BOOK\" WHERE \"NAME\" = ?;";
+    private static final String SELECT_BOOKS_WHERE_ID = "SELECT * FROM public.\"BOOK\" WHERE \"ID\" = ?;";
     private static final String SELECT_BOOKS_WHERE_NAME_AND_AUTHOR_ID = "SELECT * FROM public.\"BOOK\" WHERE \"NAME\" = ? AND \"AUTHOR_ID\" = ?;";
 
     @Override
@@ -127,6 +128,29 @@ public class DefaultBookRepository implements BookRepository {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Book getById(Integer id) {
+        Book book = new Book();
+        try (Connection connection = connect()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BOOKS_WHERE_ID);
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                book.setId(resultSet.getInt("ID"));
+                book.setName(resultSet.getString("NAME"));
+                book.setAuthorId(resultSet.getInt("AUTHOR_ID"));
+                book.setPublisherId(resultSet.getInt("PUBLISHER_ID"));
+                book.setGenre(resultSet.getString("GENRE"));
+                book.setPublicationYear(resultSet.getInt("PUBLICATION_YEAR"));
+                book.setPageNumber(resultSet.getInt("PAGE_NUMBER"));
+                book.setAvailable(resultSet.getBoolean("IS_AVAILABLE"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return book;
     }
 
 

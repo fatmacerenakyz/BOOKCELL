@@ -13,21 +13,18 @@ public class DefaultAuthorService implements AuthorService {
     }
 
     @Override
-    public void add(String name, String surname) {
+    public boolean add(String name, String surname) {
         String formattedName = capitalizeForMultipleStrings(name);
         String formattedSurname = capitalizeFirst(surname);
-        boolean bool = false;
         for (Author tempAuthor : getAll()) {
             if (tempAuthor.getName().equals(formattedName) && tempAuthor.getSurname().equals(formattedSurname)) {
-                System.out.println("THERE IS ALREADY "+formattedName+" "+formattedSurname+" IN AUTHORS LIST");
-                bool = true;
-                break;
+                System.out.println("THERE IS ALREADY " + formattedName + " " + formattedSurname + " IN AUTHORS LIST");
+                return false;
             }
         }
-        if(!bool){
-            Author author = new Author(formattedName, formattedSurname);
-            authorRepository.add(author);
-        }
+        Author author = new Author(formattedName, formattedSurname);
+        authorRepository.add(author);
+        return true;
     }
 
     @Override
@@ -38,8 +35,8 @@ public class DefaultAuthorService implements AuthorService {
     @Override
     public List<Author> getByName(String name) {
         String formattedName = capitalizeForMultipleStrings(name);
-        for(Author tempAuthor : getAll()){
-            if(tempAuthor.getName().equals(formattedName))
+        for (Author tempAuthor : getAll()) {
+            if (tempAuthor.getName().equals(formattedName))
                 return authorRepository.getByName(formattedName);
         }
         return null;
@@ -49,8 +46,8 @@ public class DefaultAuthorService implements AuthorService {
     public Author getByNameAndSurname(String name, String surname) {
         String formattedName = capitalizeForMultipleStrings(name);
         String formattedSurname = capitalizeFirst(surname);
-        for(Author tempAuthor:getAll()){
-            if(tempAuthor.getName().equals(formattedName)&&tempAuthor.getSurname().equals(formattedSurname))
+        for (Author tempAuthor : getAll()) {
+            if (tempAuthor.getName().equals(formattedName) && tempAuthor.getSurname().equals(formattedSurname))
                 return authorRepository.getByNameAndSurname(formattedName, formattedSurname);
         }
         return null;
@@ -60,12 +57,12 @@ public class DefaultAuthorService implements AuthorService {
     public void remove(String name, String surname) {
         String formattedName = capitalizeForMultipleStrings(name);
         String formattedSurname = capitalizeFirst(surname);
-        for(Author author : getAll()){
-            if(author.getName().equals(formattedName) && author.getSurname().equals(formattedSurname)){
+        for (Author author : getAll()) {
+            if (author.getName().equals(formattedName) && author.getSurname().equals(formattedSurname)) {
                 authorRepository.remove(formattedName, formattedSurname);
                 return;
             }
         }
-        System.out.println("THERE IS NO "+formattedName+" "+formattedSurname+" IN AUTHORS LIST!");
+        System.out.println("THERE IS NO " + formattedName + " " + formattedSurname + " IN AUTHORS LIST!");
     }
 }

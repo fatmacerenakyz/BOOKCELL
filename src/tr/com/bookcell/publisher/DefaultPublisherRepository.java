@@ -10,6 +10,7 @@ public class DefaultPublisherRepository implements PublisherRepository {
     private static final String INSERT_PUBLISHERS = "INSERT INTO public.\"PUBLISHER\"(\"NAME\") VALUES (?);";
     private static final String SELECT_PUBLISHERS = "SELECT * FROM public.\"PUBLISHER\";";
     private static final String DELETE_PUBLISHERS = "DELETE FROM public.\"PUBLISHER\" WHERE \"NAME\" = ?;";
+    private static final String SELECT_PUBLISHERS_WHERE_ID = "SELECT * FROM public.\"PUBLISHER\" WHERE \"ID\" = ?;";
     private static final String SELECT_PUBLISHERS_WHERE_NAME = "SELECT * FROM public.\"PUBLISHER\" WHERE \"NAME\" = ?;";
 
     @Override
@@ -41,11 +42,11 @@ public class DefaultPublisherRepository implements PublisherRepository {
     }
 
     @Override
-    public Publisher getByName(String name) {
+    public Publisher getById(Integer id) {
         Publisher publisher = new Publisher();
         try (Connection connection = connect()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(SELECT_PUBLISHERS_WHERE_NAME);
-            preparedStatement.setString(1, name);
+            PreparedStatement preparedStatement = connection.prepareStatement(SELECT_PUBLISHERS_WHERE_ID);
+            preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 publisher.setId(resultSet.getInt("ID"));
@@ -66,5 +67,22 @@ public class DefaultPublisherRepository implements PublisherRepository {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Publisher getByName(String name) {
+        Publisher publisher = new Publisher();
+        try (Connection connection = connect()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(SELECT_PUBLISHERS_WHERE_NAME);
+            preparedStatement.setString(1, name);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                publisher.setId(resultSet.getInt("ID"));
+                publisher.setName(resultSet.getString("NAME"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return publisher;
     }
 }

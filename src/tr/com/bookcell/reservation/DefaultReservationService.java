@@ -29,7 +29,7 @@ public class DefaultReservationService implements ReservationService {
         LocalDate formattedStartDate = dateFormatter(startDate);
         LocalDate formattedDeliveryDate = dateFormatter(deliveryDate);
         if (formattedStartDate == null || formattedDeliveryDate == null || formattedStartDate.isAfter(formattedDeliveryDate) || formattedStartDate.isBefore(LocalDate.now()) || formattedDeliveryDate.isBefore(LocalDate.now())) {
-            System.out.println("Please enter a proper date.");
+            System.out.println(ansiColorRed()+"PLEASE ENTER A PROPER DATE."+ansiColorReset());
             return false;
         }
 
@@ -64,7 +64,7 @@ public class DefaultReservationService implements ReservationService {
     public boolean cancel(String customerEmail, String bookName, String authorName, String authorSurname, String startDate) {
         LocalDate formattedStartDate = dateFormatter(startDate);
         if (formattedStartDate == null) {
-            System.out.println("Please enter the date according to the format (dd-mm-yyyy)");
+            System.out.println(ansiColorRed()+"PLEASE ENTER THE DATE ACCORDING TO THE FORMAT (DD-MM-YYYY)"+ansiColorReset());
             return false;
         }
         String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
@@ -91,7 +91,7 @@ public class DefaultReservationService implements ReservationService {
         LocalDate formattedStartDate = dateFormatter(newStartDate);
         LocalDate formattedDeliveryDate = dateFormatter(deliveryDate);
         if (formattedStartDate == null || formattedDeliveryDate == null) {
-            System.out.println("Please enter the date according to the format (dd-mm-yyyy)");
+            System.out.println(ansiColorRed()+"PLEASE ENTER THE DATE ACCORDING TO THE FORMAT (DD-MM-YYYY)"+ansiColorReset());
             return false;
         }
         String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
@@ -100,17 +100,17 @@ public class DefaultReservationService implements ReservationService {
         String formattedAuthorSurname = capitalizeFirst(authorSurname);
         Reservation reservation = getByDeliveryDate(formattedCustomerEmail, formattedBookName, formattedAuthorName, formattedAuthorSurname, deliveryDate);
         if (reservation == null) {
-            System.out.println("THERE IS NO RESERVATION MADE FOR " + formattedBookName + " IN THIS CUSTOMER'S RESERVATION LIST.");
+            System.out.println(ansiColorRed()+"THERE IS NO RESERVATION MADE FOR " + formattedBookName + " IN THIS CUSTOMER'S RESERVATION LIST."+ansiColorReset());
             return false;
         } else if (reservation.getStartDate().isAfter(reservation.getDeliveryDate()) || reservation.getStartDate().isBefore(LocalDate.now())) {
-            System.out.println("Please enter a valid date");
+            System.out.println(ansiColorRed()+"PLEASE ENTER A VALID DATE"+ansiColorReset());
         } else {
             List<Reservation> reservations = getByCustomer(formattedCustomerEmail);
             for (Reservation reservation1 : reservations) {
                 if (reservation.equals(reservation1)) {
                     continue;
                 } else if (!((reservation1.getStartDate().isBefore(formattedStartDate) && reservation1.getDeliveryDate().isBefore(formattedStartDate)) || (reservation1.getStartDate().isAfter(formattedDeliveryDate) && reservation1.getDeliveryDate().isAfter(formattedDeliveryDate)))) {
-                    System.out.println("THERE IS ALREADY A RESERVATION IN THIS DATES");
+                    System.out.println(ansiColorRed()+"THERE IS ALREADY A RESERVATION IN THIS DATES"+ansiColorReset());
                     return false;
                 }
             }
@@ -128,7 +128,7 @@ public class DefaultReservationService implements ReservationService {
         LocalDate formattedDeliveryDate = dateFormatter(newDeliveryDate);
         LocalDate formattedStartDate = dateFormatter(startDate);
         if (formattedDeliveryDate == null || formattedStartDate == null) {
-            System.out.println("Please enter the date according to the format (dd-mm-yyyy)");
+            System.out.println(ansiColorRed()+"PLEASE ENTER THE DATE ACCORDING TO THE FORMAT (DD-MM-YYYY)"+ansiColorReset());
             return false;
         }
         String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
@@ -140,7 +140,7 @@ public class DefaultReservationService implements ReservationService {
             System.out.println("THERE IS NO RESERVATION MADE FOR " + formattedBookName + " IN THIS CUSTOMER'S RESERVATION LIST.");
             return false;
         } else if (formattedDeliveryDate.isBefore(reservation.getStartDate()) || formattedDeliveryDate.isBefore(LocalDate.now())) {
-            System.out.println("Please enter a valid date");
+            System.out.println(ansiColorRed()+"PLEASE ENTER A VALID DATE"+ansiColorReset());
         } else {
             boolean bool = false;
             List<Reservation> reservations = getByCustomer(formattedCustomerEmail);
@@ -148,7 +148,7 @@ public class DefaultReservationService implements ReservationService {
                 if (reservation.equals(reservation1)) {
                     continue;
                 } else if (!((reservation1.getStartDate().isBefore(formattedStartDate) && reservation1.getDeliveryDate().isBefore(formattedStartDate)) || (reservation1.getStartDate().isAfter(formattedDeliveryDate) && reservation1.getDeliveryDate().isAfter(formattedDeliveryDate)))) {
-                    System.out.println("THERE IS ALREADY A RESERVATION IN THIS DATES!");
+                    System.out.println(ansiColorRed()+"THERE IS ALREADY A RESERVATION IN THIS DATES!"+ansiColorReset());
                     return false;
                 }
             }
@@ -168,7 +168,7 @@ public class DefaultReservationService implements ReservationService {
     public Reservation getByStartDate(String customerEmail, String bookName, String authorName, String authorSurname, String startDate) {
         LocalDate formattedStartDate = dateFormatter(startDate);
         if (formattedStartDate == null) {
-            System.out.println("Please enter the date according to the format (dd-mm-yyyy)");
+            System.out.println(ansiColorRed()+"PLEASE ENTER THE DATE ACCORDING TO THE FORMAT (DD-MM-YYYY)"+ansiColorReset());
             return null;
         } else {
             String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
@@ -193,7 +193,7 @@ public class DefaultReservationService implements ReservationService {
             authorSurname, String deliveryDate) {
         LocalDate formattedDeliveryDate = dateFormatter(deliveryDate);
         if (formattedDeliveryDate == null) {
-            System.out.println("Please enter the date according to the format (dd-mm-yyyy)");
+            System.out.println(ansiColorRed()+"PLEASE ENTER THE DATE ACCORDING TO THE FORMAT (DD-MM-YYYY)"+ansiColorReset());
             return null;
         } else {
             String formattedCustomerEmail = lowerCaseForEmail(customerEmail);

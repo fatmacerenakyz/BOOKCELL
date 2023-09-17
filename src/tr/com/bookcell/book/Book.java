@@ -36,6 +36,15 @@ public class Book {
         this.isAvailable = isAvailable;
     }
 
+    public Book(String name, Integer authorId, Integer publisherId, String genre, int publicationYear, int pageNumber) {
+        this.name = name;
+        this.authorId = authorId;
+        this.publisherId = publisherId;
+        this.genre = genre;
+        this.publicationYear = publicationYear;
+        this.pageNumber = pageNumber;
+    }
+
     public Book(Integer id, String name, Integer authorId, Integer publisherId, String genre, int publicationYear, int pageNumber, boolean isAvailable) {
         this.id = id;
         this.name = name;

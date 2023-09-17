@@ -12,20 +12,20 @@ public class DefaultPublisherService implements PublisherService {
     }
 
     @Override
-    public void add(String name) {
+    public boolean add(String name) {
         String formattedName = capitalizeForMultipleStrings(name);
         Publisher publisher = new Publisher(formattedName);
-        boolean bool = false;
         for (Publisher tempPublisher : getAll()) {
             if (tempPublisher.getName().equals(publisher.getName())) {
                 System.out.println("THERE IS ALREADY " + formattedName + " IN PUBLISHERS LIST");
-                bool = true;
-                break;
+                return false;
             }
         }
-        if (!bool) {
-            publisherRepository.add(publisher);
-        }
+
+
+        publisherRepository.add(publisher);
+        return true;
+
     }
 
     @Override
@@ -34,11 +34,10 @@ public class DefaultPublisherService implements PublisherService {
     }
 
     @Override
-    public Publisher getByName(String name) {
-        String formattedName = capitalizeForMultipleStrings(name);
-        for (Publisher tempPublisher : getAll()) {
-            if (tempPublisher.getName().equals(formattedName)) {
-                return publisherRepository.getByName(formattedName);
+    public Publisher getById(Integer id) {
+        for (Publisher temp : getAll()) {
+            if (temp.getId().equals(id)) {
+                return publisherRepository.getById(id);
             }
         }
         return null;
@@ -54,5 +53,15 @@ public class DefaultPublisherService implements PublisherService {
             }
         }
         System.out.println("THERE IS NO" + formattedName + " IN PUBLISHERS LIST!");
+    }
+
+    @Override
+    public Publisher getByName(String name) {
+        for (Publisher temp : getAll()) {
+            if (temp.getName().equalsIgnoreCase(name)) {
+                return publisherRepository.getByName(name);
+            }
+        }
+        return null;
     }
 }

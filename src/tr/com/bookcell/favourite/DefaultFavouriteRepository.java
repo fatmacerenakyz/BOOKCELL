@@ -10,7 +10,7 @@ public class DefaultFavouriteRepository implements FavouriteRepository {
     private static final String INSERT_FAVOURITES = "INSERT INTO public.\"FAVOURITE\"(\"CUSTOMER_ID\", \"BOOK_ID\") VALUES (?, ?);";
     private static final String DELETE_FAVOURITES = "DELETE FROM public.\"FAVOURITE\" WHERE \"CUSTOMER_ID\" = ? AND \"BOOK_ID\" = ?;";
 
-    private static final String SELECT_FAVOURITES_WITH_CUSTOMER_ID = "SELECT * FROM public.\"LANDING\" WHERE \"CUSTOMER_ID\"=?;";
+    private static final String SELECT_FAVOURITES_WITH_CUSTOMER_ID = "SELECT * FROM public.\"FAVOURITE\" WHERE \"CUSTOMER_ID\"=?;";
 
     @Override
     public void add(Favourite favourite) {
