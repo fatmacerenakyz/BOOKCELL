@@ -10,6 +10,7 @@ public interface ReservationService {
     boolean setStartDate(String customerEmail, String bookName, String authorName, String authorSurname, String newStartDate, String deliveryDate);
 
     boolean setDeliveryDate(String customerEmail, String bookName, String authorName, String authorSurname, String startDate, String newDeliveryDate);
+    void setPickedUp(Integer reservationId, boolean isPickedUp);
 
     Reservation getByStartDate(String customerEmail, String bookName, String authorName, String authorSurname, String startDate);
 

@@ -1,8 +1,12 @@
 package tr.com.bookcell.publisher;
 
 import java.util.List;
+import java.util.Locale;
 
 import static tr.com.bookcell.util.InputFormatter.capitalizeForMultipleStrings;
+import static tr.com.bookcell.util.InputFormatter.isEnglish;
+import static tr.com.bookcell.util.TestClassMethods.ansiColorRed;
+import static tr.com.bookcell.util.TestClassMethods.ansiColorReset;
 
 public class DefaultPublisherService implements PublisherService {
     private final PublisherRepository publisherRepository;
@@ -13,16 +17,18 @@ public class DefaultPublisherService implements PublisherService {
 
     @Override
     public boolean add(String name) {
-        String formattedName = capitalizeForMultipleStrings(name);
-        Publisher publisher = new Publisher(formattedName);
+        if(!isEnglish(name)){
+            System.out.println(ansiColorRed()+"ENGLISH CHARACTERS ONLY."+ansiColorReset());
+            return false;
+        }
         for (Publisher tempPublisher : getAll()) {
-            if (tempPublisher.getName().equals(publisher.getName())) {
-                System.out.println("THERE IS ALREADY " + formattedName + " IN PUBLISHERS LIST");
+            if (tempPublisher.getName().equals(name.toUpperCase(Locale.ENGLISH))) {
+                System.out.println(ansiColorRed()+"THERE IS ALREADY " + name + " IN PUBLISHERS LIST"+ansiColorReset());
                 return false;
             }
         }
 
-
+        Publisher publisher = new Publisher(name.toUpperCase(Locale.ENGLISH));
         publisherRepository.add(publisher);
         return true;
 
@@ -45,21 +51,20 @@ public class DefaultPublisherService implements PublisherService {
 
     @Override
     public void remove(String name) {
-        String formattedName = capitalizeForMultipleStrings(name);
         for (Publisher tempPublisher : getAll()) {
-            if (tempPublisher.getName().equals(formattedName)) {
-                publisherRepository.remove(name);
+            if (tempPublisher.getName().equals(name.toUpperCase(Locale.ENGLISH))) {
+                publisherRepository.remove(name.toUpperCase(Locale.ENGLISH));
                 return;
             }
         }
-        System.out.println("THERE IS NO" + formattedName + " IN PUBLISHERS LIST!");
+        System.out.println("THERE IS NO" + name + " IN PUBLISHERS LIST!");
     }
 
     @Override
     public Publisher getByName(String name) {
         for (Publisher temp : getAll()) {
-            if (temp.getName().equalsIgnoreCase(name)) {
-                return publisherRepository.getByName(name);
+            if (temp.getName().equals(name.toUpperCase(Locale.ENGLISH))) {
+                return publisherRepository.getByName(name.toUpperCase(Locale.ENGLISH));
             }
         }
         return null;

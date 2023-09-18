@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Locale;
 
 import static tr.com.bookcell.util.InputFormatter.*;
+import static tr.com.bookcell.util.TestClassMethods.ansiColorRed;
+import static tr.com.bookcell.util.TestClassMethods.ansiColorReset;
 
 public class DefaultFavouriteService implements FavouriteService {
     private final FavouriteRepository favouriteRepository;
@@ -23,35 +25,29 @@ public class DefaultFavouriteService implements FavouriteService {
 
     @Override
     public boolean add(String customerEmail, String bookName, String authorName, String authorSurname) {
-        String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
-        String formattedBookName = capitalizeForBookName(bookName);
-        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
-        String formattedAuthorSurname = capitalizeFirst(authorSurname);
 
-        Book book = bookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
-        Customer customer = customerService.getByEmail(formattedCustomerEmail);
+        Book book = bookService.getByNameAndAuthor(bookName, authorName, authorSurname);
+        Customer customer = customerService.getByEmail(customerEmail);
         if (book != null && customer != null) {
             for (Favourite tempFavourite : getByCustomer(customer.getEmail())) {
                 if (tempFavourite.getBookId().equals(book.getId())) {
-                    System.out.println("THERE IS ALREADY " + formattedBookName + " IN FAVOURITES LIST");
+                    System.out.println(ansiColorRed()+"THERE IS ALREADY " + bookName + " IN FAVOURITES LIST"+ansiColorReset());
                     return false;
                 }
             }
             Favourite favourite = new Favourite(customer.getId(), book.getId());
             favouriteRepository.add(favourite);
+            return true;
         }
-        return true;
+        System.out.println(ansiColorRed()+"THERE IS NO "+bookName+" IN BOOKS LIST!"+ansiColorReset());
+        return false;
     }
 
     @Override
     public void remove(String customerEmail, String bookName, String authorName, String authorSurname) {
-        String formattedBookName = capitalizeForBookName(bookName);
-        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
-        String formattedAuthorSurname = capitalizeFirst(authorSurname);
-        String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
 
-        Book book = bookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
-        Customer customer = customerService.getByEmail(formattedCustomerEmail);
+        Book book = bookService.getByNameAndAuthor(bookName, authorName, authorSurname);
+        Customer customer = customerService.getByEmail(customerEmail);
         if (book != null) {
             for (Favourite tempFavourite : getByCustomer(customer.getEmail())) {
                 if (tempFavourite.getBookId().equals(book.getId())) {
@@ -59,14 +55,14 @@ public class DefaultFavouriteService implements FavouriteService {
                     return;
                 }
             }
-            System.out.println("THERE IS NO " + formattedBookName + " IN FAVOURITES LIST!");
+            System.out.println(ansiColorRed()+"THERE IS NO " + bookName + " IN FAVOURITES LIST!"+ansiColorReset());
         }
 
     }
 
     @Override
     public List<Favourite> getByCustomer(String customerEmail) {
-        Customer customer = customerService.getByEmail(customerEmail.toLowerCase(Locale.ENGLISH));
+        Customer customer = customerService.getByEmail(customerEmail);
         return favouriteRepository.getByCustomer(customer.getId());
     }
 }

@@ -9,7 +9,7 @@ public class DefaultAdminService implements AdminService {
 
     @Override
     public void add(String password, String userName) {
-        Admin admin = new Admin(password, userName);
+        Admin admin = new Admin(password, userName.toUpperCase());
         adminRepository.add(admin);
     }
 

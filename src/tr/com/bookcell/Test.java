@@ -49,6 +49,7 @@ public class Test {
         AdminRepository defaultAdminRepository = new DefaultAdminRepository();
         AdminService defaultAdminService = new DefaultAdminService(defaultAdminRepository);
 
+
         BasketRepository defaultBasketRepository = new DefaultBasketRepository();
         BasketService defaultBasketService = new DefaultBasketService(defaultBasketRepository, defaultBookService, defaultCustomerService);
         Scanner scanner = new Scanner(System.in);
@@ -62,7 +63,7 @@ public class Test {
 
         while (true) {
             System.out.println(ansiColorBold() + ansiColorItalic() + ansiColorDarkBlue() + "\t\t\t\t\t\tWELCOME TO BOOKCELL DIGITAL LIBRARY SYSTEM" + ansiColorReset());
-            String userType = "";
+            String userType;
             boolean isAdmin;
             boolean backToUserType;
             do {
@@ -70,7 +71,7 @@ public class Test {
                 System.out.println(ansiColorYellowBackGround() + ansiColorBlack() + "PLEASE ENTER YOUR USER TYPE (CUSTOMER/ADMIN): " + ansiColorReset());
                 userType = scanner.nextLine();
                 if (userType.equalsIgnoreCase("customer")) {
-                    String isNewCustomer = "";
+                    String isNewCustomer;
                     do {
                         System.out.println(ansiColorYellowBackGround() + ansiColorBlack() + "ARE YOU A NEW CUSTOMER? (YES/NO) " + ansiColorReset());
                         isNewCustomer = scanner.nextLine();
@@ -185,6 +186,7 @@ public class Test {
             boolean chooseOption;
             do {
                 if(userType.equalsIgnoreCase("customer")) {
+                    isBackToMenu=false;
                     chooseOption = true;
                     System.out.println(ansiColorYellowBackGround() + ansiColorBlack() + "HELLO " + customerName + " " + customerSurname + " PLEASE ENTER A INPUT APPROPRIATE TO YOUR REQUEST." + ansiColorReset());
                     System.out.println(ansiColorCyan() + "1 for SEARCHING A BOOK.");
@@ -392,8 +394,10 @@ public class Test {
                                 System.out.println(ansiColorRed() + "YOU DON'T HAVE ANY RESERVATIONS!" + ansiColorReset());
                             } else {
                                 for(Reservation temp : reservations){
-                                    Book book = defaultBookService.getById(temp.getBookId());
-                                    System.out.println(ansiColorMagenta()+"BOOK NAME: "+ansiColorReset()+book.getName()+ansiColorMagenta()+" START DATE: "+ansiColorReset()+temp.getStartDate()+ansiColorMagenta()+" DELIVERY DATE: "+ansiColorReset()+temp.getDeliveryDate());
+                                    if(!temp.isCanceled()) {
+                                        Book book = defaultBookService.getById(temp.getBookId());
+                                        System.out.println(ansiColorMagenta() + "BOOK NAME: " + ansiColorReset() + book.getName() + ansiColorMagenta() + " START DATE: " + ansiColorReset() + temp.getStartDate() + ansiColorMagenta() + " DELIVERY DATE: " + ansiColorReset() + temp.getDeliveryDate());
+                                    }
                                 }
                             }
                             System.out.println(ansiColorGreenBackGround() + ansiColorBlack() + "YOU ARE REDIRECTED TO THE MENU." + ansiColorReset());
@@ -445,6 +449,7 @@ public class Test {
                     }
                 }
                 else{
+                    isBackToMenu=false;
                     chooseOption = true;
                     System.out.println(ansiColorYellowBackGround() + ansiColorBlack() + "HELLO " + adminUsername + " PLEASE ENTER A INPUT APPROPRIATE TO YOUR REQUEST." + ansiColorReset());
                     System.out.println(ansiColorCyan() + "1 for ADDING BOOK.");
@@ -467,16 +472,16 @@ public class Test {
                                 System.out.println("Genre: ");
                                 String genre = scanner.nextLine();
                                 System.out.println("Publication Year: ");
-                                Integer publicationYear = scanner.nextInt();
+                                String publicationYear = scanner.nextLine();
                                 System.out.println("Page Number: ");
-                                Integer pageNumber = scanner.nextInt();
-                                isAdded = defaultBookService.add(bookName, authorName, authorSurname, publisherName, genre, publicationYear, pageNumber);
+                                String pageNumber = scanner.nextLine();
+                                isAdded = defaultBookService.add(bookName, authorName, authorSurname, publisherName, genre, Integer.parseInt(publicationYear), Integer.parseInt(pageNumber));
                                 if (!isAdded) {
                                     isBackToMenu = backToMenuWhile(backToMenuInput, isBackToMenu, yesOrNoAnswer, scanner);
                                 } else {
                                     System.out.println(ansiColorGreenBackGround() + ansiColorBlack() + "THE BOOK HAS BEEN SUCCESSFULLY ADDED TO THE DATABASE. " + ansiColorReset());
                                 }
-                            } while (!isAdded && isBackToMenu);
+                            } while (!isAdded && !isBackToMenu);
                             System.out.println(ansiColorGreenBackGround() + ansiColorBlack() + "YOU ARE REDIRECTED TO THE MENU." + ansiColorReset());
                         }case("2") -> {
                             boolean isAdded;

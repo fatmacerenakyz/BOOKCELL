@@ -7,6 +7,7 @@ public class TestClassMethods {
 
     public static boolean backToMenuWhile(String backToMenuInput, boolean isBackToMenu, boolean yesOrNoAnswer, Scanner scanner) {
         do {
+            yesOrNoAnswer = true;
             isBackToMenu = true;
             System.out.println(ansiColorYellowBackGround() + ansiColorBlack() + "WOULD YOU LIKE TO GO BACK TO MENU? (Y/N)" + ansiColorReset());
             backToMenuInput = scanner.nextLine();

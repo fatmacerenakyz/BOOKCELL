@@ -13,6 +13,7 @@ public class DefaultReservationRepository implements ReservationRepository {
     private static final String UPDATE_RESERVATIONS_IS_CANCELED_WHERE_CUSTOMER_ID_BOOK_ID_START_DATE = "UPDATE public.\"RESERVATION\" SET \"IS_CANCELED\"=? WHERE \"CUSTOMER_ID\" = ? AND \"BOOK_ID\" = ? AND \"START_DATE\"=?;";
     private static final String UPDATE_RESERVATIONS_START_DATE = "UPDATE public.\"RESERVATION\" SET \"START_DATE\"=? WHERE \"CUSTOMER_ID\"=? AND \"BOOK_ID\"=? AND \"DELIVERY_DATE\"=?;";
     private static final String UPDATE_RESERVATIONS_DELIVERY_DATE = "UPDATE public.\"RESERVATION\" SET \"DELIVERY_DATE\"=? WHERE \"CUSTOMER_ID\"=? AND \"BOOK_ID\"=? AND \"START_DATE\"=?;";
+    private static final String UPDATE_RESERVATIONS_IS_PICKED_UP = "UPDATE public.\"RESERVATION\" SET \"IS_PICKED_UP\"=? WHERE \"ID\"=?;";
     private static final String SELECT_RESERVATIONS_WHERE_CUSTOMER_ID_BOOK_ID_START_DATE = "SELECT * FROM public.\"RESERVATION\" WHERE \"CUSTOMER_ID\"=? AND \"BOOK_ID\"=? AND \"START_DATE\"=?;";
     private static final String SELECT_RESERVATIONS_WHERE_CUSTOMER_ID_BOOK_ID_DELIVERY_DATE = "SELECT * FROM public.\"RESERVATION\" WHERE \"CUSTOMER_ID\"=? AND \"BOOK_ID\"=? AND \"DELIVERY_DATE\"=?;";
     private static final String SELECT_RESERVATIONS_WHERE_CUSTOMER_ID = "SELECT * FROM public.\"RESERVATION\" WHERE \"CUSTOMER_ID\"=?;";
@@ -70,6 +71,18 @@ public class DefaultReservationRepository implements ReservationRepository {
             preparedStatement.setInt(2, customerId);
             preparedStatement.setInt(3, bookId);
             preparedStatement.setDate(4, Date.valueOf(startDate));
+            preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void setPickedUp(Integer reservationId, boolean isPickedUp) {
+        try (Connection connection = connect()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_RESERVATIONS_IS_PICKED_UP);
+            preparedStatement.setBoolean(1, isPickedUp);
+            preparedStatement.setInt(2, reservationId);
             preparedStatement.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

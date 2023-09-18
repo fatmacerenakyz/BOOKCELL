@@ -1,9 +1,12 @@
 package tr.com.bookcell.author;
 
+import java.sql.SQLOutput;
 import java.util.List;
+import java.util.Locale;
 
-import static tr.com.bookcell.util.InputFormatter.capitalizeFirst;
-import static tr.com.bookcell.util.InputFormatter.capitalizeForMultipleStrings;
+import static tr.com.bookcell.util.InputFormatter.*;
+import static tr.com.bookcell.util.TestClassMethods.ansiColorRed;
+import static tr.com.bookcell.util.TestClassMethods.ansiColorReset;
 
 public class DefaultAuthorService implements AuthorService {
     private final AuthorRepository authorRepository;
@@ -14,15 +17,17 @@ public class DefaultAuthorService implements AuthorService {
 
     @Override
     public boolean add(String name, String surname) {
-        String formattedName = capitalizeForMultipleStrings(name);
-        String formattedSurname = capitalizeFirst(surname);
+        if(!isEnglish(name)||!isEnglish(surname)){
+            System.out.println(ansiColorRed()+ "ENGLISH CHARACTERS ONLY."+ansiColorReset());
+            return false;
+        }
         for (Author tempAuthor : getAll()) {
-            if (tempAuthor.getName().equals(formattedName) && tempAuthor.getSurname().equals(formattedSurname)) {
-                System.out.println("THERE IS ALREADY " + formattedName + " " + formattedSurname + " IN AUTHORS LIST");
+            if (tempAuthor.getName().equals(name.toUpperCase(Locale.ENGLISH)) && tempAuthor.getSurname().equals(surname.toUpperCase(Locale.ENGLISH))) {
+                System.out.println("THERE IS ALREADY " + name + " " + surname + " IN AUTHORS LIST");
                 return false;
             }
         }
-        Author author = new Author(formattedName, formattedSurname);
+        Author author = new Author(name.toUpperCase(Locale.ENGLISH), surname.toUpperCase(Locale.ENGLISH));
         authorRepository.add(author);
         return true;
     }
@@ -34,35 +39,30 @@ public class DefaultAuthorService implements AuthorService {
 
     @Override
     public List<Author> getByName(String name) {
-        String formattedName = capitalizeForMultipleStrings(name);
         for (Author tempAuthor : getAll()) {
-            if (tempAuthor.getName().equals(formattedName))
-                return authorRepository.getByName(formattedName);
+            if (tempAuthor.getName().equals(name.toUpperCase(Locale.ENGLISH)))
+                return authorRepository.getByName(name.toUpperCase(Locale.ENGLISH));
         }
         return null;
     }
 
     @Override
     public Author getByNameAndSurname(String name, String surname) {
-        String formattedName = capitalizeForMultipleStrings(name);
-        String formattedSurname = capitalizeFirst(surname);
         for (Author tempAuthor : getAll()) {
-            if (tempAuthor.getName().equals(formattedName) && tempAuthor.getSurname().equals(formattedSurname))
-                return authorRepository.getByNameAndSurname(formattedName, formattedSurname);
+            if (tempAuthor.getName().equals(name.toUpperCase(Locale.ENGLISH)) && tempAuthor.getSurname().equals(surname.toUpperCase(Locale.ENGLISH)))
+                return authorRepository.getByNameAndSurname(name.toUpperCase(Locale.ENGLISH), surname.toUpperCase(Locale.ENGLISH));
         }
         return null;
     }
 
     @Override
     public void remove(String name, String surname) {
-        String formattedName = capitalizeForMultipleStrings(name);
-        String formattedSurname = capitalizeFirst(surname);
         for (Author author : getAll()) {
-            if (author.getName().equals(formattedName) && author.getSurname().equals(formattedSurname)) {
-                authorRepository.remove(formattedName, formattedSurname);
+            if (author.getName().equals(name.toUpperCase()) && author.getSurname().equals(surname.toUpperCase())) {
+                authorRepository.remove(name.toUpperCase(Locale.ENGLISH), surname.toUpperCase(Locale.ENGLISH));
                 return;
             }
         }
-        System.out.println("THERE IS NO " + formattedName + " " + formattedSurname + " IN AUTHORS LIST!");
+        System.out.println("THERE IS NO " + name + " " + surname + " IN AUTHORS LIST!");
     }
 }

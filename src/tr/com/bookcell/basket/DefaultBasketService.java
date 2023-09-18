@@ -8,6 +8,8 @@ import tr.com.bookcell.user.customer.CustomerService;
 import java.util.List;
 
 import static tr.com.bookcell.util.InputFormatter.*;
+import static tr.com.bookcell.util.TestClassMethods.ansiColorRed;
+import static tr.com.bookcell.util.TestClassMethods.ansiColorReset;
 
 public class DefaultBasketService implements BasketService {
     private final BasketRepository basketRepository;
@@ -22,46 +24,43 @@ public class DefaultBasketService implements BasketService {
 
     @Override
     public boolean add(String customerEmail, String bookName, String authorName, String authorSurname) {
-        String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
-        String formattedBookName = capitalizeForBookName(bookName);
         Book book = bookService.getByNameAndAuthor(bookName, authorName, authorSurname);
-        Customer customer = customerService.getByEmail(formattedCustomerEmail);
+        Customer customer = customerService.getByEmail(customerEmail);
 
         if (book != null) {
-            for (Basket tempBasket : getByCustomer(formattedCustomerEmail)) {
+            for (Basket tempBasket : getByCustomer(customerEmail)) {
                 if (tempBasket.getBookId().equals(book.getId())) {
-                    System.out.println("THERE IS ALREADY " + formattedBookName + " IN YOUR BASKET");
+                    System.out.println("THERE IS ALREADY " + bookName + " IN YOUR BASKET");
                     return false;
                 }
             }
 
             Basket basket = new Basket(customer.getId(), book.getId());
             basketRepository.add(basket);
+            return true;
         }
-        return true;
+        System.out.println(ansiColorRed()+"THERE IS NO "+bookName+" IN BOOKS LIST!"+ansiColorReset());
+        return false;
     }
 
     @Override
     public void remove(String customerEmail, String bookName, String authorName, String authorSurname) {
-        String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
-        String formattedBookName = capitalizeForBookName(bookName);
         Book book = bookService.getByNameAndAuthor(bookName, authorName, authorSurname);
-        Customer customer = customerService.getByEmail(formattedCustomerEmail);
+        Customer customer = customerService.getByEmail(customerEmail);
         if (book != null && customer != null) {
-            for (Basket tempBasket : getByCustomer(formattedCustomerEmail)) {
+            for (Basket tempBasket : getByCustomer(customerEmail)) {
                 if (tempBasket.getBookId().equals(book.getId())) {
                     basketRepository.remove(customer.getId(), book.getId());
                     return;
                 }
             }
-            System.out.println("THERE IS NO " + formattedBookName + " IN YOUR BASKETS!");
+            System.out.println("THERE IS NO " + bookName + " IN YOUR BASKETS!");
         }
     }
 
     @Override
     public List<Basket> getByCustomer(String customerEmail) {
-        String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
-        Customer customer = customerService.getByEmail(formattedCustomerEmail);
+        Customer customer = customerService.getByEmail(customerEmail);
         if (customer != null) {
             return basketRepository.getByCustomer(customer.getId());
         } else {

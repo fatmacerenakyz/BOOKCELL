@@ -6,8 +6,11 @@ import tr.com.bookcell.publisher.Publisher;
 import tr.com.bookcell.publisher.PublisherService;
 
 import java.util.List;
+import java.util.Locale;
 
 import static tr.com.bookcell.util.InputFormatter.*;
+import static tr.com.bookcell.util.TestClassMethods.ansiColorRed;
+import static tr.com.bookcell.util.TestClassMethods.ansiColorReset;
 
 public class DefaultBookService implements BookService {
     private final BookRepository bookRepository;
@@ -23,24 +26,28 @@ public class DefaultBookService implements BookService {
 
     @Override
     public boolean add(String name, String authorName, String authorSurname, String publisherName, String genre, int publicationYear, int pageNumber) {
-        String formattedName = capitalizeForBookName(name);
-        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
-        String formattedAuthorSurname = capitalizeFirst(authorSurname);
-        String formattedPublisherName = capitalizeForMultipleStrings(publisherName);
-        String formattedGenre = capitalizeForMultipleStrings(genre);
-
-        Author author = authorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
-        Publisher publisher = publisherService.getByName(formattedPublisherName);
-        if (author != null && publisher != null) {
-            for (Book tempBook : getAll()) {
-                if (tempBook.getName().equals(formattedName) && tempBook.getAuthorId().equals(author.getId())) {
-                    System.out.println("THERE IS ALREADY " + formattedName + " IN BOOKS LIST");
-                    return false;
-                }
-            }
-            Book book = new Book(formattedName, author.getId(), publisher.getId(), formattedGenre, publicationYear, pageNumber, true);
-            bookRepository.add(book);
+        if(!isEnglish(name)||!isEnglish(authorName)||!isEnglish(authorSurname)||!isEnglish(publisherName)||!isEnglish(genre)){
+            System.out.println(ansiColorRed()+"ENGLISH CHARACTERS ONLY."+ansiColorReset());
+            return false;
         }
+        Author author = authorService.getByNameAndSurname(authorName, authorSurname);
+        Publisher publisher = publisherService.getByName(publisherName);
+        if (author == null || publisher == null) {
+            if (author == null)
+                System.out.println(ansiColorRed() + "THERE IS NO " + authorName+ " "+authorSurname+ " IN AUTHORS LIST!" + ansiColorReset());
+            else
+                System.out.println(ansiColorRed() + "THERE IS NO " + publisherName + " IN PUBLISHERS LIST!" + ansiColorReset());
+            return false;
+        }
+
+        for (Book tempBook : getAll()) {
+            if (tempBook.getName().equals(name.toUpperCase(Locale.ENGLISH)) && tempBook.getAuthorId().equals(author.getId())) {
+                System.out.println(ansiColorRed() + "THERE IS ALREADY " + name + " IN BOOKS LIST" + ansiColorReset());
+                return false;
+            }
+        }
+        Book book = new Book(name.toUpperCase(Locale.ENGLISH), author.getId(), publisher.getId(), genre.toUpperCase(Locale.ENGLISH), publicationYear, pageNumber, true);
+        bookRepository.add(book);
         return true;
     }
 
@@ -51,25 +58,21 @@ public class DefaultBookService implements BookService {
 
     @Override
     public List<Book> getByName(String name) {
-        String formattedName = capitalizeForBookName(name);
         for (Book tempBook : getAll()) {
-            if (tempBook.getName().equals(formattedName))
-                return bookRepository.getByName(formattedName);
+            if (tempBook.getName().equals(name.toUpperCase(Locale.ENGLISH)))
+                return bookRepository.getByName(name.toUpperCase(Locale.ENGLISH));
         }
         return null;
     }
 
     @Override
     public Book getByNameAndAuthor(String name, String authorName, String authorSurname) {
-        String formattedName = capitalizeForBookName(name);
-        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
-        String formattedAuthorSurname = capitalizeFirst(authorSurname);
 
-        Author author = authorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
+        Author author = authorService.getByNameAndSurname(authorName, authorSurname);
         if (author != null) {
             for (Book tempBook : getAll()) {
-                if (tempBook.getName().equals(formattedName) && tempBook.getAuthorId().equals(author.getId())) {
-                    return bookRepository.getByNameAndAuthor(formattedName, author.getId());
+                if (tempBook.getName().equals(name.toUpperCase(Locale.ENGLISH)) && tempBook.getAuthorId().equals(author.getId())) {
+                    return bookRepository.getByNameAndAuthor(name.toUpperCase(Locale.ENGLISH), author.getId());
                 }
             }
         }
@@ -79,19 +82,16 @@ public class DefaultBookService implements BookService {
 
     @Override
     public void remove(String name, String authorName, String authorSurname) {
-        String formattedName = capitalizeForBookName(name);
-        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
-        String formattedAuthorSurname = capitalizeFirst(authorSurname);
 
-        Author author = authorService.getByNameAndSurname(formattedAuthorName, formattedAuthorSurname);
+        Author author = authorService.getByNameAndSurname(authorName, authorSurname);
         if (author != null) {
             for (Book tempBook : getAll()) {
-                if (tempBook.getName().equals(formattedName) && tempBook.getAuthorId().equals(author.getId())) {
-                    bookRepository.remove(formattedName, author.getId());
+                if (tempBook.getName().equals(authorName.toUpperCase(Locale.ENGLISH)) && tempBook.getAuthorId().equals(author.getId())) {
+                    bookRepository.remove(name.toUpperCase(Locale.ENGLISH), author.getId());
                     return;
                 }
             }
-            System.out.println("THERE IS NO" + formattedName + " IN BOOKS LIST!");
+            System.out.println(ansiColorRed() + "THERE IS NO" + name + " IN BOOKS LIST!" + ansiColorReset());
         }
     }
 
@@ -102,8 +102,8 @@ public class DefaultBookService implements BookService {
 
     @Override
     public Book getById(Integer id) {
-        for(Book temp : getAll()){
-            if(temp.getId().equals(id)){
+        for (Book temp : getAll()) {
+            if (temp.getId().equals(id)) {
                 return bookRepository.getById(id);
             }
         }

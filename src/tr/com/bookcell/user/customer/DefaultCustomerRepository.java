@@ -1,6 +1,5 @@
 package tr.com.bookcell.user.customer;
 
-import java.security.spec.ECField;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -10,10 +9,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DefaultCustomerRepository implements CustomerRepository {
-    private static final String INSERT_CUSTOMERS = "WITH rows AS (INSERT INTO public.\"USER\" (\"PASSWORD\") VALUES (?) RETURNING \"ID\") INSERT INTO public.\"CUSTOMER\" (\"ID\", \"NAME\", \"SURNAME\", \"REGISTRATION_DATE\", \"EMAIL\") SELECT \"ID\", ?, ?, ?, ? FROM rows;";
-    private static final String DELETE_CUSTOMERS = "WITH rows AS (DELETE FROM public.\"CUSTOMER\" WHERE \"EMAIL\"=? RETURNING \"ID\") DELETE FROM public.\"USER\" WHERE \"ID\" IN (SELECT \"ID\" FROM rows);";
-    private static final String SELECT_CUSTOMERS = "SELECT u.\"ID\", u.\"PASSWORD\", c.\"NAME\", c.\"SURNAME\", c.\"REGISTRATION_DATE\", c.\"EMAIL\" FROM public.\"USER\" u INNER JOIN public.\"CUSTOMER\" c ON u.\"ID\" = c.\"ID\";";
-    private static final String SELECT_CUSTOMERS_WHERE_EMAIL = "SELECT u.\"ID\", u.\"PASSWORD\", c.\"NAME\", c.\"SURNAME\", c.\"REGISTRATION_DATE\", c.\"EMAIL\" FROM public.\"USER\" u INNER JOIN public.\"CUSTOMER\" c ON u.\"ID\" = c.\"ID\" WHERE \"EMAIL\"=?;";
+    private static final String INSERT_CUSTOMERS = """
+            WITH rows AS (INSERT INTO public."USER" ("PASSWORD") VALUES (?) RETURNING "ID")
+            INSERT INTO public."CUSTOMER" ("ID", "NAME", "SURNAME", "REGISTRATION_DATE", "EMAIL")
+            SELECT "ID", ?, ?, ?, ? FROM rows;""";
+    private static final String DELETE_CUSTOMERS = """
+            WITH rows AS (DELETE FROM public."CUSTOMER" WHERE "EMAIL"=? RETURNING "ID")
+             DELETE FROM public."USER" WHERE "ID" IN (SELECT "ID" FROM rows);""";
+    private static final String SELECT_CUSTOMERS = """
+            SELECT u."ID", u."PASSWORD", c."NAME", c."SURNAME", c."REGISTRATION_DATE", c."EMAIL" FROM public."USER" u
+            INNER JOIN public."CUSTOMER" c ON u."ID" = c."ID";""";
+    private static final String SELECT_CUSTOMERS_WHERE_EMAIL = """
+            SELECT u."ID", u."PASSWORD", c."NAME", c."SURNAME", c."REGISTRATION_DATE", c."EMAIL" FROM public."USER" u
+            INNER JOIN public."CUSTOMER" c ON u."ID" = c."ID" WHERE "EMAIL"=?;""";
 
     @Override
     public void add(Customer customer) {

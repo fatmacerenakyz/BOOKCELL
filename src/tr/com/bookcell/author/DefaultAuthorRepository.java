@@ -39,6 +39,7 @@ public class DefaultAuthorRepository implements AuthorRepository {
                 author.setSurname(resultSet.getString("SURNAME"));
                 authors.add(author);
             }
+            connection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

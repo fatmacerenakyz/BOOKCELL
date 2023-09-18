@@ -30,26 +30,29 @@ public class DefaultLandingService implements LandingService {
 
     @Override
     public boolean setPickUp(String customerEmail, String bookName, String authorName, String authorSurname) {
-        String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
-        String formattedBookName = capitalizeForBookName(bookName);
-        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
-        String formattedAuthorSurname = capitalizeFirst(authorSurname);
-        Book book = bookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
-        Customer customer = customerService.getByEmail(formattedCustomerEmail);
+
+        Book book = bookService.getByNameAndAuthor(bookName, authorName, authorSurname);
+        Customer customer = customerService.getByEmail(customerEmail);
         if (book != null && customer != null) {
             if(!(book.isAvailable())){
                 System.out.println(ansiColorRed()+"THIS BOOK IS NOT AVAILABLE. "+ansiColorReset());
                 return false;
             }
             else {
-                List<Landing> landings = getByCustomerAndBook(formattedCustomerEmail, formattedBookName, formattedAuthorName, formattedAuthorSurname);
-                for (Landing tempLanding : landings) {
-                    if (tempLanding.getDropOffDate() == null) {
-                        System.out.println(ansiColorRed() + "YOU HAVE ALREADY BORROW THIS BOOK. PLEASE DELIVER IT FIRST!!!" + ansiColorReset());
-                        return false;
+                List<Reservation> reservations = reservationService.getByCustomerAndBook(customerEmail, bookName, authorName, authorSurname);
+                if(reservations==null){
+                    System.out.println(ansiColorRed()+"YOU HAVE NO RESERVATIONS!"+ansiColorReset());
+                    return false;
+                }
+                List<Landing> landings = getByCustomerAndBook(customerEmail, bookName, authorName, authorSurname);
+                if(landings!=null) {
+                    for (Landing tempLanding : landings) {
+                        if (tempLanding.getDropOffDate() == null) {
+                            System.out.println(ansiColorRed() + "YOU HAVE ALREADY BORROW THIS BOOK. PLEASE DELIVER IT FIRST!!!" + ansiColorReset());
+                            return false;
+                        }
                     }
                 }
-                List<Reservation> reservations = reservationService.getByCustomerAndBook(customerEmail, bookName, authorName, authorSurname);
                 for (Reservation tempReservation : reservations) {
                     if (!(tempReservation.isCanceled()) && !(tempReservation.isPickedUp())) {
                         if (tempReservation.getStartDate().isBefore(LocalDate.now())) {
@@ -60,7 +63,7 @@ public class DefaultLandingService implements LandingService {
                             System.out.println(ansiColorRed() + "YOUR PICK UP DATE HAS NOT COME YET." + ansiColorReset());
                             return false;
                         } else {
-                            tempReservation.setPickedUp(true);
+                            reservationService.setPickedUp(tempReservation.getId(), true);
                         }
                     }
                 }
@@ -70,18 +73,15 @@ public class DefaultLandingService implements LandingService {
                 landing.setPickUpDate(LocalDate.now());
                 bookService.setAvailable(book.getId(), false);
                 landingRepository.setPickUp(landing);
+                return true;
             }
 
         }
-        return true;
+        return false;
     }
 
     @Override
     public boolean setDropOff(String customerEmail, String bookName, String authorName, String authorSurname, String pickUpDate) {
-        String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
-        String formattedBookName = capitalizeForBookName(bookName);
-        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
-        String formattedAuthorSurname = capitalizeFirst(authorSurname);
 
         LocalDate formattedPickUpDate = dateFormatter(pickUpDate);
         if (formattedPickUpDate == null) {
@@ -89,7 +89,7 @@ public class DefaultLandingService implements LandingService {
             return false;
         }
         List<Reservation> reservations = reservationService.getByCustomerAndBook(customerEmail, bookName, authorName, authorSurname);
-        List<Landing> landings = getByCustomerAndBook(formattedCustomerEmail, formattedBookName, formattedAuthorName, formattedAuthorSurname);
+        List<Landing> landings = getByCustomerAndBook(customerEmail, bookName, authorName, authorSurname);
         for(Reservation tempReservation : reservations){
             if(!(tempReservation.isCanceled()) && (tempReservation.isPickedUp())){
                 if (tempReservation.getDeliveryDate().isBefore(LocalDate.now())) {
@@ -97,7 +97,7 @@ public class DefaultLandingService implements LandingService {
                     return false;
                 } else if (tempReservation.getDeliveryDate().isAfter(LocalDate.now())) {
                     System.out.println(ansiColorRed() + "YOUR DELIVERY DATE HAS EXPIRED. YOUR RESERVATION HAS BEEN CANCELED." + ansiColorReset());
-                    tempReservation.setCanceled(true);
+                    reservationService.cancel(customerEmail, bookName, authorName, authorSurname, pickUpDate);
                     return false;
                 } else {
                     if (landings != null) {
@@ -119,12 +119,9 @@ public class DefaultLandingService implements LandingService {
 
     @Override
     public List<Landing> getByCustomerAndBook(String customerEmail, String bookName, String authorName, String authorSurname) {
-        String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
-        String formattedBookName = capitalizeForBookName(bookName);
-        String formattedAuthorName = capitalizeForMultipleStrings(authorName);
-        String formattedAuthorSurname = capitalizeFirst(authorSurname);
-        Book book = bookService.getByNameAndAuthor(formattedBookName, formattedAuthorName, formattedAuthorSurname);
-        Customer customer = customerService.getByEmail(formattedCustomerEmail);
+
+        Book book = bookService.getByNameAndAuthor(bookName, authorName, authorSurname);
+        Customer customer = customerService.getByEmail(customerEmail);
         if (book != null && customer != null) {
             for (Landing temp : getAll()) {
                 if (temp.getBookId().equals(book.getId()) && temp.getCustomerId().equals(customer.getId())) {
@@ -138,8 +135,7 @@ public class DefaultLandingService implements LandingService {
 
     @Override
     public List<Landing> getByCustomer(String customerEmail) {
-        String formattedCustomerEmail = lowerCaseForEmail(customerEmail);
-        Customer customer = customerService.getByEmail(formattedCustomerEmail);
+        Customer customer = customerService.getByEmail(customerEmail);
         return landingRepository.getByCustomer(customer.getId());
     }
 

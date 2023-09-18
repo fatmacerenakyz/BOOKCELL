@@ -2,6 +2,7 @@ package tr.com.bookcell.user.customer;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 
 import static tr.com.bookcell.util.InputFormatter.*;
 import static tr.com.bookcell.util.PatternMatcher.emailPattern;
@@ -17,12 +18,16 @@ public class DefaultCustomerService implements CustomerService {
 
     @Override
     public boolean add(String email, String password, String name, String surname) {
-        String formattedEmail = lowerCaseForEmail(email);
-        Customer customer = getByEmail(formattedEmail);
+        Customer customer = getByEmail(email);
         if (customer != null) {
             return false;
-        } else {
-            Integer integerCustomerType = emailPattern(formattedEmail);
+        }
+        else if(!isEnglish(email)||!isEnglish(name)||!isEnglish(password)||!isEnglish(surname)){
+            System.out.println(ansiColorRed()+"ENGLISH CHARACTERS ONLY!"+ansiColorReset());
+            return false;
+        }
+        else {
+            Integer integerCustomerType = emailPattern(email);
             CustomerType customerType = null;
             switch (integerCustomerType) {
                 case (0) -> customerType = CustomerType.DEFAULT;
@@ -34,9 +39,7 @@ public class DefaultCustomerService implements CustomerService {
                 }
             }
             if (passwordPattern(password)) {
-                String formattedName = capitalizeForMultipleStrings(name);
-                String formattedSurname = capitalizeFirst(surname);
-                Customer newCustomer = new Customer(password, formattedName, formattedSurname, LocalDate.now(), formattedEmail);
+                Customer newCustomer = new Customer(password, name.toUpperCase(Locale.ENGLISH), surname.toUpperCase(Locale.ENGLISH), LocalDate.now(), email.toUpperCase(Locale.ENGLISH));
                 customerRepository.add(newCustomer);
                 System.out.println(ansiColorGreen() + "YOU HAVE SUCCESSFULLY REGISTERED!" + ansiColorReset());
                 return true;
@@ -49,14 +52,11 @@ public class DefaultCustomerService implements CustomerService {
 
     @Override
     public void remove(String email) {
-        String formattedEmail = lowerCaseForEmail(email);
-        Customer customer = getByEmail(formattedEmail);
+        Customer customer = getByEmail(email);
         if (customer == null) {
-            System.out.println(ansiColorRed() + "THERE IS NO CUSTOMER WITH " + formattedEmail + " IN CUSTOMERS LIST!" + ansiColorReset());
+            System.out.println(ansiColorRed() + "THERE IS NO CUSTOMER WITH " + email.toUpperCase() + " IN CUSTOMERS LIST!" + ansiColorReset());
         } else {
-
-            customerRepository.remove(formattedEmail);
-
+            customerRepository.remove(email.toUpperCase(Locale.ENGLISH));
         }
 
     }
@@ -71,7 +71,7 @@ public class DefaultCustomerService implements CustomerService {
     public Customer getByEmail(String email) {
         for (Customer temp : getAll()) {
             if (temp.getEmail().equalsIgnoreCase(email)) {
-                return customerRepository.getByEmail(email.toLowerCase());
+                return customerRepository.getByEmail(email.toUpperCase(Locale.ENGLISH));
             }
         }
         return null;
@@ -79,8 +79,7 @@ public class DefaultCustomerService implements CustomerService {
 
     @Override
     public boolean isPasswordCorrect(String email, String password) {
-        String formattedEmail = lowerCaseForEmail(email);
-        Customer customer = getByEmail(formattedEmail);
+        Customer customer = getByEmail(email);
         return customer != null && customer.getPassword().equals(password);
     }
 
